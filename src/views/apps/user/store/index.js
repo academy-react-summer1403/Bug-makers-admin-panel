@@ -9,6 +9,7 @@ const axiosInstance = axios.create({
   baseURL: baseURL
 });
 
+// Set up interceptors for authorization
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token'); 
@@ -38,10 +39,9 @@ export const getData = createAsyncThunk('appUsers/getData', async (params) => {
   };
 });
 
-
 // ** Get User by ID
 export const getUser = createAsyncThunk('appUsers/getUser', async (id) => {
-  const response = await axiosInstance.get(`/${id}`);
+  const response = await axiosInstance.get(`/User/UserDetails/${id}`);
   return response.data;
 });
 
@@ -68,6 +68,31 @@ export const addUser = createAsyncThunk('appUsers/addUser', async (user, { dispa
   }
 });
 
+// ** Update User
+export const updateUser = createAsyncThunk('appUsers/updateUser', async (user, { dispatch, getState }) => {
+  try {
+    const response = await axiosInstance.put('/User/UpdateUser', {
+      id: user.id, // Send user ID
+      lastName: user.lastName,
+      firstName: user.firstName,
+      gmail: user.gmail,
+      password: user.password,
+      phoneNumber: user.phoneNumber,
+      isStudent: user.isStudent,
+      isTeacher: user.isTeacher,
+      nationalCode: user.nationalCode,
+      birthday: user.birthDay ,
+    });
+    
+    await dispatch(getData(getState().users.params));
+    await dispatch(getAllData());
+
+    return response.data; 
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
+  }
+});
 
 // ** Delete User
 export const deleteUser = createAsyncThunk('appUsers/deleteUser', async (id, { dispatch, getState }) => {
@@ -76,7 +101,6 @@ export const deleteUser = createAsyncThunk('appUsers/deleteUser', async (id, { d
   await dispatch(getAllData());
   return id;
 });
-
 
 // ** Slice
 export const appUsersSlice = createSlice({

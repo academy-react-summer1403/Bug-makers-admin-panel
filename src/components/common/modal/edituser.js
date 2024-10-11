@@ -1,5 +1,12 @@
 // ** React Imports
 import { Fragment, useState } from 'react'
+import { useDispatch } from 'react-redux';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup'; // Import Yup for validation
+import { updateUser } from '../../../views/apps/user/store/index';
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 // ** Reactstrap Imports
 import {
@@ -19,239 +26,216 @@ import {
 } from 'reactstrap'
 
 // ** Third Party Components
-import Select from 'react-select'
-import { User, Check, X  ,Archive} from 'react-feather'
-import { useForm, Controller } from 'react-hook-form'
-
-// ** Utils
-import { selectThemeColors } from '@utils'
+import { Archive } from 'react-feather';
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 
-const statusOptions = [
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' },
-  { value: 'suspended', label: 'Suspended' }
-]
+const EditUserExample = ({ onClick, user }) => {
 
-const countryOptions = [
-  { value: 'uk', label: 'UK' },
-  { value: 'usa', label: 'USA' },
-  { value: 'france', label: 'France' },
-  { value: 'russia', label: 'Russia' },
-  { value: 'canada', label: 'Canada' }
-]
+  const [startDate, setStartDate] = useState(user.birthDay ? new Date(user.birthDay) : new Date());
+  const dispatch = useDispatch();
 
-const languageOptions = [
-  { value: 'english', label: 'English' },
-  { value: 'spanish', label: 'Spanish' },
-  { value: 'french', label: 'French' },
-  { value: 'german', label: 'German' },
-  { value: 'dutch', label: 'Dutch' }
-]
-
-const defaultValues = {
-  firstName: 'Bob',
-  lastName: 'Barton',
-  username: 'bob.dev'
-}
-
-const EditUserExample = () => {
-  // ** States
-  const [show, setShow] = useState(false)
-
-  // ** Hooks
-  const {
-    control,
-    setError,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({ defaultValues })
-
-  const onSubmit = data => {
-    if (Object.values(data).every(field => field.length > 0)) {
-      return null
-    } else {
-      for (const key in data) {
-        if (data[key].length === 0) {
-          setError(key, {
-            type: 'manual'
-          })
-        }
+  // ** Validation Schema
+  const validationSchema = Yup.object().shape({
+    gmail: Yup.string().email('فرمت ایمیل نامعتبر است').required('ایمیل الزامی است'),
+    phoneNumber: Yup.string()
+      .matches(/^09\d{9}$/, 'شماره تلفن باید ۱۱ رقم و با 09 شروع شود')
+      .required('شماره تلفن الزامی است'),
+    firstName: Yup.string().required('نام الزامی است'),
+    lastName: Yup.string().required('نام خانوادگی الزامی است'),
+    isStudent: Yup.boolean(),
+    isTeacher: Yup.boolean(),
+    nationalCode: Yup.number().required('کدملی الزامیست'),
+    userType: Yup.mixed().test(
+      'at-least-one',
+      'باید حداقل یکی از گزینه‌های دانش‌آموز یا معلم انتخاب شود',
+      (values, context) => {
+        const { isStudent, isTeacher } = context.parent;
+        return isStudent || isTeacher;
       }
-    }
-  }
-  const [isHovered, setIsHovered] = useState(false); // ایجاد حالت برای کنترل هاور
+    ),
+  });
+
+  // ** Form Submission
+  const handleSubmit = (data) => {
+    const formattedData = {
+      ...data,
+      birthDay: startDate.toISOString() // Convert to ISO string for API
+    };
+    dispatch(updateUser(formattedData));
+    setShow(false);
+  };
+
+  const [show, setShow] = useState(false);
 
   return (
-      <div  
-        style={{
-          backgroundColor: isHovered ? '#E8E7F7' : 'initial', 
-          color: isHovered ? '#7367F0' : '#9e9ba6', 
-          padding: '10px 20px',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          transition: 'background-color 0.3s, color 0.3s', 
-          display: 'flex', 
-          justifyContent: 'start', 
-          gap:'6px',
-          alignItems: 'center'
-        }}
-        onMouseEnter={() => setIsHovered(true)} 
-        onMouseLeave={() => setIsHovered(false)} 
-        onClick={() => console.log('Button clicked!')} 
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'start',
+        gap: '6px',
+        alignItems: 'center'
+      }}
+      onClick={onClick}
+    >
+      <Archive size={14} />
+      <div className="" onClick={() => setShow(true)}>
+        Show
+      </div>
+      <Modal
+        isOpen={show}
+        toggle={() => setShow(!show)}
+        className='modal-dialog-centered modal-lg'
+        backdrop='static'
+        keyboard={false}
       >
-        <Archive size={14}  />
-          <div    className=""   onClick={() => setShow(true)}>
-            Show
-          </div>
-      <Modal isOpen={show} toggle={() => setShow(!show)} className='modal-dialog-centered modal-lg'>
-        <ModalHeader className='bg-transparent' toggle={() => setShow(!show)}></ModalHeader>
-        <ModalBody className='px-sm-5 mx-50 pb-5'>
+        <ModalHeader className='bg-transparent' toggle={() => setShow(false)}></ModalHeader>
+        <ModalBody className="px-sm-5 mx-50 pb-5">
           <div className='text-center mb-2'>
             <h1 className='mb-1'>Edit User Information</h1>
             <p>Updating user details will receive a privacy audit.</p>
           </div>
-          <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
-            <Col md={6} xs={12}>
-              <Label className='form-label' for='firstName'>
-                First Name
-              </Label>
-              <Controller
-                control={control}
-                name='firstName'
-                render={({ field }) => {
-                  return (
-                    <Input
-                      {...field}
-                      id='firstName'
-                      placeholder='John'
-                      value={field.value}
-                      invalid={errors.firstName && true}
-                    />
-                  )
-                }}
-              />
-              {errors.firstName && <FormFeedback>Please enter a valid First Name</FormFeedback>}
-            </Col>
-            <Col md={6} xs={12}>
-              <Label className='form-label' for='lastName'>
-                Last Name
-              </Label>
-              <Controller
-                name='lastName'
-                control={control}
-                render={({ field }) => (
-                  <Input {...field} id='lastName' placeholder='Doe' invalid={errors.lastName && true} />
-                )}
-              />
-              {errors.lastName && <FormFeedback>Please enter a valid Last Name</FormFeedback>}
-            </Col>
-            <Col xs={12}>
-              <Label className='form-label' for='username'>
-                Username
-              </Label>
-              <Controller
-                name='username'
-                control={control}
-                render={({ field }) => (
-                  <Input {...field} id='username' placeholder='john.doe.007' invalid={errors.username && true} />
-                )}
-              />
-              {errors.username && <FormFeedback>Please enter a valid Username</FormFeedback>}
-            </Col>
-            <Col md={6} xs={12}>
-              <Label className='form-label' for='email'>
-                Billing Email
-              </Label>
-              <Input type='email' id='email' placeholder='example@domain.com' />
-            </Col>
-            <Col md={6} xs={12}>
-              <Label className='form-label' for='status'>
-                Status:
-              </Label>
-              <Select
-                id='status'
-                isClearable={false}
-                className='react-select'
-                classNamePrefix='select'
-                options={statusOptions}
-                theme={selectThemeColors}
-                defaultValue={statusOptions[0]}
-              />
-            </Col>
-            <Col md={6} xs={12}>
-              <Label className='form-label' for='tax-id'>
-                Tax ID
-              </Label>
-              <Input id='tax-id' defaultValue='Tax-8894' placeholder='Tax-1234' />
-            </Col>
-            <Col md={6} xs={12}>
-              <Label className='form-label' for='contact'>
-                Contact
-              </Label>
-              <Input id='contact' defaultValue='+1 609 933 4422' placeholder='+1 609 933 4422' />
-            </Col>
-            <Col md={6} xs={12}>
-              <Label className='form-label' for='language'>
-                Language
-              </Label>
-              <Select
-                id='language'
-                isClearable={false}
-                className='react-select'
-                classNamePrefix='select'
-                options={languageOptions}
-                theme={selectThemeColors}
-                defaultValue={languageOptions[0]}
-              />
-            </Col>
-            <Col md={6} xs={12}>
-              <Label className='form-label' for='country'>
-                Country
-              </Label>
-              <Select
-                id='country'
-                isClearable={false}
-                className='react-select'
-                classNamePrefix='select'
-                options={countryOptions}
-                theme={selectThemeColors}
-                defaultValue={countryOptions[0]}
-              />
-            </Col>
-            <Col xs={12}>
-              <div className='d-flex align-items-center'>
-                <div className='form-switch'>
-                  <Input type='switch' defaultChecked id='billing-switch' name='billing-switch' />
-                  <Label className='form-check-label' htmlFor='billing-switch'>
-                    <span className='switch-icon-left'>
-                      <Check size={14} />
-                    </span>
-                    <span className='switch-icon-right'>
-                      <X size={14} />
-                    </span>
+          <Formik
+            initialValues={{
+              id: user.id || '',
+              lastName: user.lname || '',
+              firstName: user.fname || '',
+              gmail: user.gmail || '',
+              phoneNumber: user.phoneNumber || '',
+              isStudent: user.isStudent || false,
+              isTeacher: user.isTeacher || false,
+              nationalCode : user.NationalCode			 || '',
+              birthDay: user.birthDay || '',
+            }}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ handleChange, values, errors, touched }) => (
+              <Form>
+                <div className='mb-1'>
+                  <Label className='form-label' for='gmail'>
+                    ایمیل <span className='text-danger'>*</span>
                   </Label>
+                  <Input
+                    id='gmail'
+                    name='gmail'
+                    placeholder='user@gmail.com'
+                    value={values.gmail}
+                    onChange={handleChange}
+                    invalid={touched.gmail && !!errors.gmail}
+                  />
+                  {touched.gmail && errors.gmail && <FormFeedback>{errors.gmail}</FormFeedback>}
                 </div>
-                <Label className='form-check-label fw-bolder' htmlFor='billing-switch'>
-                  Use as a billing address?
-                </Label>
-              </div>
-            </Col>
-            <Col xs={12} className='text-center mt-2 pt-50'>
-              <Button type='submit' className='me-1' color='primary'>
-                Submit
-              </Button>
-              <Button type='reset' color='secondary' outline onClick={() => setShow(false)}>
-                Discard
-              </Button>
-            </Col>
-          </Row>
+
+                <div className='mb-1'>
+                  <Label className='form-label' for='phoneNumber'>
+                    شماره تلفن <span className='text-danger'>*</span>
+                  </Label>
+                  <Input
+                    id='phoneNumber'
+                    name='phoneNumber'
+                    placeholder='(09xxxxxxxxx)'
+                    value={values.phoneNumber}
+                    onChange={handleChange}
+                    invalid={touched.phoneNumber && !!errors.phoneNumber}
+                  />
+                  {touched.phoneNumber && errors.phoneNumber && <FormFeedback>{errors.phoneNumber}</FormFeedback>}
+                </div>
+
+                <div className='mb-1'>
+                  <Label className='form-label' for='firstName'>
+                    نام <span className='text-danger'>*</span>
+                  </Label>
+                  <Input
+                    id='firstName'
+                    name='firstName'
+                    placeholder='نام'
+                    value={values.firstName}
+                    onChange={handleChange}
+                    invalid={touched.firstName && !!errors.firstName}
+                  />
+                  {touched.firstName && errors.firstName && <FormFeedback>{errors.firstName}</FormFeedback>}
+                </div>
+
+                <div className='mb-1'>
+                  <Label className='form-label' for='lastName'>
+                    نام خانوادگی <span className='text-danger'>*</span>
+                  </Label>
+                  <Input
+                    id='lastName'
+                    name='lastName'
+                    placeholder='نام خانوادگی'
+                    value={values.lastName}
+                    onChange={handleChange}
+                    invalid={touched.lastName && !!errors.lastName}
+                  />
+                  {touched.lastName && errors.lastName && <FormFeedback>{errors.lastName}</FormFeedback>}
+                </div>
+                <div className='mb-1'>
+                  <Label className='form-label' for='nationalCode	'>
+                    national code  <span className='text-danger'>*</span>
+                  </Label>
+                  <Input
+                    id='nationalCode'
+                    name='nationalCode'
+                    placeholder='national code'
+                    value={values.nationalCode}
+                    onChange={handleChange}
+                    invalid={touched.nationalCode && !!errors.nationalCode		}
+                  />
+                  {touched.lastName && errors.lastName && <FormFeedback>{errors.lastName}</FormFeedback>}
+                </div>
+
+                <div className='mb-1'>
+                  <Label className='form-label'>تاریخ تولد</Label>
+                  <DatePicker
+                    name='birthday'
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    dateFormat="yyyy-MM-dd"
+                    className="form-control"
+                  />
+                </div>
+
+                <div className='mb-1'>
+                  <Label className='form-label'>نوع کاربر</Label>
+                  <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '1rem' }}>
+                    <Label style={{ marginBottom: '0.5rem' }}>
+                      <Input
+                        type='checkbox'
+                        name='isStudent'
+                        checked={values.isStudent}
+                        onChange={handleChange}
+                      />
+                      دانش‌آموز
+                    </Label>
+                    <Label style={{ marginBottom: '0.5rem' }}>
+                      <Input
+                        type='checkbox'
+                        name='isTeacher'
+                        checked={values.isTeacher}
+                        onChange={handleChange}
+                      />
+                      معلم
+                    </Label>
+                    {errors.userType && <FormFeedback className="d-block">{errors.userType}</FormFeedback>}
+                  </div>
+                </div>
+
+                <Button type='submit' className='me-1' color='primary'>
+                  ارسال
+                </Button>
+                <Button type='reset' color='secondary' outline onClick={() => setShow(false)}>
+                  انصراف
+                </Button>
+              </Form>
+            )}
+          </Formik>
         </ModalBody>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default EditUserExample
+export default EditUserExample;
