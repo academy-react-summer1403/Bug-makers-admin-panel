@@ -35,7 +35,11 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
-  UncontrolledDropdown
+  UncontrolledDropdown,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
 } from 'reactstrap'
 
 // ** Styles
@@ -44,127 +48,185 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 import { auto } from '@popperjs/core'
 
 // ** Table Header
-const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
+const CustomHeader = ({
+  store,
+  toggleSidebar,
+  handlePerPage,
+  rowsPerPage,
+  handleFilter,
+  searchTerm,
+  setSearchTerm,
+  currentRole,
+  currentPlan,
+  currentStatus,
+  setCurrentRole,
+  setCurrentPlan,
+  setCurrentStatus,
+  roleOptions,
+  selectThemeColors,
+  dispatch,
+  getData,
+  sort,
+  sortColumn,
+  currentPage
+}) => {
   // ** Converts table to CSV
   function convertArrayOfObjectsToCSV(array) {
-    let result
+    let result;
 
-    const columnDelimiter = ','
-    const lineDelimiter = '\n'
-    const keys = Object.keys(store.data[0])
+    const columnDelimiter = ',';
+    const lineDelimiter = '\n';
+    const keys = Object.keys(store.data[0]);
 
-    result = ''
-    result += keys.join(columnDelimiter)
-    result += lineDelimiter
+    result = '';
+    result += keys.join(columnDelimiter);
+    result += lineDelimiter;
 
-    array.forEach(item => {
-      let ctr = 0
-      keys.forEach(key => {
-        if (ctr > 0) result += columnDelimiter
+    array.forEach((item) => {
+      let ctr = 0;
+      keys.forEach((key) => {
+        if (ctr > 0) result += columnDelimiter;
+        result += item[key];
+        ctr++;
+      });
+      result += lineDelimiter;
+    });
 
-        result += item[key]
-
-        ctr++
-      })
-      result += lineDelimiter
-    })
-
-    return result
+    return result;
   }
 
   // ** Downloads CSV
   function downloadCSV(array) {
-    const link = document.createElement('a')
-    let csv = convertArrayOfObjectsToCSV(array)
-    if (csv === null) return
+    const link = document.createElement('a');
+    let csv = convertArrayOfObjectsToCSV(array);
+    if (csv === null) return;
 
-    const filename = 'export.csv'
+    const filename = 'export.csv';
 
     if (!csv.match(/^data:text\/csv/i)) {
-      csv = `data:text/csv;charset=utf-8,${csv}`
+      csv = `data:text/csv;charset=utf-8,${csv}`;
     }
 
-    link.setAttribute('href', encodeURI(csv))
-    link.setAttribute('download', filename)
-    link.click()
+    link.setAttribute('href', encodeURI(csv));
+    link.setAttribute('download', filename);
+    link.click();
   }
+
+  const [modal, setModal] = useState(false);
+
+  const toggleModal = () => setModal(!modal);
+
+  const handleRoleChange = (role) => {
+    setCurrentRole(role);
+    toggleModal(); // Close modal after selecting a role
+  };
+  const handleClearFilters = () => {
+    setSearchTerm("");
+  
+    setCurrentRole({ value: '', label: 'انتخاب نقش' });
+    
+    setCurrentStatus({ value: '', label: 'Select Status', number: 0 });
+    
+    setCurrentPlan({ value: '', label: 'Select Plan' });
+  
+    dispatch(getData({
+      sort,
+      sortColumn,
+      q: "",  
+      page: currentPage,
+      perPage: rowsPerPage,
+      userRoles: '',  
+      status: '',    
+      currentPlan: '' ,
+    }));
+  };
+  
   return (
-    <div className='invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75'>
+<div className="invoice-list-table-header w-100 me-1 ms-50 align-items-center mt-2 mb-75">
+  <Row>
+    <Card className="bg-transparent w-50 mt-3">
       <Row>
-        <Col xl='6' className='d-flex align-items-center p-0'>
-          <div className='d-flex align-items-center w-100'>
-            <label htmlFor='rows-per-page'>Show</label>
-            <Input
-              className='mx-50'
-              type='select'
-              id='rows-per-page'
-              value={rowsPerPage}
-              onChange={handlePerPage}
-              style={{ width: '5rem' }}
-            >
-              <option value='10'>10</option>
-              <option value='25'>25</option>
-              <option value='50'>50</option>
-            </Input>
-            <label htmlFor='rows-per-page'>Entries</label>
-          </div>
-        </Col>
-        <Col
-          xl='6'
-          className='d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1'
-        >
-          <div className='d-flex align-items-center mb-sm-0 mb-1 me-1'>
-            <label className='mb-0' htmlFor='search-invoice'>
-              Search:
-            </label>
-            <Input
-              id='search-invoice'
-              className='ms-50 w-100'
-              type='text'
-              value={searchTerm}
-              onChange={e => handleFilter(e.target.value)}
-            />
-          </div>
-
-          <div className='d-flex align-items-center table-header-actions'>
-            <UncontrolledDropdown className='me-1'>
-              <DropdownToggle color='secondary' caret outline>
-                <Share className='font-small-4 me-50' />
-                <span className='align-middle'>Export</span>
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className='w-100'>
-                  <Printer className='font-small-4 me-50' />
-                  <span className='align-middle'>Print</span>
-                </DropdownItem>
-                <DropdownItem className='w-100' onClick={() => downloadCSV(store.data)}>
-                  <FileText className='font-small-4 me-50' />
-                  <span className='align-middle'>CSV</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <Grid className='font-small-4 me-50' />
-                  <span className='align-middle'>Excel</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <File className='font-small-4 me-50' />
-                  <span className='align-middle'>PDF</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <Copy className='font-small-4 me-50' />
-                  <span className='align-middle'>Copy</span>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-
-            <Button className='add-new-user' color='primary' onClick={toggleSidebar}>
-              Add New User
-            </Button>
-          </div>
+        <Col md="4">
+          {/* Trigger to open modal */}
+          <Button color="primary" onClick={toggleModal}>
+            {currentRole ? currentRole.label : "انتخاب نقش"}
+          </Button>
         </Col>
       </Row>
-    </div>
-  )
-}
+    </Card>
+
+    {/* Modal for role selection */}
+    <Modal isOpen={modal} toggle={toggleModal}>
+      <ModalHeader toggle={toggleModal}>انتخاب نقش</ModalHeader>
+      <ModalBody>
+        {/* You can map over roleOptions to show them as a list */}
+        {roleOptions.map((role) => (
+          <Button
+            key={role.value}
+            color="primary"
+            className="mb-2 w-100"
+            onClick={() => handleRoleChange(role)}
+          >
+            {role.label}
+          </Button>
+        ))}
+      </ModalBody>
+      <ModalFooter>
+        <Button color="secondary" onClick={toggleModal}>
+          بیخیال
+        </Button>
+      </ModalFooter>
+    </Modal>
+        {/* Remove All Filters Button */}
+        <Button
+          style={{position : 'absolute', top : '0' , right : 0}}
+          color='primary'
+          onClick={handleClearFilters}
+        >
+          حذف فیلتر ها
+        </Button>
+    <Col
+      xl="6"
+      className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
+    >
+      <div className="d-flex align-items-center ">
+        <label style={{marginRight : '20px' }} htmlFor="search-invoice">
+          Search:
+        </label>
+        <Input
+          id="search-invoice"
+          className="ms-2 "
+          style={{width: '200px' , marginLeft : '20px'}}
+          type="text"
+          value={searchTerm}
+          onChange={(e) => handleFilter(e.target.value)}
+        />
+      </div>
+
+      <div className="d-flex align-items-center table-header-actions">
+        <UncontrolledDropdown className="me-1">
+          <DropdownToggle color="secondary" caret outline>
+            <Share className="font-small-4 me-50" />
+            <span className="align-middle">خروجی</span>
+          </DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem className="w-100" onClick={() => downloadCSV(store.data)}>
+              <FileText className="font-small-4 me-50" />
+              <span className="align-middle">CSV</span>
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
+
+        <Button className="add-new-user me-3   " style={{width: '150px'}} color="primary" onClick={toggleSidebar}>
+          اضافه کردن کاربر 
+        </Button>
+      </div>
+    </Col>
+  </Row>
+</div>
+
+  );
+};
 
 const UsersList = () => {
   // ** Store Vars
@@ -176,9 +238,9 @@ const UsersList = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [sortColumn, setSortColumn] = useState('DESC')
-  const [rowsPerPage, setRowsPerPage] = useState(246)
+  const [rowsPerPage, setRowsPerPage] = useState(5000)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select Role' })
+  const [currentRole, setCurrentRole] = useState({ value: '', label: 'انتخاب نقش' })
   const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
 
@@ -198,46 +260,43 @@ const UsersList = () => {
       page: currentPage,
       perPage: rowsPerPage,
       userRoles: currentRole.value,
-      status: currentStatus.value,
-      currentPlan: currentPlan.value
+      active: currentStatus.value,
     }));
   }, [dispatch, currentPage, rowsPerPage, searchTerm, sort, sortColumn, currentRole, currentStatus, currentPlan]); // اضافه کردن وابستگی‌ها
   
 
   // ** User filter options
   const roleOptions = [
-    { value: '', label: 'Select Role' },
-    { value: '1', label: 'Admin' },
-    { value: '2', label: 'Teacher' },
-    { value: '3', label: 'Employee.Admin' },
-    { value: '4', label: 'Student' },
-    { value: '5', label: 'CourseAssistance' },
-    { value: '6', label: 'TournamentAdmin' },
-    { value: '7', label: 'Referee' },
-    { value: '8', label: 'TournamentMentor' },
-    { value: '9', label: 'Support' },
+    { value: '', label: 'انتخاب نقش' },
+    { value: '1', label: 'ادمین' },
+    { value: '2', label: 'معلم' },
+    { value: '3', label: 'کارمند.ادمین' },
+    { value: '4', label: 'دانش آموز' },
+    { value: '5', label: 'کمک دوره' },
+    { value: '6', label: 'مدیریت مسابقات' },
+    { value: '7', label: 'داور' },
+    { value: '8', label: 'مربی مسابقات' },
+    { value: '9', label: 'پشتیبان' },
   ]
 
-  // ** Function in get data on page change
   const handlePagination = page => {
     dispatch(
       getData({
-        sort,
-        sortColumn,
         q: searchTerm,
-        perPage: rowsPerPage,
-        page: page.selected + 1,
+        RowsOfPage: rowsPerPage,
+        PageNumber: page.selected + 1,
         userRoles: currentRole.value,
-        status: currentStatus.value,
-        currentPlan: currentPlan.value
+        active: currentStatus.value,
       })
     )
     setCurrentPage(page.selected + 1)
   }
+  
 
   // ** Function in get data on rows per page
   const handlePerPage = e => {
     const value = parseInt(e.currentTarget.value)
+    setRowsPerPage(value)
     dispatch(
       getData({
         sort,
@@ -246,12 +305,11 @@ const UsersList = () => {
         perPage: value,
         page: currentPage,
         userRoles: currentRole.value,
-        currentPlan: currentPlan.value,
-        status: currentStatus.value
+        active: currentStatus.value
       })
     )
-    setRowsPerPage(value)
   }
+  
 
   // ** Function in get data on search query change
   const handleFilter = val => {
@@ -272,8 +330,8 @@ const UsersList = () => {
 
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Number(Math.ceil(store.total / rowsPerPage))
-
+    const count = Number(Math.ceil(store.totalCount / rowsPerPage))
+  
     return (
       <ReactPaginate
         previousLabel={''}
@@ -292,28 +350,28 @@ const UsersList = () => {
       />
     )
   }
+  
 
-  // ** Table data to render
   const dataToRender = () => {
     const filters = {
       userRoles: currentRole.value,
-      currentPlan: currentPlan.value,
-      status: currentStatus.value,
+      active: currentStatus.value,
       q: searchTerm
     }
-
+  
     const isFiltered = Object.keys(filters).some(function (k) {
       return filters[k].length > 0
     })
-
+  
     if (store.data.length > 0) {
       return store.data
     } else if (store.data.length === 0 && isFiltered) {
       return []
     } else {
-      return store.allData.slice(0, rowsPerPage)
+      return store.allData.slice(0, rowsPerPage) 
     }
   }
+  
 
   const handleSort = (column, sortDirection) => {
     setSort(sortDirection)
@@ -332,48 +390,17 @@ const UsersList = () => {
     )
   }
 
+  const customStyles = {
+    table: {
+      style: {
+        minHeight: '200px',
+      },
+    },
+ 
+  
+  };
   return (
     <Fragment>
-      <Card>
-        <CardHeader>
-          <CardTitle tag='h4'>Filters</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <Row>
-            <Col md='4'>
-              <Label for='role-select'>Role</Label>
-              <Select
-                isClearable={false}
-                value={currentRole}
-                options={roleOptions}
-                className='react-select'
-                classNamePrefix='select'
-                theme={selectThemeColors}
-                onChange={data => {
-                  setCurrentRole(data)
-                  dispatch(
-                    getData({
-                      sort,
-                      sortColumn,
-                      q: searchTerm,
-                      userRoles: data.value,
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      status: currentStatus.value,
-                      currentPlan: currentPlan.value
-                    })
-                  )
-                }}
-              />
-            </Col>
-            <Col className='my-md-0 my-1' md='4'>
-            </Col>
-            <Col md='4'>
-            </Col>
-          </Row>
-        </CardBody>
-      </Card>
-
       <Card className='overflow-hidden'>
         <div className='react-dataTable'>
           <DataTable
@@ -381,6 +408,7 @@ const UsersList = () => {
             subHeader
             sortServer
             pagination
+            customStyles={customStyles}
             responsive
             paginationServer
             columns={columns}
@@ -393,10 +421,24 @@ const UsersList = () => {
               <CustomHeader
                 store={store}
                 searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
                 rowsPerPage={rowsPerPage}
                 handleFilter={handleFilter}
                 handlePerPage={handlePerPage}
                 toggleSidebar={toggleSidebar}
+                currentRole={currentRole}
+                currentPlan={currentPlan}
+                currentStatus={currentStatus}
+                setCurrentRole={setCurrentRole}
+                setCurrentPlan={setCurrentPlan}
+                setCurrentStatus={setCurrentStatus}
+                roleOptions={roleOptions}
+                selectThemeColors={selectThemeColors}
+                dispatch={dispatch}
+                getData={getData}
+                sort={sort}
+                sortColumn={sortColumn}
+                currentPage={currentPage}
               />
             }
           />

@@ -1,6 +1,6 @@
 // ** React Imports
 import { Link } from 'react-router-dom'
-
+import { useState } from 'react'
 // ** Custom Components
 import Avatar from '@components/avatar'
 
@@ -13,6 +13,7 @@ import { Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2,
 
 // ** Reactstrap Imports
 import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+
 
 // ** Renders Client Columns
 const renderClient = row => {
@@ -29,6 +30,7 @@ const renderClient = row => {
     )
   }
 }
+
 
 // ** Renders Role Columns
 const renderRole = row => {
@@ -72,8 +74,9 @@ const statusObj = {
 }
 
 export const columns = [
+
   {
-    name: 'User',
+    name: 'کاربران',
     sortable: true,
     minWidth: '300px',
     sortField: 'fullName',
@@ -95,7 +98,7 @@ export const columns = [
     )
   },
   {
-    name: 'Role',
+    name: 'نقش ',
     sortable: true,
     minWidth: '172px',
     sortField: 'role',
@@ -104,7 +107,7 @@ export const columns = [
   },
   {
     name: 'تلفن همراه',
-    minWidth: '138px',
+    minWidth: '10px',
     sortable: true,
     sortField: 'currentPlan',
     selector: row => row.phoneNumber,
@@ -112,7 +115,7 @@ export const columns = [
   },
   {
     name: 'وضعیت',
-    minWidth: '138px',
+    minWidth: '20px',
     sortable: true,
     sortField: 'status',
     selector: row => row.active,
@@ -123,15 +126,15 @@ export const columns = [
     )
   },
   {
-    name: 'Actions',
-    minWidth: '100px',
+    name: 'ویرایش',
+    minWidth: '20px',
     cell: row => (
       <div className='column-action'>
         <UncontrolledDropdown>
           <DropdownToggle tag='div' className='btn btn-sm'>
             <MoreVertical size={14} className='cursor-pointer' />
           </DropdownToggle>
-          <DropdownMenu>
+          <DropdownMenu > 
             <DropdownItem
               tag={Link}
               className='w-100'
@@ -139,7 +142,7 @@ export const columns = [
               onClick={() => store.dispatch(getUser(row.id))}
             >
               <FileText size={14} className='me-50' />
-              <span className='align-middle'>Details</span>
+              <span className='align-middle' >Details</span>
             </DropdownItem>
             <DropdownItem tag='a' href='/' className='w-100' onClick={e => e.preventDefault()}>
               <Archive size={14} className='me-50' />
@@ -150,8 +153,8 @@ export const columns = [
               href='/'
               className='w-100'
               onClick={e => {
-                e.preventDefault()
-                store.dispatch(deleteUser(row.id))
+                e.preventDefault();
+                store.dispatch(deleteUser(row.id));
               }}
             >
               <Trash2 size={14} className='me-50' />
@@ -160,6 +163,6 @@ export const columns = [
           </DropdownMenu>
         </UncontrolledDropdown>
       </div>
-    )
+    )    
   }
 ]

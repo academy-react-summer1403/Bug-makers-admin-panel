@@ -17,7 +17,6 @@ import { useSelector } from 'react-redux'
 
 const UsersList = () => {
   const userStore = useSelector(state => state.users); // Renamed here
-console.log(userStore);
   return (
     <div className='app-user-list'>
       <Row>

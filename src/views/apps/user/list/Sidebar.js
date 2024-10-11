@@ -1,257 +1,186 @@
 // ** React Import
-import { useState } from 'react'
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { Formik } from 'formik';
+import * as Yup from 'yup'; // Import Yup for validation
 
 // ** Custom Components
-import Sidebar from '@components/sidebar'
-
-// ** Utils
-import { selectThemeColors } from '@utils'
-
-// ** Third Party Components
-import Select from 'react-select'
-import classnames from 'classnames'
-import { useForm, Controller } from 'react-hook-form'
+import Sidebar from '@components/sidebar';
 
 // ** Reactstrap Imports
-import { Button, Label, FormText, Form, Input } from 'reactstrap'
+import { Button, Label, Form, Input, FormFeedback } from 'reactstrap';
 
 // ** Store & Actions
-import { addUser } from '../store'
-import { useDispatch } from 'react-redux'
+import { addUser } from '../store';
 
-const defaultValues = {
-  email: '',
-  contact: '',
-  company: '',
-  fullName: '',
-  username: '',
-  country: null
-}
-
-const countryOptions = [
-  { label: 'Australia', value: 'Australia' },
-  { label: 'Bangladesh', value: 'Bangladesh' },
-  { label: 'Belarus', value: 'Belarus' },
-  { label: 'Brazil', value: 'Brazil' },
-  { label: 'Canada', value: 'Canada' },
-  { label: 'China', value: 'China' },
-  { label: 'France', value: 'France' },
-  { label: 'Germany', value: 'Germany' },
-  { label: 'India', value: 'India' },
-  { label: 'Indonesia', value: 'Indonesia' },
-  { label: 'Israel', value: 'Israel' },
-  { label: 'Italy', value: 'Italy' },
-  { label: 'Japan', value: 'Japan' },
-  { label: 'Korea', value: 'Korea' },
-  { label: 'Mexico', value: 'Mexico' },
-  { label: 'Philippines', value: 'Philippines' },
-  { label: 'Russia', value: 'Russia' },
-  { label: 'South', value: 'South' },
-  { label: 'Thailand', value: 'Thailand' },
-  { label: 'Turkey', value: 'Turkey' },
-  { label: 'Ukraine', value: 'Ukraine' },
-  { label: 'United Arab Emirates', value: 'United Arab Emirates' },
-  { label: 'United Kingdom', value: 'United Kingdom' },
-  { label: 'United States', value: 'United States' }
-]
-
-const checkIsValid = data => {
-  return Object.values(data).every(field => (typeof field === 'object' ? field !== null : field.length > 0))
-}
+// ** Validation Schema
+const validationSchema = Yup.object().shape({
+  gmail: Yup.string().email('فرمت ایمیل نامعتبر است').required('ایمیل الزامی است'),
+  phoneNumber: Yup.string()
+    .matches(/^09\d{9}$/, 'شماره تلفن باید ۱۱ رقم و با 09 شروع شود')
+    .required('شماره تلفن الزامی است'),
+  firstName: Yup.string().required('نام الزامی است'),
+  lastName: Yup.string().required('نام خانوادگی الزامی است'),
+  password: Yup.string().required('رمز عبور الزامی است').min(6, 'رمز عبور باید حداقل ۶ کاراکتر باشد'),
+  // At least one checkbox should be checked
+  isStudent: Yup.boolean(),
+  isTeacher: Yup.boolean(),
+  userType: Yup.mixed().test(
+    'at-least-one',
+    'باید حداقل یکی از گزینه‌های دانش‌آموز یا معلم انتخاب شود',
+    (values, context) => {
+      const { isStudent, isTeacher } = context.parent;
+      return isStudent || isTeacher;
+    }
+  ),
+});
 
 const SidebarNewUsers = ({ open, toggleSidebar }) => {
-  // ** States
-  const [data, setData] = useState(null)
-  const [plan, setPlan] = useState('basic')
-  const [role, setRole] = useState('subscriber')
-
   // ** Store Vars
-  const dispatch = useDispatch()
-
-  // ** Vars
-  const {
-    control,
-    setValue,
-    setError,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({ defaultValues })
-
-  // ** Function to handle form submit
-  const onSubmit = data => {
-    setData(data)
-    if (checkIsValid(data)) {
-      toggleSidebar()
-      dispatch(
-        addUser({
-          role,
-          avatar: '',
-          status: 'active',
-          email: data.email,
-          currentPlan: plan,
-          billing: 'auto debit',
-          company: data.company,
-          contact: data.contact,
-          fullName: data.fullName,
-          username: data.username,
-          country: data.country.value
-        })
-      )
-    } else {
-      for (const key in data) {
-        if (data[key] === null) {
-          setError('country', {
-            type: 'manual'
-          })
-        }
-        if (data[key] !== null && data[key].length === 0) {
-          setError(key, {
-            type: 'manual'
-          })
-        }
-      }
-    }
-  }
-
-  const handleSidebarClosed = () => {
-    for (const key in defaultValues) {
-      setValue(key, '')
-    }
-    setRole('subscriber')
-    setPlan('basic')
-  }
+  const dispatch = useDispatch();
 
   return (
     <Sidebar
       size='lg'
       open={open}
-      title='New User'
+      title='کاربر جدید'
       headerClassName='mb-1'
       contentClassName='pt-0'
       toggleSidebar={toggleSidebar}
-      onClosed={handleSidebarClosed}
     >
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <div className='mb-1'>
-          <Label className='form-label' for='fullName'>
-            Full Name <span className='text-danger'>*</span>
-          </Label>
-          <Controller
-            name='fullName'
-            control={control}
-            render={({ field }) => (
-              <Input id='fullName' placeholder='John Doe' invalid={errors.fullName && true} {...field} />
-            )}
-          />
-        </div>
-        <div className='mb-1'>
-          <Label className='form-label' for='username'>
-            Username <span className='text-danger'>*</span>
-          </Label>
-          <Controller
-            name='username'
-            control={control}
-            render={({ field }) => (
-              <Input id='username' placeholder='johnDoe99' invalid={errors.username && true} {...field} />
-            )}
-          />
-        </div>
-        <div className='mb-1'>
-          <Label className='form-label' for='userEmail'>
-            Email <span className='text-danger'>*</span>
-          </Label>
-          <Controller
-            name='email'
-            control={control}
-            render={({ field }) => (
+      <Formik
+        initialValues={{
+          lastName: '',
+          firstName: '',
+          gmail: '',
+          password: '',
+          phoneNumber: '',
+          isStudent: false,
+          isTeacher: false,
+        }}
+        validationSchema={validationSchema}
+        onSubmit={(data) => {
+          dispatch(addUser(data)); // Submit the form data
+          toggleSidebar();
+        }}
+      >
+        {({ handleSubmit, handleChange, values, errors, touched }) => (
+          <Form onSubmit={handleSubmit}>
+            <div className='mb-1'>
+              <Label className='form-label' for='gmail'>
+                ایمیل <span className='text-danger'>*</span>
+              </Label>
               <Input
-                type='email'
-                id='userEmail'
-                placeholder='john.doe@example.com'
-                invalid={errors.email && true}
-                {...field}
+                id='gmail'
+                name='gmail'
+                placeholder='user@gmail.com'
+                value={values.gmail}
+                onChange={handleChange}
+                invalid={touched.gmail && !!errors.gmail} // Show error if touched
               />
-            )}
-          />
-          <FormText color='muted'>You can use letters, numbers & periods</FormText>
-        </div>
+              {touched.gmail && errors.gmail && <FormFeedback>{errors.gmail}</FormFeedback>}
+            </div>
 
-        <div className='mb-1'>
-          <Label className='form-label' for='contact'>
-            Contact <span className='text-danger'>*</span>
-          </Label>
-          <Controller
-            name='contact'
-            control={control}
-            render={({ field }) => (
-              <Input id='contact' placeholder='(397) 294-5153' invalid={errors.contact && true} {...field} />
-            )}
-          />
-        </div>
-        <div className='mb-1'>
-          <Label className='form-label' for='company'>
-            Company <span className='text-danger'>*</span>
-          </Label>
-          <Controller
-            name='company'
-            control={control}
-            render={({ field }) => (
-              <Input id='company' placeholder='Company Pvt Ltd' invalid={errors.company && true} {...field} />
-            )}
-          />
-        </div>
-        <div className='mb-1'>
-          <Label className='form-label' for='country'>
-            Country <span className='text-danger'>*</span>
-          </Label>
-          <Controller
-            name='country'
-            control={control}
-            render={({ field }) => (
-              // <Input id='country' placeholder='Australia' invalid={errors.country && true} {...field} />
-              <Select
-                isClearable={false}
-                classNamePrefix='select'
-                options={countryOptions}
-                theme={selectThemeColors}
-                className={classnames('react-select', { 'is-invalid': data !== null && data.country === null })}
-                {...field}
+            <div className='mb-1'>
+              <Label className='form-label' for='phoneNumber'>
+                شماره تلفن <span className='text-danger'>*</span>
+              </Label>
+              <Input
+                id='phoneNumber'
+                name='phoneNumber'
+                placeholder='(09xxxxxxxxx)'
+                value={values.phoneNumber}
+                onChange={handleChange}
+                invalid={touched.phoneNumber && !!errors.phoneNumber} // Show error if touched
               />
-            )}
-          />
-        </div>
-        <div className='mb-1'>
-          <Label className='form-label' for='user-role'>
-            User Role
-          </Label>
-          <Input type='select' id='user-role' name='user-role' value={role} onChange={e => setRole(e.target.value)}>
-            <option value='subscriber'>Subscriber</option>
-            <option value='editor'>Editor</option>
-            <option value='maintainer'>Maintainer</option>
-            <option value='author'>Author</option>
-            <option value='admin'>Admin</option>
-          </Input>
-        </div>
-        <div className='mb-1' value={plan} onChange={e => setPlan(e.target.value)}>
-          <Label className='form-label' for='select-plan'>
-            Select Plan
-          </Label>
-          <Input type='select' id='select-plan' name='select-plan'>
-            <option value='basic'>Basic</option>
-            <option value='enterprise'>Enterprise</option>
-            <option value='company'>Company</option>
-            <option value='team'>Team</option>
-          </Input>
-        </div>
-        <Button type='submit' className='me-1' color='primary'>
-          Submit
-        </Button>
-        <Button type='reset' color='secondary' outline onClick={toggleSidebar}>
-          Cancel
-        </Button>
-      </Form>
+              {touched.phoneNumber && errors.phoneNumber && <FormFeedback>{errors.phoneNumber}</FormFeedback>}
+            </div>
+
+            <div className='mb-1'>
+              <Label className='form-label' for='firstName'>
+                نام <span className='text-danger'>*</span>
+              </Label>
+              <Input
+                id='firstName'
+                name='firstName'
+                placeholder='نام'
+                value={values.firstName}
+                onChange={handleChange}
+                invalid={touched.firstName && !!errors.firstName} // Show error if touched
+              />
+              {touched.firstName && errors.firstName && <FormFeedback>{errors.firstName}</FormFeedback>}
+            </div>
+
+            <div className='mb-1'>
+              <Label className='form-label' for='lastName'>
+                نام خانوادگی <span className='text-danger'>*</span>
+              </Label>
+              <Input
+                id='lastName'
+                name='lastName'
+                placeholder='نام خانوادگی'
+                value={values.lastName}
+                onChange={handleChange}
+                invalid={touched.lastName && !!errors.lastName} // Show error if touched
+              />
+              {touched.lastName && errors.lastName && <FormFeedback>{errors.lastName}</FormFeedback>}
+            </div>
+
+            <div className='mb-1'>
+              <Label className='form-label' for='password'>
+                رمز عبور <span className='text-danger'>*</span>
+              </Label>
+              <Input
+                type='password'
+                id='password'
+                name='password'
+                placeholder='رمز عبور'
+                value={values.password}
+                onChange={handleChange}
+                invalid={touched.password && !!errors.password} // Show error if touched
+              />
+              {touched.password && errors.password && <FormFeedback>{errors.password}</FormFeedback>}
+            </div>
+
+            {/* User Type with checkboxes in column layout */}
+            <div className='mb-1'>
+              <Label className='form-label'>نوع کاربر</Label>
+              <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '1rem' }}>
+                <Label style={{ marginBottom: '0.5rem' }}>
+                  <Input
+                    type='checkbox'
+                    name='isStudent'
+                    checked={values.isStudent}
+                    onChange={handleChange}
+                    invalid={touched.isStudent && !!errors.userType} // Show error if validation fails
+                  />
+                  دانش‌آموز
+                </Label>
+                <Label style={{ marginBottom: '0.5rem' }}>
+                  <Input
+                    type='checkbox'
+                    name='isTeacher'
+                    checked={values.isTeacher}
+                    onChange={handleChange}
+                    invalid={touched.isTeacher && !!errors.userType} // Show error if validation fails
+                  />
+                  معلم
+                </Label>
+                {errors.userType && <FormFeedback className="d-block">{errors.userType}</FormFeedback>}
+              </div>
+            </div>
+
+            <Button type='submit' className='me-1' color='primary'>
+              ارسال
+            </Button>
+            <Button type='reset' color='secondary' outline onClick={toggleSidebar}>
+              انصراف
+            </Button>
+          </Form>
+        )}
+      </Formik>
     </Sidebar>
-  )
-}
+  );
+};
 
-export default SidebarNewUsers
+export default SidebarNewUsers;
