@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 // ** Custom Components
 import Avatar from '@components/avatar'
+import EditUserExample from '../../../../components/common/modal/edituser'
 
 // ** Store & Actions
 import { store } from '@store/store'
@@ -144,10 +145,7 @@ export const columns = [
               <FileText size={14} className='me-50' />
               <span className='align-middle' >Details</span>
             </DropdownItem>
-            <DropdownItem tag='a' href='/' className='w-100' onClick={e => e.preventDefault()}>
-              <Archive size={14} className='me-50' />
-              <span className='align-middle'>Edit</span>
-            </DropdownItem>
+            <EditUserExample />
             <DropdownItem
               tag='a'
               href='/'
