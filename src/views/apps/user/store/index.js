@@ -1,27 +1,5 @@
-// ** Axios Imports
-import axios from 'axios';
+import axiosInstance from '../../../../@core/interceptor/interceptor'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
-// ** Base URL
-const baseURL = 'https://classapi.sepehracademy.ir/api';
-
-const axiosInstance = axios.create({
-  baseURL: baseURL
-});
-
-// Set up interceptors for authorization
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token'); 
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
 
 // ** Get All Users Data
 export const getAllData = createAsyncThunk('appUsers/getAllData', async () => {
@@ -72,16 +50,26 @@ export const addUser = createAsyncThunk('appUsers/addUser', async (user, { dispa
 export const updateUser = createAsyncThunk('appUsers/updateUser', async (user, { dispatch, getState }) => {
   try {
     const response = await axiosInstance.put('/User/UpdateUser', {
-      id: user.id, // Send user ID
-      lastName: user.lastName,
-      firstName: user.firstName,
-      gmail: user.gmail,
-      password: user.password,
-      phoneNumber: user.phoneNumber,
-      isStudent: user.isStudent,
-      isTeacher: user.isTeacher,
-      nationalCode: user.nationalCode,
-      birthday: user.birthDay ,
+      id: user.id || null, 
+      fName: user.fName || null,
+      lName: user.lName || null,
+      userName: user.userName || null,
+      gmail: user.gmail || null,
+      phoneNumber: user.phoneNumber || null,
+      active: user.active ? true : false,
+      isDelete: user.isDelete || false,
+      isTecher: user.isTecher || false,
+      isStudent: user.isStudent || false,
+      recoveryEmail: user.recoveryEmail || null,
+      userAbout: user.userAbout || null,
+      telegramLink: user.telegramLink || null,
+      homeAdderess: user.homeAdderess || null,
+      nationalCode: user.nationalCode || null,
+      gender: user.gender || false,
+      latitude: user.latitude || null,
+      longitude: user.longitude || null,
+      insertDate: user.insertDate || null,
+      birthDay: user.birthDay || null,
     });
     
     await dispatch(getData(getState().users.params));

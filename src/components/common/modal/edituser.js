@@ -26,7 +26,7 @@ import {
 } from 'reactstrap'
 
 // ** Third Party Components
-import { Archive } from 'react-feather';
+import { Archive, Linkedin } from 'react-feather';
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
@@ -42,17 +42,19 @@ const EditUserExample = ({ onClick, user }) => {
     phoneNumber: Yup.string()
       .matches(/^09\d{9}$/, 'شماره تلفن باید ۱۱ رقم و با 09 شروع شود')
       .required('شماره تلفن الزامی است'),
-    firstName: Yup.string().required('نام الزامی است'),
-    lastName: Yup.string().required('نام خانوادگی الزامی است'),
+      fName: Yup.string().required('نام الزامی است'),
+    lName: Yup.string().required('نام خانوادگی الزامی است'),
     isStudent: Yup.boolean(),
-    isTeacher: Yup.boolean(),
+    isTecher: Yup.boolean(),
+    active: Yup.boolean(),
+    userName: Yup.string().required('نام کاربری را وارد کنید'),
     nationalCode: Yup.number().required('کدملی الزامیست'),
     userType: Yup.mixed().test(
       'at-least-one',
       'باید حداقل یکی از گزینه‌های دانش‌آموز یا معلم انتخاب شود',
       (values, context) => {
-        const { isStudent, isTeacher } = context.parent;
-        return isStudent || isTeacher;
+        const { isStudent, isTecher } = context.parent;
+        return isStudent || isTecher;
       }
     ),
   });
@@ -67,8 +69,35 @@ const EditUserExample = ({ onClick, user }) => {
     setShow(false);
   };
 
-  const [show, setShow] = useState(false);
 
+  // Default Values from API
+  const defaultValue = {
+    id: user.id || null, 
+    fName: user.fname || null,
+    lName: user.lname || null,
+    userName: user.userName || null,
+    gmail: user.gmail || null,
+    phoneNumber: user.phoneNumber || null,
+    active: user.active ? true : false,
+    isDelete: user.isDelete || null,
+    isTecher: user.isTecher || false,
+    isStudent: user.isStudent || false,
+    recoveryEmail: user.recoveryEmail || null,
+    userAbout: user.userAbout || null,
+    telegramLink: user.telegramLink || null,
+    homeAdderess: user.homeAdderess || null,
+    nationalCode: user.nationalCode || null,
+    gender: user.gender || false,
+    latitude: user.latitude || null,
+    longitude: user.longitude || null,
+    insertDate: user.insertDate || null, // اضافه شده
+    birthDay: user.birthDay || null,
+  };
+  
+  
+  const [show, setShow] = useState(false);
+  const [activity, setActivity] = useState(true);
+  
   return (
     <div
       style={{
@@ -97,23 +126,27 @@ const EditUserExample = ({ onClick, user }) => {
             <p>Updating user details will receive a privacy audit.</p>
           </div>
           <Formik
-            initialValues={{
-              id: user.id || '',
-              lastName: user.lname || '',
-              firstName: user.fname || '',
-              gmail: user.gmail || '',
-              phoneNumber: user.phoneNumber || '',
-              isStudent: user.isStudent || false,
-              isTeacher: user.isTeacher || false,
-              nationalCode : user.NationalCode			 || '',
-              birthDay: user.birthDay || '',
-            }}
+            initialValues={defaultValue}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
             {({ handleChange, values, errors, touched }) => (
-              <Form>
-                <div className='mb-1'>
+              <Form style={{  display : 'flex', justifyContent : 'center' , flexFlow: 'row wrap', gap: '14px'}}>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='userName'>
+                    نام کاربری <span className='text-danger'>*</span>
+                  </Label>
+                  <Input
+                    id='userName'
+                    name='userName'
+                    placeholder='userName'
+                    value={values.userName}
+                    onChange={handleChange}
+                    invalid={touched.userName && !!errors.userName}
+                  />
+                  {touched.userName && errors.userName && <FormFeedback>{errors.userName}</FormFeedback>}
+                </div>
+                <div className='mb-1 w-40'>
                   <Label className='form-label' for='gmail'>
                     ایمیل <span className='text-danger'>*</span>
                   </Label>
@@ -128,7 +161,7 @@ const EditUserExample = ({ onClick, user }) => {
                   {touched.gmail && errors.gmail && <FormFeedback>{errors.gmail}</FormFeedback>}
                 </div>
 
-                <div className='mb-1'>
+                <div className='mb-1 w-40'>
                   <Label className='form-label' for='phoneNumber'>
                     شماره تلفن <span className='text-danger'>*</span>
                   </Label>
@@ -143,37 +176,37 @@ const EditUserExample = ({ onClick, user }) => {
                   {touched.phoneNumber && errors.phoneNumber && <FormFeedback>{errors.phoneNumber}</FormFeedback>}
                 </div>
 
-                <div className='mb-1'>
-                  <Label className='form-label' for='firstName'>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='fName'>
                     نام <span className='text-danger'>*</span>
                   </Label>
                   <Input
-                    id='firstName'
-                    name='firstName'
+                    id='fName'
+                    name='fName'
                     placeholder='نام'
-                    value={values.firstName}
+                    value={values.fName}
                     onChange={handleChange}
-                    invalid={touched.firstName && !!errors.firstName}
+                    invalid={touched.fName && !!errors.fName}
                   />
-                  {touched.firstName && errors.firstName && <FormFeedback>{errors.firstName}</FormFeedback>}
+                  {touched.fName && errors.fName && <FormFeedback>{errors.fName}</FormFeedback>}
                 </div>
 
-                <div className='mb-1'>
-                  <Label className='form-label' for='lastName'>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='lName'>
                     نام خانوادگی <span className='text-danger'>*</span>
                   </Label>
                   <Input
-                    id='lastName'
-                    name='lastName'
+                    id='lName'
+                    name='lName'
                     placeholder='نام خانوادگی'
-                    value={values.lastName}
+                    value={values.lName}
                     onChange={handleChange}
-                    invalid={touched.lastName && !!errors.lastName}
+                    invalid={touched.lName && !!errors.lName}
                   />
-                  {touched.lastName && errors.lastName && <FormFeedback>{errors.lastName}</FormFeedback>}
+                  {touched.lName && errors.lName && <FormFeedback>{errors.lName}</FormFeedback>}
                 </div>
-                <div className='mb-1'>
-                  <Label className='form-label' for='nationalCode	'>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='nationalCode'>
                     national code  <span className='text-danger'>*</span>
                   </Label>
                   <Input
@@ -184,11 +217,147 @@ const EditUserExample = ({ onClick, user }) => {
                     onChange={handleChange}
                     invalid={touched.nationalCode && !!errors.nationalCode		}
                   />
-                  {touched.lastName && errors.lastName && <FormFeedback>{errors.lastName}</FormFeedback>}
+                  {touched.nationalCode && errors.nationalCode && <FormFeedback>{errors.nationalCode}</FormFeedback>}
                 </div>
 
-                <div className='mb-1'>
-                  <Label className='form-label'>تاریخ تولد</Label>
+
+                {/* start  */}
+
+                <div style={{width:'230px'}}>
+                <Label className='form-label' for='gender'>
+                    وضعیت <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    type='select'
+                    id='gender'
+                    name='gender'
+                    value={values.gender}
+                    onChange={handleChange}
+                    invalid={touched.gender && !!errors.gender}
+                  >
+                    <option value='true'>مرد</option>
+                    <option value='false'>زن</option>
+                  </Input>
+                  {touched.gender && errors.gender && <FormFeedback>{errors.gender}</FormFeedback>}
+                </div>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='homeAdderess'>
+                    ادرس  <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    id='homeAdderess'
+                    name='homeAdderess'
+                    placeholder='آدرس'
+                    value={values.homeAdderess}
+                    onChange={handleChange}
+                    invalid={touched.homeAdderess && !!errors.homeAdderess}
+                  />
+                  {touched.homeAdderess && errors.homeAdderess && <FormFeedback>{errors.homeAdderess}</FormFeedback>}
+                </div>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='userAbout'>
+                    درباره کاربر  <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    id='userAbout'
+                    name='userAbout'
+                    placeholder='درباره کاربر'
+                    value={values.userAbout}
+                    onChange={handleChange}
+                    invalid={touched.userAbout && !!errors.userAbout		}
+                  />
+                  {touched.userAbout && errors.userAbout && <FormFeedback>{errors.userAbout}</FormFeedback>}
+                </div>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='recoveryEmail'>
+                    ایمیل بازگردانی  <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    id='recoveryEmail'
+                    name='recoveryEmail'
+                    placeholder='ایمیل  بازگردانی'
+                    value={values.recoveryEmail}
+                    onChange={handleChange}
+                    invalid={touched.recoveryEmail && !!errors.recoveryEmail		}
+                  />
+                  {touched.recoveryEmail && errors.recoveryEmail && <FormFeedback>{errors.recoveryEmail}</FormFeedback>}
+                </div>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='telegramLink'>
+                    لینک تلگرام  <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    id='telegramLink'
+                    name='telegramLink'
+                    placeholder='لینک تلگرام'
+                    value={values.telegramLink}
+                    onChange={handleChange}
+                    invalid={touched.telegramLink && !!errors.telegramLink		}
+                  />
+                  {touched.telegramLink && errors.telegramLink && <FormFeedback>{errors.telegramLink}</FormFeedback>}
+                </div>
+                <div className='mb-1 ' style={{width : '230px'}}>
+                  <Label className='form-label' for='gender'>
+                    جنسیت <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    type='select'
+                    id='gender'
+                    name='gender'
+                    value={values.gender}
+                    onChange={handleChange}
+                    invalid={touched.gender && !!errors.gender}
+                  >
+                    <option value='true'>مرد</option>
+                    <option value='false'>زن</option>
+                  </Input>
+                  {touched.gender && errors.gender && <FormFeedback>{errors.gender}</FormFeedback>}
+                </div>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='LinkedinLink'>
+                    لینک لینکدین  <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    id='LinkedinLink'
+                    name='LinkedinLink'
+                    placeholder='لینک لینکدین'
+                    value={values.LinkedinLink}
+                    onChange={handleChange}
+                    invalid={touched.LinkedinLink && !!errors.LinkedinLink		}
+                  />
+                  {touched.LinkedinLink && errors.LinkedinLink && <FormFeedback>{errors.LinkedinLink}</FormFeedback>}
+                </div>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='latitude'>
+                    lat  <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    id='latitude'
+                    name='latitude'
+                    placeholder='latitude'
+                    value={values.latitude}
+                    onChange={handleChange}
+                    invalid={touched.latitude && !!errors.latitude		}
+                  />
+                  {touched.latitude && errors.latitude && <FormFeedback>{errors.latitude}</FormFeedback>}
+                </div>
+                <div className='mb-1 w-40'>
+                  <Label className='form-label' for='longitude'>
+                    long  <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    id='longitude'
+                    name='longitude'
+                    placeholder='longitude'
+                    value={values.longitude}
+                    onChange={handleChange}
+                    invalid={touched.longitude && !!errors.longitude		}
+                  />
+                  {touched.longitude && errors.longitude && <FormFeedback>{errors.longitude}</FormFeedback>}
+                </div>
+
+                <div className='mt-2 w-40'>
+                  <Label className='form-label'> </Label>
                   <DatePicker
                     name='birthday'
                     selected={startDate}
@@ -198,9 +367,18 @@ const EditUserExample = ({ onClick, user }) => {
                   />
                 </div>
 
-                <div className='mb-1'>
+                <div className='mb-1  ' style={{width: '300px'}}>
                   <Label className='form-label'>نوع کاربر</Label>
                   <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '1rem' }}>
+                    <Label style={{ marginBottom: '0.5rem' }}>
+                      <Input
+                        type='checkbox'
+                        name='isTecher'
+                        checked={values.isTecher}
+                        onChange={handleChange}
+                      />
+                      معلم
+                    </Label>
                     <Label style={{ marginBottom: '0.5rem' }}>
                       <Input
                         type='checkbox'
@@ -210,23 +388,13 @@ const EditUserExample = ({ onClick, user }) => {
                       />
                       دانش‌آموز
                     </Label>
-                    <Label style={{ marginBottom: '0.5rem' }}>
-                      <Input
-                        type='checkbox'
-                        name='isTeacher'
-                        checked={values.isTeacher}
-                        onChange={handleChange}
-                      />
-                      معلم
-                    </Label>
                     {errors.userType && <FormFeedback className="d-block">{errors.userType}</FormFeedback>}
                   </div>
                 </div>
-
-                <Button type='submit' className='me-1' color='primary'>
+                <Button type='submit' className='me-1' style={{position: 'absolute' , bottom :'10px' ,right: '100px'}} color='primary'>
                   ارسال
                 </Button>
-                <Button type='reset' color='secondary' outline onClick={() => setShow(false)}>
+                <Button type='reset' color='secondary' style={{position: 'absolute' , bottom :'10px' , left: '100px'}} outline onClick={() => setShow(false)}>
                   انصراف
                 </Button>
               </Form>
