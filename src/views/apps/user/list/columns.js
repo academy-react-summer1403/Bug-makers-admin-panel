@@ -1,40 +1,39 @@
 import { Link, NavLink } from 'react-router-dom';
 import Avatar from '@components/avatar';
 import EditUserExample from '../../../../components/common/modal/edituser';
+import AddRole from '../../../../components/common/modal/addRole';
 import { store } from '@store/store';
 import { getUser, deleteUser } from '../store';
-import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical } from 'react-feather';
+import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical, UserPlus } from 'react-feather';
 import { Badge, Button } from 'reactstrap';
 import { useState } from 'react';
 
 // Custom Menu component
-const CustomMenu = ({ user, onEdit, onDelete, viewLink }) => {
+const CustomMenu = ({ user, onEdit, onDelete, rowId }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="custom-menu-container">
-      <div
-        className="btn btn-sm"
-        onClick={() => setOpen(!open)}
-      >
-        <MoreVertical size={14} className="cursor-pointer" />
-      </div>
-      {open && (
-        <div className="custom-menu" style={{ width: '140px' }}>
-          <Link to={viewLink} className="custom-menu-item">
-            <FileText size={14} className="me-50" />
-            <span className="align-middle">Details</span>
+    <div style={{display : 'flex' , flexFlow : 'row nowrap' , justifyContent : 'center' , alignItems : 'center' , gap: '10px'}}>
+
+          <Link to={`/apps/user/view/${rowId}`} >
+            <FileText size={14}  />
           </Link>
-          <button className="custom-menu-item" onClick={onEdit}>
-            <EditUserExample user={user} /> {/* Pass user to EditUserExample */}
-          </button>
-          <button className="custom-menu-item" onClick={onDelete}>
-            <Trash2 size={14} className="me-50" />
-            <span className="align-middle">Delete</span>
-          </button>
-        </div>
-      )}
+          <div  onClick={onEdit}>
+            <EditUserExample size={'14px'} user={user} /> 
+          </div>
+          <div onClick={onDelete}>
+            <Trash2 size={14}/>
+          </div>
     </div>
+  );
+};
+const CustomAddRole = ({ user, onEdit } ) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+          <div  onClick={onEdit}>
+            <AddRole size={'14px'} user={user} /> 
+          </div>
   );
 };
 
@@ -100,7 +99,7 @@ const renderRole = row => {
   return (
     <span className="text-truncate text-capitalize align-middle">
       <Icon size={18} className={`${roleObj[row.userRoles] ? roleObj[row.userRoles].class : ''} me-50`} />
-      {row.userRoles}
+      {row.userRoles ? row.userRoles : 'کاربر هیچ دسترسی ندارد'}
     </span>
   );
 };
@@ -115,7 +114,7 @@ export const columns = [
   {
     name: 'کاربران',
     sortable: true,
-    minWidth: '300px',
+    minWidth: '30px',
     sortField: 'fullName',
     selector: row => row.userRoles.split(',')[0],
     cell: row => (
@@ -157,20 +156,33 @@ export const columns = [
     sortField: 'status',
     selector: row => row.active,
     cell: row => (
-      <Badge className="text-capitalize" color={statusObj[row.active]} pill>
+      <Badge className="text-capitalize" color={statusObj[row.active ? 'active' : 'inactive']} pill>
         {row.active === 'True' ? 'فعال' : 'غیرفعال'}
       </Badge>
     ),
+  },
+  {
+    name: 'دسترسی',
+    minWidth: '0px',
+    sortable: true,
+    sortField: 'status',
+    selector: row => row.active,
+    cell: row => (
+      <CustomAddRole
+        user={row} 
+        onEdit={() => store.dispatch(getUser(row.id))}
+      /> 
+    )
   },
   {
     name: 'ویرایش',
     minWidth: '20px',
     cell: row => (
       <CustomMenu
-        user={row} // Pass the entire user object
-        onEdit={() => store.dispatch(getUser(row.id))}
-        onDelete={() => store.dispatch(deleteUser(row.id))}
-        viewLink={`https://classapi.sepehracademy.ir/api/User/UserDetails/${row.id}`}
+      user={row} 
+      onEdit={() => store.dispatch(getUser(row.id))}
+      onDelete={() => store.dispatch(deleteUser(row.id))}
+      rowId={row.id}
       />
     ),
   },
@@ -182,3 +194,4 @@ const styleSheet = document.createElement('style');
 styleSheet.type = 'text/css';
 styleSheet.innerText = styles;
 document.head.appendChild(styleSheet);
+

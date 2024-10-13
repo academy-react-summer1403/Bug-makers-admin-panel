@@ -33,12 +33,14 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Check for error response and status
     if (error.response && error.response.status === 422) {
-      // Assuming the error message is in error.response.data.ErrorMessage
       const errorMessage = error.response.data.ErrorMessage || "خطا: ورودی نامعتبر.";
       toast.error(errorMessage);
     }
+    if (error.response.status === 401) {
+      toast.error('ابتدا وارد حساب کاربری خود شوید');
+    }
+console.log(error.response);
     return Promise.reject(error);
   }
 );

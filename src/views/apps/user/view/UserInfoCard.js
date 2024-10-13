@@ -1,5 +1,8 @@
 // ** React Imports
 import { useState, Fragment } from 'react'
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css'; 
+import moment from 'moment-jalaali';
 
 // ** Reactstrap Imports
 import { Row, Col, Card, Form, CardBody, Button, Badge, Modal, Input, Label, ModalBody, ModalHeader } from 'reactstrap'
@@ -10,6 +13,7 @@ import Select from 'react-select'
 import { Check, Briefcase, X } from 'react-feather'
 import { useForm, Controller } from 'react-hook-form'
 import withReactContent from 'sweetalert2-react-content'
+import avatar from '../../../../assets/images/avatars/2.png'
 
 // ** Custom Components
 import Avatar from '@components/avatar'
@@ -19,6 +23,10 @@ import { selectThemeColors } from '@utils'
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
+import { useSelector } from 'react-redux'
+import EditUserExample from '../../../../components/common/modal/edituser';
+import AddRole from '../../../../components/common/modal/addRole';
+import LocationPicker from '../../../../components/common/modal/LocationPicker';
 
 const roleColors = {
   editor: 'light-info',
@@ -48,19 +56,26 @@ const countryOptions = [
   { value: 'canada', label: 'Canada' }
 ]
 
-const languageOptions = [
-  { value: 'english', label: 'English' },
-  { value: 'spanish', label: 'Spanish' },
-  { value: 'french', label: 'French' },
-  { value: 'german', label: 'German' },
-  { value: 'dutch', label: 'Dutch' }
-]
+const roleOptions = [
+  { id: '1', label: 'ادمین', roleName: 'Administrator', roleParentName: null },
+  { id: '2', label: 'معلم', roleName: 'Teacher', roleParentName: null },
+  { id: '3', label: 'کارمند.ادمین', roleName: 'Employee.Admin', roleParentName: 'Admin' },
+  { id: '4', label: 'نویسنده ادمین' , roleName: "Employee.Writer", roleParentName: "Employee.Admin" },
+  { id: '5', label: 'دانش آموز', roleName: 'Student', roleParentName: null },
+  { id: '7', label: 'مدیریت مسابقات', roleName: 'TournamentAdmin', roleParentName: null },
+  { id: '8', label: 'داور', roleName: 'Referee', roleParentName: null },
+  { id: '9', label: 'مربی مسابقات', roleName: 'TournamentMentor', roleParentName: 'TournamentAdmin' },
+  { id: '10', label: 'پشتیبان', roleName: 'Support', roleParentName: null }
+];
+
 
 const MySwal = withReactContent(Swal)
 
 const UserInfoCard = ({ selectedUser }) => {
   // ** State
   const [show, setShow] = useState(false)
+  const user = useSelector(state => state.user.selectUser); 
+
 
   // ** Hook
   const {
@@ -71,44 +86,16 @@ const UserInfoCard = ({ selectedUser }) => {
     formState: { errors }
   } = useForm({
     defaultValues: {
-      username: selectedUser.username,
-      lastName: selectedUser.fullName.split(' ')[1],
-      firstName: selectedUser.fullName.split(' ')[0]
+      username: user.userName,
+      lName: user.lname,
+      fName: user.fname,
+      email:user.gmail,
     }
   })
 
   // ** render user img
   const renderUserImg = () => {
-    if (selectedUser !== null && selectedUser.avatar.length) {
-      return (
-        <img
-          height='110'
-          width='110'
-          alt='user-avatar'
-          src={selectedUser.avatar}
-          className='img-fluid rounded mt-3 mb-2'
-        />
-      )
-    } else {
-      return (
-        <Avatar
-          initials
-          color={selectedUser.avatarColor || 'light-primary'}
-          className='rounded mt-3 mb-2'
-          content={selectedUser.fullName}
-          contentStyles={{
-            borderRadius: 0,
-            fontSize: 'calc(48px)',
-            width: '100%',
-            height: '100%'
-          }}
-          style={{
-            height: '110px',
-            width: '110px'
-          }}
-        />
-      )
-    }
+
   }
 
   const onSubmit = data => {
@@ -127,9 +114,9 @@ const UserInfoCard = ({ selectedUser }) => {
 
   const handleReset = () => {
     reset({
-      username: selectedUser.username,
-      lastName: selectedUser.fullName.split(' ')[1],
-      firstName: selectedUser.fullName.split(' ')[0]
+      username: user.userName,
+      lName: user.lname,
+      fName: user.fname
     })
   }
 
@@ -168,94 +155,124 @@ const UserInfoCard = ({ selectedUser }) => {
     })
   }
 
+  // isValidURL 
+  const isValidURL = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const percentage = user.profileCompletionPercentage || 0; 
+  
+  // birthDay  
+  const useBirthDay = (date) => {
+    if(!date) return 'تاریخ تولد وجود ندارد';
+    return moment(date).format('jYYYY/jMM/jDD'); 
+  }
+
   return (
     <Fragment>
       <Card>
         <CardBody>
-          <div className='user-avatar-section'>
-            <div className='d-flex align-items-center flex-column'>
-              {renderUserImg()}
-              <div className='d-flex flex-column align-items-center text-center'>
-                <div className='user-info'>
-                  <h4>{selectedUser !== null ? selectedUser.fullName : 'Eleanor Aguilar'}</h4>
-                  {selectedUser !== null ? (
-                    <Badge color={roleColors[selectedUser.role]} className='text-capitalize'>
-                      {selectedUser.role}
-                    </Badge>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          </div>
+        <img 
+              src={isValidURL(user.currentPictureAddress) ? user.currentPictureAddress : avatar} 
+              style={{width : '150px', height : '150px' , margin : 'auto' , display : 'block' , borderRadius : '100%' }}
+              />
           <div className='d-flex justify-content-around my-2 pt-75'>
-            <div className='d-flex align-items-start me-2'>
+
+            <div className='d-flex align-items-start me-2 ' style={{marginTop : '5px'}}>
               <Badge color='light-primary' className='rounded p-75'>
                 <Check className='font-medium-2' />
               </Badge>
               <div className='ms-75'>
-                <h4 className='mb-0'>1.23k</h4>
-                <small>Tasks Done</small>
+                <h4 className='mb-0'>{user.coursesReseves.length ? user.coursesReseves.length	 : '0'}</h4>
+                <small>{user.coursesReseves.length ? 'دور های رزرو شده' : 'این کاربر هیچ دوره ای را رزرو نکرده'}</small>
               </div>
             </div>
-            <div className='d-flex align-items-start'>
-              <Badge color='light-primary' className='rounded p-75'>
-                <Briefcase className='font-medium-2' />
-              </Badge>
+            <div className='d-flex align-items-center'>
+              <div style={{ width: 60, height: 60 }}>
+                <CircularProgressbar
+                  value={percentage}
+                  text={`${percentage}%`}
+                  styles={buildStyles({
+                    pathColor: `rgba(62, 152, 199, ${percentage / 100})`, 
+                    textColor: '#000',
+                    trailColor: '#d6d6d6', 
+                    backgroundColor: '#85d8ee' 
+                  })}
+                />
+              </div>
               <div className='ms-75'>
-                <h4 className='mb-0'>568</h4>
-                <small>Projects Done</small>
+                <h4 className='mb-0'>
+                  {percentage > 0 ? percentage + '%' : 'این کاربر پروفایل خود را تکمیل نکرده'}
+                </h4>
+                <small>درصد تکمیل پروفایل</small>
               </div>
             </div>
           </div>
-          <h4 className='fw-bolder border-bottom pb-50 mb-1'>Details</h4>
+          <h4 className='fw-bolder border-bottom pb-50 mb-1'>جزییات</h4>
           <div className='info-container'>
-            {selectedUser !== null ? (
+            {user !== null ? (
               <ul className='list-unstyled'>
                 <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Username:</span>
-                  <span>{selectedUser.username}</span>
+                  <span className='fw-bolder me-25'>نام کاربری : </span>
+                  <span>{user.userName ? user.userName : 'این کاربر دارای نام کاربری نمیباشد'}</span>
                 </li>
                 <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Billing Email:</span>
-                  <span>{selectedUser.email}</span>
+                  <span className='fw-bolder me-25'>آدرس ایمیل :</span>
+                  <span>{user.gmail ? user.gmail : 'این کاربر دارای جیمیل نمیباشد'}</span>
                 </li>
                 <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Status:</span>
-                  <Badge className='text-capitalize' color={statusColors[selectedUser.status]}>
-                    {selectedUser.status}
+                  <span className='fw-bolder me-25'>وضعیت :</span>
+                  <Badge className='text-capitalize' color={statusColors[user.active ? 'active' : 'inactive']}>
+                    {user.active ? 'فعال' : 'غیرفعال'}
                   </Badge>
                 </li>
                 <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Role:</span>
-                  <span className='text-capitalize'>{selectedUser.role}</span>
+                  <span className='fw-bolder me-25'>تاریخ تولد : </span>
+                  <span className='text-capitalize'>{useBirthDay(user.birthDay)}</span>
                 </li>
                 <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Tax ID:</span>
-                  <span>Tax-{selectedUser.contact.substr(selectedUser.contact.length - 4)}</span>
+                  <span className='fw-bolder me-25'>کد ملی : </span>
+                  <span className='text-capitalize'>{user.nationalCode ? user.nationalCode : 'کد ملی ثبت نشد'}</span>
                 </li>
                 <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Contact:</span>
-                  <span>{selectedUser.contact}</span>
+                  <span className='fw-bolder me-25'>جنسیت : </span>
+                  <span className='text-capitalize'>{user.gender ? 'مرد' : 'زن'}</span>
                 </li>
                 <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Language:</span>
-                  <span>English</span>
+                  <span className='fw-bolder me-25'>تاریخ ثبت نام : </span>
+                  <span className='text-capitalize'>{useBirthDay(user.insertDate)}</span>
                 </li>
                 <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Country:</span>
-                  <span>England</span>
+                  <span className='fw-bolder me-25'>آدرس : </span>
+                  <span className='text-capitalize'>{user.homeAdderess ? user.homeAdderess : 'آدرس ثبت نشد'}</span>
+                </li>
+                <li className='mb-75'>
+                  <span className='fw-bolder me-25'>درباره کاربر : </span>
+                  <span className='text-capitalize'>{user.userAbout ? user.userAbout : 'اطلاعاتی ثبت نشد'}</span>
+                </li>
+                <li className='mb-75'>
+                  <span className='fw-bolder me-25'>نقش :</span>
+                  <span className='text-capitalize'>{user.roles[0]?.roleName ? user.roles[0]?.roleName : 'هیچ دسترسی ندارد'}</span>
+                </li>
+                <li className='mb-75'>
+                  <span className='fw-bolder me-25'>شماره تلفن : </span>
+                  <span>{user.phoneNumber ? user.phoneNumber : 'این کاربر دارای شماره تلفن نمیباشد'}</span>
                 </li>
               </ul>
             ) : null}
           </div>
-          <div className='d-flex justify-content-center pt-2'>
-            <Button color='primary' onClick={() => setShow(true)}>
-              Edit
-            </Button>
-            <Button className='ms-1' color='danger' outline onClick={handleSuspendedClick}>
-              Suspended
-            </Button>
-          </div>
+
+        {/* edit */}
+           <EditUserExample size={'20px'} /> 
+           <div style={{position : 'relative' ,right : '80px' , bottom : '20px'}} >
+           <AddRole  size={'20px'} />
+           </div>
+           <LocationPicker />
         </CardBody>
       </Card>
       <Modal isOpen={show} toggle={() => setShow(!show)} className='modal-dialog-centered modal-lg'>
@@ -268,36 +285,36 @@ const UserInfoCard = ({ selectedUser }) => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row className='gy-1 pt-75'>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='firstName'>
+                <Label className='form-label' for='fName'>
                   First Name
                 </Label>
                 <Controller
                   defaultValue=''
                   control={control}
-                  id='firstName'
-                  name='firstName'
+                  id='fName'
+                  name='fName'
                   render={({ field }) => (
-                    <Input {...field} id='firstName' placeholder='John' invalid={errors.firstName && true} />
+                    <Input {...field} id='fName' placeholder='John' invalid={errors.fName && true} />
                   )}
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='lastName'>
+                <Label className='form-label' for='lName'>
                   Last Name
                 </Label>
                 <Controller
                   defaultValue=''
                   control={control}
-                  id='lastName'
-                  name='lastName'
+                  id='lName'
+                  name='lName'
                   render={({ field }) => (
-                    <Input {...field} id='lastName' placeholder='Doe' invalid={errors.lastName && true} />
+                    <Input {...field} id='lName' placeholder='Doe' invalid={errors.lName && true} />
                   )}
                 />
               </Col>
               <Col xs={12}>
                 <Label className='form-label' for='username'>
-                  Username
+                  Usernadkcdkdme
                 </Label>
                 <Controller
                   defaultValue=''
@@ -316,7 +333,7 @@ const UserInfoCard = ({ selectedUser }) => {
                 <Input
                   type='email'
                   id='billing-email'
-                  defaultValue={selectedUser.email}
+                  defaultValue={user.email}
                   placeholder='example@domain.com'
                 />
               </Col>
@@ -331,7 +348,7 @@ const UserInfoCard = ({ selectedUser }) => {
                   classNamePrefix='select'
                   options={statusOptions}
                   theme={selectThemeColors}
-                  defaultValue={statusOptions[statusOptions.findIndex(i => i.value === selectedUser.status)]}
+                  defaultValue={statusOptions[statusOptions.findIndex(i => i.value === user.status)]}
                 />
               </Col>
               <Col md={6} xs={12}>
@@ -341,14 +358,14 @@ const UserInfoCard = ({ selectedUser }) => {
                 <Input
                   id='tax-id'
                   placeholder='Tax-1234'
-                  defaultValue={selectedUser.contact.substr(selectedUser.contact.length - 4)}
+                  defaultValue={user.phoneNumber.substr(user.phoneNumber.length - 4)}
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='contact'>
-                  Contact
+                <Label className='form-label' for='phoneNumber'>
+                  phoneNumber
                 </Label>
-                <Input id='contact' defaultValue={selectedUser.contact} placeholder='+1 609 933 4422' />
+                <Input id='phoneNumber' defaultValue={user.phoneNumber} placeholder='+1 609 933 4422' />
               </Col>
               <Col md={6} xs={12}>
                 <Label className='form-label' for='language'>
@@ -359,9 +376,9 @@ const UserInfoCard = ({ selectedUser }) => {
                   isClearable={false}
                   className='react-select'
                   classNamePrefix='select'
-                  options={languageOptions}
+                  options={roleOptions}
                   theme={selectThemeColors}
-                  defaultValue={languageOptions[0]}
+                  defaultValue={roleOptions[0]}
                 />
               </Col>
               <Col md={6} xs={12}>

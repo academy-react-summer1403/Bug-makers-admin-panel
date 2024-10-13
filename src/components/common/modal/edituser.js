@@ -5,7 +5,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup'; // Import Yup for validation
 import { updateUser } from '../../../views/apps/user/store/index';
 import DatePicker from "react-datepicker";
-
+import { useSelector } from 'react-redux';
 import "react-datepicker/dist/react-datepicker.css";
 
 // ** Reactstrap Imports
@@ -26,12 +26,13 @@ import {
 } from 'reactstrap'
 
 // ** Third Party Components
-import { Archive, Linkedin } from 'react-feather';
+import { Archive, Edit, Linkedin } from 'react-feather';
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 
-const EditUserExample = ({ onClick, user }) => {
+const EditUserExample = ({ onClick , size}) => {
+  const user = useSelector(state => state.user.selectUser);
 
   const [startDate, setStartDate] = useState(user.birthDay ? new Date(user.birthDay) : new Date());
   const dispatch = useDispatch();
@@ -60,21 +61,26 @@ const EditUserExample = ({ onClick, user }) => {
   });
 
   // ** Form Submission
+
   const handleSubmit = (data) => {
     const formattedData = {
       ...data,
-      birthDay: startDate.toISOString() // Convert to ISO string for API
+      birthDay: startDate.toISOString(), // Convert to ISO string for API
+      roles: roleOptions.filter(role => data.roles.includes(role.id)).map(role => ({
+        id: role.id,
+        roleName: role.roleName,
+        roleParentName: role.roleParentName
+      }))
     };
     dispatch(updateUser(formattedData));
     setShow(false);
   };
 
-
   // Default Values from API
   const defaultValue = {
     id: user.id || null, 
-    fName: user.fname || null,
-    lName: user.lname || null,
+    fName: user.fName || null,
+    lName: user.lName || null,
     userName: user.userName || null,
     gmail: user.gmail || null,
     phoneNumber: user.phoneNumber || null,
@@ -90,14 +96,30 @@ const EditUserExample = ({ onClick, user }) => {
     gender: user.gender || false,
     latitude: user.latitude || null,
     longitude: user.longitude || null,
-    insertDate: user.insertDate || null, // اضافه شده
+    insertDate: user.insertDate || null, 
     birthDay: user.birthDay || null,
-  };
+    roles: user.roles?.map(role => ({
+      id: Number(role.id), 
+      roleName: role.roleName, 
+      roleParentName: role.roleParentName
+    })) || []
+    };
   
   
-  const [show, setShow] = useState(false);
-  const [activity, setActivity] = useState(true);
-  
+  const [show, setShow] = useState(false);  
+
+  const roleOptions = [
+    { id: '1', label: 'ادمین', roleName: 'Administrator', roleParentName: null },
+    { id: '2', label: 'معلم', roleName: 'Teacher', roleParentName: null },
+    { id: '3', label: 'کارمند.ادمین', roleName: 'Employee.Admin', roleParentName: 'Admin' },
+    { id: '4', label: 'نویسنده ادمین' , roleName: "Employee.Writer", roleParentName: "Employee.Admin" },
+    { id: '5', label: 'دانش آموز', roleName: 'Student', roleParentName: null },
+    { id: '7', label: 'مدیریت مسابقات', roleName: 'TournamentAdmin', roleParentName: null },
+    { id: '8', label: 'داور', roleName: 'Referee', roleParentName: null },
+    { id: '9', label: 'مربی مسابقات', roleName: 'TournamentMentor', roleParentName: 'TournamentAdmin' },
+    { id: '10', label: 'پشتیبان', roleName: 'Support', roleParentName: null }
+  ];
+
   return (
     <div
       style={{
@@ -108,10 +130,7 @@ const EditUserExample = ({ onClick, user }) => {
       }}
       onClick={onClick}
     >
-      <Archive size={14} />
-      <div className="" onClick={() => setShow(true)}>
-        Show
-      </div>
+      <Edit size={size} className=' cursor-pointer' onClick={() => setShow(true)} />
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
@@ -122,13 +141,14 @@ const EditUserExample = ({ onClick, user }) => {
         <ModalHeader className='bg-transparent' toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
           <div className='text-center mb-2'>
-            <h1 className='mb-1'>Edit User Information</h1>
-            <p>Updating user details will receive a privacy audit.</p>
+            <h1 className='mb-1'>آپدیت اطلاعات کاربر</h1>
+            <p>اطلاعات کاربر</p>
           </div>
           <Formik
             initialValues={defaultValue}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
+            enableReinitialize={true}
           >
             {({ handleChange, values, errors, touched }) => (
               <Form style={{  display : 'flex', justifyContent : 'center' , flexFlow: 'row wrap', gap: '14px'}}>
@@ -356,16 +376,30 @@ const EditUserExample = ({ onClick, user }) => {
                   {touched.longitude && errors.longitude && <FormFeedback>{errors.longitude}</FormFeedback>}
                 </div>
 
-                <div className='mt-2 w-40'>
-                  <Label className='form-label'> </Label>
-                  <DatePicker
-                    name='birthday'
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    dateFormat="yyyy-MM-dd"
-                    className="form-control"
-                  />
+                <div className='mb-1' style={{ width: '230px' }}>
+                  <Label className='form-label' for='roles'>
+                    نقش <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    type='select'
+                    id='roles'
+                    name='roles'
+                    multiple
+                    value={values.roles}
+                    onChange={handleChange}
+                    invalid={touched.roles && !!errors.roles}
+                  >
+                    {roleOptions.map((role) => (
+                      <option key={role.id} value={role.id}>
+                        {role.label}
+                      </option>
+                    ))}
+                  </Input>
+                  {touched.roles && errors.roles && <FormFeedback>{errors.roles}</FormFeedback>}
                 </div>
+
+
+
 
                 <div className='mb-1  ' style={{width: '300px'}}>
                   <Label className='form-label'>نوع کاربر</Label>

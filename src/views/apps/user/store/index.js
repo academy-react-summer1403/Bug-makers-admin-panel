@@ -70,6 +70,11 @@ export const updateUser = createAsyncThunk('appUsers/updateUser', async (user, {
       longitude: user.longitude || null,
       insertDate: user.insertDate || null,
       birthDay: user.birthDay || null,
+      roles: user.roles.map(role => ({
+        id: Number(role.id) || null,
+        roleName: role.roleName || null,
+        roleParentName: role.roleParentName || null
+      }))
     });
     
     await dispatch(getData(getState().users.params));
@@ -81,6 +86,26 @@ export const updateUser = createAsyncThunk('appUsers/updateUser', async (user, {
     throw error;
   }
 });
+
+// ** add role
+export const addRole = createAsyncThunk('appUsers/addRole', async ({ user, enable }, { dispatch, getState }) => {
+  try {
+    const response = await axiosInstance.post(`/User/AddUserAccess?Enable=${enable}`, {
+      roleId: Number(user.RoleId),
+      userId: user.id
+    });
+    
+    // Dispatch to refresh the data after adding the role
+    await dispatch(getData(getState().users.params));
+    await dispatch(getAllData());
+
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
+  }
+});
+
 
 // ** Delete User
 export const deleteUser = createAsyncThunk('appUsers/deleteUser', async (id, { dispatch, getState }) => {
