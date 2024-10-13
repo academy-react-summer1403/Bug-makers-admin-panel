@@ -38,7 +38,7 @@ export const appUsersSlice = createSlice({
     total: 1,
     params: {},
     allData: [],
-    selectUser: null,  
+    selectUser: [],  
     error: null,   
     loading: false  
   },

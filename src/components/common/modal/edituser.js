@@ -48,6 +48,7 @@ const EditUserExample = ({ onClick , size}) => {
     isStudent: Yup.boolean(),
     isTecher: Yup.boolean(),
     active: Yup.boolean(),
+    gender: Yup.boolean(),
     userName: Yup.string().required('نام کاربری را وارد کنید'),
     nationalCode: Yup.number().required('کدملی الزامیست'),
     userType: Yup.mixed().test(
@@ -93,11 +94,13 @@ const EditUserExample = ({ onClick , size}) => {
     telegramLink: user.telegramLink || null,
     homeAdderess: user.homeAdderess || null,
     nationalCode: user.nationalCode || null,
-    gender: user.gender || false,
+    gender: user.gender ? true : false,
     latitude: user.latitude || null,
     longitude: user.longitude || null,
     insertDate: user.insertDate || null, 
     birthDay: user.birthDay || null,
+    linkdinProfile : user.linkdinProfile || null,
+    currentPictureAddress: user.currentPictureAddress || null,
     roles: user.roles?.map(role => ({
       id: Number(role.id), 
       roleName: role.roleName, 
@@ -289,6 +292,20 @@ const EditUserExample = ({ onClick , size}) => {
                   {touched.userAbout && errors.userAbout && <FormFeedback>{errors.userAbout}</FormFeedback>}
                 </div>
                 <div className='mb-1 w-40'>
+                  <Label className='form-label' for='currentPictureAddress'>
+                   عکس پروفایل  <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <Input
+                    id='currentPictureAddress'
+                    name='currentPictureAddress'
+                    placeholder='درباره کاربر'
+                    value={values.currentPictureAddress}
+                    onChange={handleChange}
+                    invalid={touched.currentPictureAddress && !!errors.currentPictureAddress		}
+                  />
+                  {touched.currentPictureAddress && errors.currentPictureAddress && <FormFeedback>{errors.currentPictureAddress}</FormFeedback>}
+                </div>
+                <div className='mb-1 w-40'>
                   <Label className='form-label' for='recoveryEmail'>
                     ایمیل بازگردانی  <span className='text-danger'>اختیاری</span>
                   </Label>
@@ -334,18 +351,18 @@ const EditUserExample = ({ onClick , size}) => {
                   {touched.gender && errors.gender && <FormFeedback>{errors.gender}</FormFeedback>}
                 </div>
                 <div className='mb-1 w-40'>
-                  <Label className='form-label' for='LinkedinLink'>
+                  <Label className='form-label' for='linkdinProfile'>
                     لینک لینکدین  <span className='text-danger'>اختیاری</span>
                   </Label>
                   <Input
-                    id='LinkedinLink'
-                    name='LinkedinLink'
+                    id='linkdinProfile'
+                    name='linkdinProfile'
                     placeholder='لینک لینکدین'
-                    value={values.LinkedinLink}
+                    value={values.linkdinProfile}
                     onChange={handleChange}
-                    invalid={touched.LinkedinLink && !!errors.LinkedinLink		}
+                    invalid={touched.linkdinProfile && !!errors.linkdinProfile		}
                   />
-                  {touched.LinkedinLink && errors.LinkedinLink && <FormFeedback>{errors.LinkedinLink}</FormFeedback>}
+                  {touched.linkdinProfile && errors.linkdinProfile && <FormFeedback>{errors.linkdinProfile}</FormFeedback>}
                 </div>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='latitude'>
