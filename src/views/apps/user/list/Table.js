@@ -142,18 +142,12 @@ const CustomHeader = ({
   };
   
   return (
-<div className="invoice-list-table-header w-100 me-1 ms-50 align-items-center mt-2 mb-75">
-  <Row>
-    <Card className="bg-transparent w-50 mt-3">
-      <Row>
-        <Col md="4">
+<div className="invoice-list-table-header  w-100 me-1 ms-50 align-items-center mt-2 mb-75" >
+  <Row style={{justifyContent : 'end' , alignItems : 'center' , display : 'flex' , height:'100px'}}>
           {/* Trigger to open modal */}
-          <Button color="primary" onClick={toggleModal}>
+          <Button color="primary" style={{ width : '200px' , position :'absolute' , right: '20px'}} onClick={toggleModal}>
             {currentRole ? currentRole.label : "انتخاب نقش"}
           </Button>
-        </Col>
-      </Row>
-    </Card>
 
     {/* Modal for role selection */}
     <Modal isOpen={modal} toggle={toggleModal}>
@@ -203,7 +197,7 @@ const CustomHeader = ({
         />
       </div>
 
-      <div className="d-flex align-items-center table-header-actions">
+      <div className="d-flex align-items-center justify-content-center table-header-actions">
         <UncontrolledDropdown className="me-1">
           <DropdownToggle color="secondary" caret outline>
             <Share className="font-small-4 me-50" />

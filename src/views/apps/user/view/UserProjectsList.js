@@ -2,8 +2,11 @@
 import { Card, CardHeader, Progress } from 'reactstrap'
 
 // ** Third Party Components
-import { ChevronDown } from 'react-feather'
+import { ChevronDown, User } from 'react-feather'
 import DataTable from 'react-data-table-component'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { getComments } from '../../../../redux/comments'
 
 // ** Custom Components
 import Avatar from '@components/avatar'
@@ -17,137 +20,94 @@ import sketchLabel from '@src/assets/images/icons/brands/sketch-label.png'
 
 // ** Styles
 import '@styles/react/libs/tables/react-dataTable-component.scss'
+import EditCommentModal from '../../../../components/common/modal/editComment'
+import { getUser } from '../store'
+import EditCommentForm from '../../../../components/common/modal/editComment'
 
-const projectsArr = [
-  {
-    progress: 60,
-    hours: '210:30h',
-    progressColor: 'info',
-    totalTasks: '233/240',
-    subtitle: 'React Project',
-    title: 'BGC eCommerce App',
-    img: reactLabel
-  },
-  {
-    hours: '89h',
-    progress: 15,
-    totalTasks: '9/50',
-    progressColor: 'danger',
-    subtitle: 'UI/UX Project',
-    title: 'Falcon Logo Design',
-    img: xdLabel
-  },
-  {
-    progress: 90,
-    hours: '129:45h',
-    totalTasks: '100/190',
-    progressColor: 'success',
-    subtitle: 'Vuejs Project',
-    title: 'Dashboard Design',
-    img: vueLabel
-  },
-  {
-    hours: '45h',
-    progress: 49,
-    totalTasks: '12/86',
-    progressColor: 'warning',
-    subtitle: 'iPhone Project',
-    title: 'Foodista mobile app',
-    img: sketchLabel
-  },
+// const CustomEditCommentDetail = ({  onEdit }) => {
+//   return (
 
-  {
-    progress: 73,
-    hours: '67:10h',
-    totalTasks: '234/378',
-    progressColor: 'info',
-    subtitle: 'React Project',
-    title: 'Dojo React Project',
-    img: reactLabel
-  },
-  {
-    progress: 81,
-    hours: '108:39h',
-    totalTasks: '264/537',
-    title: 'HTML Project',
-    progressColor: 'success',
-    subtitle: 'Crypto Website',
-    img: htmlLabel
-  },
-  {
-    progress: 78,
-    hours: '88:19h',
-    totalTasks: '214/627',
-    progressColor: 'success',
-    subtitle: 'Vuejs Project',
-    title: 'Vue Admin template',
-    img: vueLabel
-  }
-]
-
-export const columns = [
-  {
-    sortable: true,
-    minWidth: '300px',
-    name: 'Project',
-    selector: row => row.title,
-    cell: row => {
-      return (
-        <div className='d-flex justify-content-left align-items-center'>
-          <div className='avatar-wrapper'>
-            <Avatar className='me-1' img={row.img} alt={row.title} imgWidth='32' />
-          </div>
-          <div className='d-flex flex-column'>
-            <span className='text-truncate fw-bolder'>{row.title}</span>
-            <small className='text-muted'>{row.subtitle}</small>
-          </div>
-        </div>
-      )
-    }
-  },
-  {
-    name: 'Total Tasks',
-    selector: row => row.totalTasks
-  },
-  {
-    name: 'Progress',
-    selector: row => row.progress,
-    sortable: true,
-    cell: row => {
-      return (
-        <div className='d-flex flex-column w-100'>
-          <small className='mb-1'>{`${row.progress}%`}</small>
-          <Progress
-            value={row.progress}
-            style={{ height: '6px' }}
-            className={`w-100 progress-bar-${row.progressColor}`}
-          />
-        </div>
-      )
-    }
-  },
-  {
-    name: 'Hours',
-    selector: row => row.hours
-  }
-]
+//   )
+// }
 
 const UserProjectsList = () => {
+  const [commentState, setCommentState] = useState([]) // State to hold the comments
+  const dispatch = useDispatch()
+  const comment = useSelector(state => state.comment.selectUser)
+  const user = useSelector(state => state.user.selectUser)
+
+  useEffect(() => {
+    const id = user.id;
+    if (id) {
+      dispatch(getComments(id))
+    }
+  }, [dispatch, user.id])
+
+  useEffect(() => {
+    if (comment?.comments) {
+      setCommentState(comment.comments) // Set the comments when available
+    }
+  }, [comment])
+
+
+  const columns = [
+    {
+      sortable: true,
+      minWidth: '20px',
+      name: 'نام کاربر',
+      selector: row => row.courseTitle, // Assuming 'courseTitle' is the correct field for name
+      cell: row => {
+        return (
+          <div className='d-flex justify-content-left align-items-center'>
+            <div className='avatar-wrapper'>
+              <User className='me-1'  imgWidth='32' />
+            </div>
+            <div className='d-flex flex-column'>
+              <span className='text-truncate fw-bolder'>{row.userFullName}</span>
+            </div>
+          </div>
+        )
+      }
+    },
+    {
+      name: 'نام دوره',
+      selector: row => row.courseTitle 
+    },
+    {
+      name: 'متن کامنت',
+      selector: row => row.commentTitle 
+    },
+    {
+      name: 'وضعیت کامنت',
+      selector: row => row.accept ? 'تاییده شده' : 'رد شده' 
+    },
+    {
+      name: 'جزییات بیشتر',
+      minWidth: '20px',
+      cell: row => {
+        return(
+        <div >
+          <EditCommentForm size={'14px'} onClick={() => dispatch(getComments(row.userId))} selectedComment={row} />
+      </div>              
+      )}
+    }
+  ]
+  if(comment.totalCount > 0) {
   return (
     <Card>
-      <CardHeader tag='h4'>User's Projects List</CardHeader>
+      <CardHeader tag='h4'>کامنت‌های کاربر  </CardHeader>
       <div className='react-dataTable user-view-account-projects'>
         <DataTable
           noHeader
           responsive
           columns={columns}
-          data={projectsArr}
+          data={commentState} 
           className='react-dataTable'
           sortIcon={<ChevronDown size={10} />}
         />
       </div>
     </Card>
-  )
+  )}
 }
 
 export default UserProjectsList

@@ -5,7 +5,7 @@ import { Fragment } from 'react'
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
 
 // ** Icons Imports
-import { User, Lock, Bookmark, Bell, Link } from 'react-feather'
+import { User, Lock, Bookmark, Bell, Link, Book, BookOpen } from 'react-feather'
 
 // ** User Components
 import InvoiceList from './InvoiceList'
@@ -15,8 +15,10 @@ import BillingPlanTab from './BillingTab'
 import UserTimeline from './UserTimeline'
 import Notifications from './Notifications'
 import UserProjectsList from './UserProjectsList'
+import { useSelector } from 'react-redux'
 
 const UserTabs = ({ active, toggleTab }) => {
+  const user = useSelector(state => state.user.selectUser)
   return (
     <Fragment>
       <Nav pills className='mb-2'>
@@ -26,16 +28,16 @@ const UserTabs = ({ active, toggleTab }) => {
             <span className='fw-bold'>Account</span>
           </NavLink>
         </NavItem>
-        <NavItem>
-          <NavLink active={active === '2'} onClick={() => toggleTab('2')}>
-            <Lock className='font-medium-3 me-50' />
-            <span className='fw-bold'>Security</span>
+        <NavItem style={{display : user.isTecher ? 'block' : 'none'}}>
+          <NavLink  active={active === '2'} onClick={() => toggleTab('2')}>
+            <Book className='font-medium-3 me-50' />
+            <span className='fw-bold'>دوره های این معلم</span>
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink active={active === '3'} onClick={() => toggleTab('3')}>
-            <Bookmark className='font-medium-3 me-50' />
-            <span className='fw-bold'>Billing & Plans</span>
+          <NavLink active={active === '5'} onClick={() => toggleTab('5')}>
+            <BookOpen className='font-medium-3 me-50' />
+            <span className='fw-bold'>دوره های رزرو شده</span>
           </NavLink>
         </NavItem>
         <NavItem>
@@ -45,9 +47,9 @@ const UserTabs = ({ active, toggleTab }) => {
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink active={active === '5'} onClick={() => toggleTab('5')}>
-            <Link className='font-medium-3 me-50' />
-            <span className='fw-bold'>Connections</span>
+          <NavLink active={active === '3'} onClick={() => toggleTab('3')}>
+            <Bookmark className='font-medium-3 me-50' />
+            <span className='fw-bold'>Billing & Plans</span>
           </NavLink>
         </NavItem>
       </Nav>

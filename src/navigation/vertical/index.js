@@ -12,5 +12,11 @@ export default [
     title:"کاربران",
     icon: <User size={20} />,
     navLink:"/apps/user/list"
-  }
+  },
+  {
+    id: "email",
+    title: "کامنت ها",
+    icon: <Mail size={20} />,
+    navLink: "/apps/email",
+  },
 ];

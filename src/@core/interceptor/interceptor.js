@@ -1,6 +1,7 @@
 // ** Axios Imports
 import axios from 'axios';
-import { toast } from 'react-hot-toast'; 
+import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2'
 
 // ** Base URL
 const baseURL = import.meta.env.VITE_BASE_URL;
@@ -28,19 +29,34 @@ axiosInstance.interceptors.response.use(
   (response) => {
     // Show toast message for successful response
     if (response.data.success) {
-      toast.success(response.data.message);
+      Swal.fire({
+        title: response.data.message,
+        icon : 'success',
+        confirmButtonText: 'باشه'
+      });    
     }
     return response;
   },
   (error) => {
     if (error.response && error.response.status === 422) {
       const errorMessage = error.response.data.ErrorMessage || "خطا: ورودی نامعتبر.";
-      toast.error(errorMessage);
+
+      Swal.fire({
+        title: 'با خطا مواجه شدید',
+        text: errorMessage,
+        icon : 'error',
+        confirmButtonText: 'باشه'
+      });
     }
     if (error.response.status === 401) {
-      toast.error('ابتدا وارد حساب کاربری خود شوید');
-    }
-console.log(error.response);
+      Swal.fire({
+        title: 'با خطا مواجه شدید',
+        text: 'ابتدا وارد حساب کاربری خود شوید',
+        icon : 'error',
+        confirmButtonText: 'باشه'
+      });
+        }
+    console.log(error.response);
     return Promise.reject(error);
   }
 );

@@ -1,7 +1,7 @@
 // ** React Imports
 import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
-
+import moment from 'moment-jalaali';
 // ** Custom Components
 import Avatar from '@components/avatar'
 
@@ -31,16 +31,19 @@ const invoiceStatusObj = {
   'Past Due': { color: 'light-danger', icon: Info },
   'Partial Payment': { color: 'light-warning', icon: PieChart }
 }
-
+const useDate = (date) => {
+  if(!date) return 'تاریخ تولد وجود ندارد';
+  return moment(date).format('jYYYY/jMM/jDD'); 
+}
 // ** Table columns
 export const columns = [
   {
-    name: '#',
+    name: 'نام کاربر',
     sortable: true,
     sortField: 'id',
     minWidth: '107px',
     selector: row => row.id,
-    cell: row => <Link className='fw-bolder' to={`/apps/invoice/preview/${row.id}`}>{`#${row.id}`}</Link>
+    cell: row => <Link className='fw-bolder' to={`/apps/invoice/preview/${row.id}`}>{`#${row.groupName}`}</Link>
   },
   {
     name: <TrendingUp size={14} />,
@@ -67,17 +70,15 @@ export const columns = [
   },
 
   {
-    name: 'Total Paid',
-    sortable: true,
+    name: 'مبلغ پرداخت شده',
     minWidth: '150px',
-    sortField: 'total',
-    selector: row => row.total,
-    cell: row => <span>${row.total || 0}</span>
+    selector: row => row.paid,
+    cell: row => <span>تومان{row.paid || 0}</span>
   },
   {
     minWidth: '200px',
-    name: 'Issued Date',
-    cell: row => row.dueDate
+    name: 'تاریخ پرداخت',
+    cell: row => useDate(row.peymentDate)
   },
   {
     name: 'Action',
@@ -92,9 +93,9 @@ export const columns = [
         <Link className='text-body' to={`/apps/invoice/preview/${row.id}`} id={`pw-tooltip-${row.id}`}>
           <Eye size={17} className='mx-1' />
         </Link>
-        <UncontrolledTooltip placement='top' target={`pw-tooltip-${row.id}`}>
+        <Link placement='top' to={`/apps/invoice/preview/${row.courseUserId}`}>
           Preview Invoice
-        </UncontrolledTooltip>
+        </Link>
 
         <Download className='text-body cursor-pointer' size={17} id={`download-tooltip-${row.id}`} />
         <UncontrolledTooltip placement='top' target={`download-tooltip-${row.id}`}>

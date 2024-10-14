@@ -29,7 +29,6 @@ export const updateUserLocation = createAsyncThunk(
   );
   
 
-
 // ** Slice
 export const appUsersSlice = createSlice({
   name: 'appUsers',

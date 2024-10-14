@@ -65,7 +65,7 @@ export const updateUser = createAsyncThunk('appUsers/updateUser', async (user, {
       telegramLink: user.telegramLink || null,
       homeAdderess: user.homeAdderess || null,
       nationalCode: user.nationalCode || null,
-      gender: user.gender ? true : false,
+      gender: !!(user.gender) ,
       latitude: user.latitude || null,
       longitude: user.longitude || null,
       insertDate: user.insertDate || null,

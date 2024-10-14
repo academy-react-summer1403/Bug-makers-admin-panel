@@ -14,6 +14,7 @@ import { Check, Briefcase, X } from 'react-feather'
 import { useForm, Controller } from 'react-hook-form'
 import withReactContent from 'sweetalert2-react-content'
 import avatar from '../../../../assets/images/avatars/2.png'
+import womenAvatars from '../../../../assets/images/avatars/1.png'
 
 // ** Custom Components
 import Avatar from '@components/avatar'
@@ -169,7 +170,7 @@ const UserInfoCard = ({ selectedUser }) => {
   
   // birthDay  
   const useBirthDay = (date) => {
-    if(!date) return 'تاریخ تولد وجود ندارد';
+    if(!date) return 'تاریخ  وجود ندارد';
     return moment(date).format('jYYYY/jMM/jDD'); 
   }
 
@@ -178,7 +179,7 @@ const UserInfoCard = ({ selectedUser }) => {
       <Card>
         <CardBody>
         <img 
-              src={isValidURL(user.currentPictureAddress) ? user.currentPictureAddress : avatar} 
+              src={isValidURL(user.currentPictureAddress) ? user.currentPictureAddress : user.gender ? avatar : womenAvatars } 
               style={{width : '150px', height : '150px' , margin : 'auto' , display : 'block' , borderRadius : '100%' }}
               />
           <div className='d-flex justify-content-around my-2 pt-75'>

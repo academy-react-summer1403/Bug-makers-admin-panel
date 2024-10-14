@@ -34,6 +34,9 @@ const Error = lazy(() => import("../../pages/Error"));
 const Sample = lazy(() => import("../../pages/Sample"));
 const UserList = lazy(() => import('../../views//apps/user/list'))
 const UserView = lazy(() => import('../../views//apps/user/view'))
+const Email = lazy(() => import('../../views/apps/email'))
+// const ChatApp = lazy(() => import('../../chatApp'))
+const InvoicePreview = lazy(() => import('../../views/apps/invoice/preview'))
 
 
 // ** Merge Routes
@@ -76,6 +79,42 @@ const Routes = [
   {
     element: <UserView />,
     path: '/apps/user/view/:id'
+  },
+  {
+    element: <Email />,
+    path: '/apps/email',
+    meta: {
+      appLayout: true,
+      className: 'email-application'
+    }
+  },
+  {
+    element: <Email />,
+    path: '/apps/email/:folder',
+    meta: {
+      appLayout: true,
+      className: 'email-application'
+    }
+  },
+  {
+    element: <Email />,
+    path: '/apps/email/label/:label',
+    meta: {
+      appLayout: true,
+      className: 'email-application'
+    }
+  },
+  {
+    element: <Email />,
+    path: '/apps/email/:filter'
+  },
+  // {
+  //   element: <ChatApp />,
+  //   path: '/apps/support'
+  // },
+  {
+    element: <InvoicePreview />,
+    path: '/apps/invoice/preview/:id'
   },
   {
     path: "/forgot-password",

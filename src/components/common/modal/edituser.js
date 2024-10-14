@@ -94,7 +94,7 @@ const EditUserExample = ({ onClick , size}) => {
     telegramLink: user.telegramLink || null,
     homeAdderess: user.homeAdderess || null,
     nationalCode: user.nationalCode || null,
-    gender: user.gender ? true : false,
+    gender: !!(user.gender) ,
     latitude: user.latitude || null,
     longitude: user.longitude || null,
     insertDate: user.insertDate || null, 
@@ -133,7 +133,7 @@ const EditUserExample = ({ onClick , size}) => {
       }}
       onClick={onClick}
     >
-      <Edit size={size} className=' cursor-pointer' onClick={() => setShow(true)} />
+      <Edit size={size} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={() => setShow(true)} />
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
@@ -248,19 +248,23 @@ const EditUserExample = ({ onClick , size}) => {
 
                 <div style={{width:'230px'}}>
                 <Label className='form-label' for='gender'>
-                    وضعیت <span className='text-danger'>اختیاری</span>
+                    جنسیت <span className='text-danger'>اختیاری</span>
                   </Label>
                   <Input
                     type='select'
                     id='gender'
                     name='gender'
                     value={values.gender}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const value = e.target.value === 'true';
+                      handleChange({ target: { name: 'gender', value } });
+                    }}
                     invalid={touched.gender && !!errors.gender}
                   >
                     <option value='true'>مرد</option>
                     <option value='false'>زن</option>
                   </Input>
+
                   {touched.gender && errors.gender && <FormFeedback>{errors.gender}</FormFeedback>}
                 </div>
                 <div className='mb-1 w-40'>
