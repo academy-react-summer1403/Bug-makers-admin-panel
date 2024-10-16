@@ -5,6 +5,7 @@ import users from '@src/views/apps/user/store';
 import userReducer from './userSlice'
 import commentReducer from './comments'
 import CoursePaymentReducer from "./CoursePayment";
+import CourseSliceReducer from "./CourseSlice";
 const rootReducer = { 
     navbar, 
     layout,
@@ -12,6 +13,7 @@ const rootReducer = {
     user: userReducer,
     comment : commentReducer,
     payment : CoursePaymentReducer,
+    Course: CourseSliceReducer
 };
 
 export default rootReducer;

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css'; 
 import moment from 'moment-jalaali';
@@ -121,40 +121,6 @@ const UserInfoCard = ({ selectedUser }) => {
     })
   }
 
-  const handleSuspendedClick = () => {
-    return MySwal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert user!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, Suspend user!',
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-outline-danger ms-1'
-      },
-      buttonsStyling: false
-    }).then(function (result) {
-      if (result.value) {
-        MySwal.fire({
-          icon: 'success',
-          title: 'Suspended!',
-          text: 'User has been suspended.',
-          customClass: {
-            confirmButton: 'btn btn-success'
-          }
-        })
-      } else if (result.dismiss === MySwal.DismissReason.cancel) {
-        MySwal.fire({
-          title: 'Cancelled',
-          text: 'Cancelled Suspension :)',
-          icon: 'error',
-          customClass: {
-            confirmButton: 'btn btn-success'
-          }
-        })
-      }
-    })
-  }
 
   // isValidURL 
   const isValidURL = (url) => {
@@ -165,6 +131,17 @@ const UserInfoCard = ({ selectedUser }) => {
       return false;
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        userName: user.userName,
+        lName: user.lName,
+        fName: user.fName,
+        email: user.gmail,
+      });
+    }
+  }, [user]);
 
   const percentage = user.profileCompletionPercentage || 0; 
   

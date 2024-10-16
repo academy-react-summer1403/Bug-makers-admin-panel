@@ -35,7 +35,7 @@ const Sample = lazy(() => import("../../pages/Sample"));
 const UserList = lazy(() => import('../../views//apps/user/list'))
 const UserView = lazy(() => import('../../views//apps/user/view'))
 const Email = lazy(() => import('../../views/apps/email'))
-// const ChatApp = lazy(() => import('../../chatApp'))
+const Course = lazy(() => import('../../views/apps//Course'))
 const InvoicePreview = lazy(() => import('../../views/apps/invoice/preview'))
 
 
@@ -108,10 +108,10 @@ const Routes = [
     element: <Email />,
     path: '/apps/email/:filter'
   },
-  // {
-  //   element: <ChatApp />,
-  //   path: '/apps/support'
-  // },
+  {
+    element: <Course />,
+    path: '/apps/Course'
+  },
   {
     element: <InvoicePreview />,
     path: '/apps/invoice/preview/:id'

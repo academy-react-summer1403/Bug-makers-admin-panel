@@ -1,4 +1,4 @@
-import { Mail, Home, Airplay, Circle, User } from "react-feather";
+import { Mail, Home, Airplay, Circle, User, Book } from "react-feather";
 
 export default [
   {
@@ -18,5 +18,11 @@ export default [
     title: "کامنت ها",
     icon: <Mail size={20} />,
     navLink: "/apps/email",
+  },
+  {
+    id: "addCourse",
+    title: "دوره ها",
+    icon: <Book size={20} />,
+    navLink: "/apps/Course",
   },
 ];

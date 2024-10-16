@@ -7,6 +7,7 @@ import { updateUser } from '../../../views/apps/user/store/index';
 import DatePicker from "react-datepicker";
 import { useSelector } from 'react-redux';
 import "react-datepicker/dist/react-datepicker.css";
+import moment from 'moment-jalaali';
 
 // ** Reactstrap Imports
 import {
@@ -34,7 +35,7 @@ import '@styles/react/libs/react-select/_react-select.scss'
 const EditUserExample = ({ onClick , size}) => {
   const user = useSelector(state => state.user.selectUser);
 
-  const [startDate, setStartDate] = useState(user.birthDay ? new Date(user.birthDay) : new Date());
+  const [startDate, setStartDate] = useState(new Date());
   const dispatch = useDispatch();
 
   // ** Validation Schema
@@ -123,6 +124,10 @@ const EditUserExample = ({ onClick , size}) => {
     { id: '10', label: 'پشتیبان', roleName: 'Support', roleParentName: null }
   ];
 
+  const useBirthDay = (date) => {
+    if(!date) return 'تاریخ  وجود ندارد';
+    return moment(date).format('jYYYY/jMM/jDD'); 
+  }
   return (
     <div
       style={{
@@ -419,9 +424,17 @@ const EditUserExample = ({ onClick , size}) => {
                   {touched.roles && errors.roles && <FormFeedback>{errors.roles}</FormFeedback>}
                 </div>
 
-
-
-
+                <div className='mb-1' style={{ width: '230px' }}>
+                  <Label className='form-label' for='birthDay'>
+                    تاریخ تولد <span className='text-danger'>اختیاری</span>
+                  </Label>
+                  <DatePicker 
+                  selected={startDate} 
+                  onChange={(date) => 
+                  setStartDate(date)} 
+                  value={useBirthDay(values.birthDay)}
+                  />
+                </div>
                 <div className='mb-1  ' style={{width: '300px'}}>
                   <Label className='form-label'>نوع کاربر</Label>
                   <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '1rem' }}>
