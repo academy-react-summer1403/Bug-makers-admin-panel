@@ -1,7 +1,8 @@
 import axiosInstance from "../../interceptor/interceptor";
 
 export const getCourseListWithPagination = async (query, teacherId, categoryQuery, startDate, endDate , sorting , minCost , maxCost) => {
-  let url = `/Home/GetCoursesWithPagination?PageNumber=1&RowsOfPage=300&SortingCol=Active&SortType=${sorting ? sorting : 'DESC'}`;
+  let url = `/Course/CourseList?PageNumber=1&RowsOfPage=300&SortingCol=Active&SortType=${sorting ? sorting : 'DESC'}`;
+  
 
   if (query) {
     url += `&Query=${query}`;

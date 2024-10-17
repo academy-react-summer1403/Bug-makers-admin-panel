@@ -37,6 +37,7 @@ const UserView = lazy(() => import('../../views//apps/user/view'))
 const Email = lazy(() => import('../../views/apps/email'))
 const Course = lazy(() => import('../../views/apps//Course'))
 const InvoicePreview = lazy(() => import('../../views/apps/invoice/preview'))
+const CourseDetail = lazy(() => import('../../views/apps/Course/CourseDetail/CourseDetail'))
 
 
 // ** Merge Routes
@@ -115,6 +116,10 @@ const Routes = [
   {
     element: <InvoicePreview />,
     path: '/apps/invoice/preview/:id'
+  },
+  {
+    element: <CourseDetail />,
+    path: '/apps/Detail/:id'
   },
   {
     path: "/forgot-password",

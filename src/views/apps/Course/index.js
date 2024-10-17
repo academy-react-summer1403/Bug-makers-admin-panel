@@ -38,7 +38,7 @@ const CoursePage = () => {
   
   useEffect(() => {
     if (data) {
-      dispatch(setCourseList(data.courseFilterDtos || data));
+      dispatch(setCourseList(data.courseDtos	 || data));
     }
   }, [data, dispatch]);
   
@@ -97,12 +97,12 @@ const CoursePage = () => {
       .map((course) => (
         <CourseListItems
           key={course.courseId}
-          courseId={course.courseId}
+          id={course.courseId}
           title={course.title}
           img={course.tumbImageAddress}
           technologyList={course.technologyList}
           description={course.describe}
-          teacherName={course.teacherName}
+          teacherName={course.fullName}
           likeCount={course.likeCount}
           commandCount={course.commandCount}
           courseRate={course.courseRate}
@@ -111,6 +111,8 @@ const CoursePage = () => {
           currentRegistrants={course.currentRegistrants}
           date={convertToJalali(course.lastUpdate)}
           listStyle={listStyle}
+          isActive={course.isActive}
+          isExpire={course.isExpire}
           />
         ));
   };
