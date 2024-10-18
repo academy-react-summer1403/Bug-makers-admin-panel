@@ -1,10 +1,10 @@
 // ** React Imports
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 // ** Third Party Components
 import classnames from 'classnames'
-import { Star, ShoppingCart, DollarSign, Heart, Share2, Facebook, Twitter, Youtube, Instagram, ThumbsUp, MessageCircle, User, CreditCard, X } from 'react-feather'
+import { Star, ShoppingCart, DollarSign, Heart, Share2, Facebook, Twitter, Youtube, Instagram, ThumbsUp, MessageCircle, User, CreditCard, X, PenTool } from 'react-feather'
 import moment from 'moment-jalaali';
 import image from '../../../assets/images/icons/image.jpg'
 
@@ -22,6 +22,10 @@ import {
 import Active from '../../../components/common/active/active';
 import AddGroupCourse from '../../../components/common/modal/AddGroup';
 import AddCategory from '../../../components/common/modal/addCategory';
+import EditCourse from '../../../components/common/modal/editCourse';
+import { useSelected } from 'slate-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPreview } from '../../../redux/Preview';
 
 const Product = props => {
   // ** Props
@@ -70,11 +74,24 @@ const Product = props => {
     dispatch(getProduct(productId))
   }
 
+  // use date 
   const useDate = (date) => {
     if(!date) return 'تاریخ  وجود ندارد';
     return moment(date).format('jYYYY/jMM/jDD'); 
   }
+
+  // handle state 
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const preview = useSelector((state) => state.preview.value)
+
+  const handlingNavigate = (e) => {
+    e.preventDefault();
+    navigate('/forms/wizard')
+    dispatch(setPreview(false))
+  }
   
+  // handle state 
   return (
     <Row className='my-2'>
       <Col className='d-flex align-items-center justify-content-center mb-2 mb-md-0' md='5' xs='12'>
@@ -97,6 +114,7 @@ const Product = props => {
          وضعیت : <span className={` ms-25 ${isActive ? 'text-success' : 'text-danger'} `}>{isActive ? 'فعال' : 'غیرفعال'} </span>
         </CardText>
         <CardText>{Description}</CardText>
+        {preview ? (
         <ul className='product-features list-unstyled d-flex align-items-center gap-2'>
             <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
               <span>{courseLikeTotal}</span>
@@ -118,7 +136,9 @@ const Product = props => {
               <span>{paymentNotDoneTotal}</span>
               <CreditCard color='red' size={'15px'} />
             </div>
-        </ul>
+        </ul>) : (
+          <></>
+        )}
         <hr />
         <ul className='product-features list-unstyled d-flex  align-items-start  gap-4'>
             <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
@@ -150,7 +170,8 @@ const Product = props => {
             </div>
           </ul>
         <hr />
-        <div className='d-flex flex-column flex-sm-row pt-1'>
+        {preview ? (
+        <div className='d-flex flex-column flex-sm-row pt-1' >
           <AddCategory uuid={id} />
           <AddGroupCourse />
 
@@ -169,9 +190,10 @@ const Product = props => {
             api="/Course/ActiveAndDeactiveCourse" 
             method="put"
             styled={{ minWidth: '50px' , cursor: 'pointer', padding: '10px', marginRight: '10px' }} 
-            text='غیر فعال'
-            text2='فعال'
+            text={preview === true ? 'غیر فعال' :  'در حال آپلود'}
+            text2={preview  === true ? 'فعال' :  'در حال آپلود'}
           />
+          <PenTool onClick={handlingNavigate} />
           <UncontrolledButtonDropdown className='dropdown-icon-wrapper btn-share'>
             <DropdownMenu end>
               <DropdownItem tag='a' href='/' onClick={e => e.preventDefault()}>
@@ -189,6 +211,9 @@ const Product = props => {
             </DropdownMenu>
           </UncontrolledButtonDropdown>
         </div>
+        ) : (
+          <></>
+        )}
       </Col>
     </Row>
   )
