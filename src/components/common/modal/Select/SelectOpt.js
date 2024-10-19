@@ -48,8 +48,9 @@ const SelectOpt = ({ width, placeholder, onChange, isTeacherSelect, isSortSelect
     <div className={`position-relative ${isOpen ? 'z-index-10' : 'z-index-0'}`}>
       {selectedOption && (
         <span
-          className="cursor-pointer position-absolute top-0 start-0 p-2"
+          className="cursor-pointer  p-2"
           onClick={handleRemove}
+          style={{left : '0px' , top : '-10px' , position: 'absolute'}}
         >
           ✖
         </span>

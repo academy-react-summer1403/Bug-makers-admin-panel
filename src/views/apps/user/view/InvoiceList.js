@@ -146,10 +146,10 @@ const InvoiceList = () => {
             sortServer
             columns={columns}
             responsive={true}
+            className='react-dataTable'
             onSort={handleSort}
             data={coursePayment}
             sortIcon={<ChevronDown />}
-            className='react-dataTable'
             defaultSortField='invoiceId'
           />
         </div>

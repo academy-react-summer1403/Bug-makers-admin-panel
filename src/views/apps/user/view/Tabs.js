@@ -25,7 +25,7 @@ const UserTabs = ({ active, toggleTab }) => {
         <NavItem>
           <NavLink active={active === '1'} onClick={() => toggleTab('1')}>
             <User className='font-medium-3 me-50' />
-            <span className='fw-bold'>Account</span>
+            <span className='fw-bold'>اکانت</span>
           </NavLink>
         </NavItem>
         <NavItem style={{display : user.isTecher ? 'block' : 'none'}}>

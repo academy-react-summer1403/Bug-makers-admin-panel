@@ -27,13 +27,18 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    // Show toast message for successful response
     if (response.data.success) {
       Swal.fire({
         title: response.data.message,
-        icon : 'success',
-        confirmButtonText: 'باشه'
-      });    
+        icon: 'success',
+        timer: 3000,
+        timerProgressBar: true,
+        showCloseButton: false,
+        showConfirmButton: false,
+        customClass: {
+          timerProgressBar: 'bg-success',
+        }
+      });
     }
     return response;
   },
@@ -44,19 +49,46 @@ axiosInstance.interceptors.response.use(
       Swal.fire({
         title: 'با خطا مواجه شدید',
         text: errorMessage,
-        icon : 'error',
-        confirmButtonText: 'باشه'
+        icon: 'error',
+        timer: 3000,
+        timerProgressBar: true,
+        showCloseButton: false,
+        showConfirmButton: false,
+        customClass: {
+          timerProgressBar: 'bg-danger',
+        }
       });
     }
     if (error.response.status === 401) {
       Swal.fire({
         title: 'با خطا مواجه شدید',
         text: 'ابتدا وارد حساب کاربری خود شوید',
-        icon : 'error',
-        confirmButtonText: 'باشه'
-      });
+        icon: 'error',
+        timer: 3000,
+        timerProgressBar: true,
+        showCloseButton: false,
+        showConfirmButton: false,
+        customClass: {
+          timerProgressBar: 'bg-danger',
         }
-    console.log(error.response);
+      });
+    }
+    if (error.response.status === 403) {
+      const errorMessage = error.response.data.ErrorMessage || "خطا: ورودی نامعتبر.";
+
+      Swal.fire({
+        title: 'با خطا مواجه شدید',
+        text: errorMessage,
+        icon: 'error',
+        timer: 3000,
+        timerProgressBar: true,
+        showCloseButton: false,
+        showConfirmButton: false,
+        customClass: {
+          timerProgressBar: 'bg-danger',
+        }
+      });
+    }
     return Promise.reject(error);
   }
 );

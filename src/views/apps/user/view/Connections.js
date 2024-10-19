@@ -1,47 +1,108 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 // ** Reactstrap Imports
-import { Card, CardBody, CardTitle, Input, Label, Button } from 'reactstrap'
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Table,
+  Alert,
+  Input,
+  Modal,
+  Button,
+  CardBody,
+  CardTitle,
+  ModalBody,
+  CardHeader,
+  ModalHeader,
+  FormFeedback
+} from 'reactstrap'
 
-// ** Icons Imports
-import { Check, X, Link } from 'react-feather'
+// ** Custom Components
+import InputPasswordToggle from '@components/input-password-toggle'
 
+// ** Third Party Components
+import * as yup from 'yup'
+import Cleave from 'cleave.js/react'
+import 'cleave.js/dist/addons/cleave-phone.us'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm, Controller } from 'react-hook-form'
+import { Edit, Trash, Settings, MessageSquare, ChevronRight } from 'react-feather'
+import DataTable from 'react-data-table-component'
+
+// ** Images
 import CourseItem from '../../../../components/common/modal/CourseItem'
 import { useQuery } from '@tanstack/react-query'
 import { getUser } from '../store'
 import { useSelector } from 'react-redux'
+import moment from 'moment-jalaali';
 
 const connections = () => {
-
+  const useDate = (date) => {
+    if(!date) return 'تاریخ  وجود ندارد';
+    return moment(date).format('jYYYY/jMM/jDD'); 
+  }
+  // ** Hooks
   const user = useSelector(state => state.user.selectUser)
 
-  return (
-    <Fragment>
-      <div style={{ maxWidth: '540px', display: 'flex', flexFlow: 'column wrap', gap: '15px', justifyContent: 'center' }}>
-        {user.coursesReseves?.map((item) => (
-          <CourseItem
-            key={item.reserveId}
-            title={item.courseName}
-            StudentName={item.studentName}
-            reserverDate={item.reserverDate}
-            accept={item.accept}
-          />
-        ))}
+  // ** Columns for DataTable
+  const columns = [
+    {
+      name: 'عنوان دوره',
+      minWidth : '50px',
+      cell: row => <Link to={`/apps/Detail/${row.courseId}`}>{row.courseName}</Link>,
+      sortable: true,
+    },
+    {
+      name: 'نام دانش آموز',
+      maxWidth : '200px',
+      selector: row => row.studentName,
+      sortable: false,
+    },
+    {
+      name: 'آیدی دانش آموز',
+      maxWidth : '200px',
+      selector: row => row.studentId,
+      sortable: false,
+    },
+    {
+      name: 'آخرین آپدیت',
+      minWidth : '50px',
+      selector: row => useDate(row.reserverDate),
+      sortable: false,
+    },
+  ];
+
+
+
+  // ** Render
+  if (user.isTecher === true) {
+    return (
+      <div className='w-100'>
+      <DataTable
+        title="دوره های رزرو شده"
+        columns={columns}
+        data={user.coursesReseves}
+        pagination
+        responsive={true}
+        className='react-dataTable'
+        noDataComponent={<div>شما هیج دوره‌ای را ثبت نکردید</div>
+      }
+      />
       </div>
+    )
+  } else if (user.coursesReseves.length === 0) {
+    return (
+      <div>
+        <h1>شما هیج دوره‌ای  را رزرو نکردید </h1>
+      </div>
+    )
+  }
 
-      {/* reserveId	"9722b8d4-e169-ef11-b6d9-f4b91c39617c"
-courseId	"991a9307-133d-ef11-b6ca-c84ec5106ca4"
-courseName	"AliNouri24"
-studentId	10169
-studentName	"طاها رحیمی"
-reserverDate	"2024-09-03T14:16:53.917"
-accept	false */}
-    
-  
-
-    </Fragment>
-  )
+  return null; 
 }
 
 export default connections

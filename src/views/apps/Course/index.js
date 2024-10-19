@@ -4,192 +4,214 @@ import { useQuery } from '@tanstack/react-query';
 import { setCourseList } from '../../../redux/CourseSlice';
 import { getCourseListWithPagination } from '../../../@core/api/course/getCourseListWithPagination';
 import SearchBox from '../../../components/common/modal/SearchBox/SearchBox';
-import CourseListItems from './CourseListItems ';
-import Pagination from '../../../components/common/modal/pagination';
+import DataTable from 'react-data-table-component';
 import SelectOpt from '../../../components/common/modal/Select/SelectOpt';
 import DateModal from '../../../components/Date/Date';
 import PriceFilter from '../../../components/PriceFilter/PriceFilter';
+import CourseListItems from './CourseListItems ';
 import moment from 'moment-jalaali';
-
+import Active from '../../../components/common/active/active';
+import { ThreeDots } from 'react-loader-spinner';
+import Pagination from '../../../components/common/modal/pagination';
+import { motion, AnimatePresence } from 'framer-motion'; 
+import { Link } from 'react-router-dom';
 
 const CoursePage = () => {
-  // state variables
   const [categoryQuery, setCategoryQuery] = useState('');
   const [teacherId, setTeacherId] = useState(null);
-  const [queryValue, setQueryValue] = useState(''); 
-  const [currentPage, setCurrentPage] = useState(0);
-  const [listStyle, setListStyle] = useState(false);
-  const [filterValue, setFilterValue] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [sorting, setSorting] = useState('');
+  const [queryValue, setQueryValue] = useState('');
   const [minCost, setMinCost] = useState(null);
   const [maxCost, setMaxCost] = useState(null);
+  const [viewMode, setViewMode] = useState('table');
+  const [currentPage, setCurrentPage] = useState(0);
 
-  const itemsPerPage =9; 
   const dispatch = useDispatch();
   const CourseListItem = useSelector((state) => state.Course.CourseList);
-  
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ['getCourses', queryValue, teacherId, categoryQuery, startDate, endDate, sorting, minCost, maxCost],
-    queryFn: () => getCourseListWithPagination(queryValue, teacherId, categoryQuery, startDate, endDate, sorting, minCost, maxCost),
+    queryKey: ['getCourses', queryValue, teacherId, categoryQuery, minCost, maxCost, currentPage],
+    queryFn: () => getCourseListWithPagination(queryValue, teacherId, categoryQuery, currentPage, itemsPerPage, '', minCost, maxCost),
     keepPreviousData: true,
   });
-  
+
   useEffect(() => {
     if (data) {
-      dispatch(setCourseList(data.courseDtos	 || data));
+      dispatch(setCourseList(data.courseDtos || data));
     }
   }, [data, dispatch]);
-  
-  const handleSearch = (e) => {
-    setQueryValue(e.target.value); 
-  };
 
-  const handleRemoveFilter = () => {
-    setQueryValue('');
-    setTeacherId(null);  
-    setCategoryQuery(''); 
-    setFilterValue(true);
-    setMinCost(null);
-    setMaxCost(null);
-    setTimeout(() => {
-      setFilterValue(false);
-    }, 100); 
-  };
-
-  const filterByDateRange = (startDate, endDate) => {
-    setStartDate(startDate);
-    setEndDate(endDate);
-  };
-
+  const handleSearch = (e) => setQueryValue(e.target.value);
   const handlePriceFilter = (min, max) => {
     setMinCost(min);
     setMaxCost(max);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 952) {
-        setListStyle(false);
-      } else {
-        setListStyle(null);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Initial check
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-  const convertToJalali = (date) => {
-    if(!date) return 'تاریخ  وجود ندارد';
-    return moment(date).format('jYYYY/jMM/jDD'); 
-  }
-  const renderCourses = () => {
-    if (isLoading) return <p>در حال بارگذاری...</p>;
-    if (error) return <p>خطایی رخ داده است...</p>;
-
-    return CourseListItem
-      .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-      .map((course) => (
-        <CourseListItems
-          key={course.courseId}
-          id={course.courseId}
-          title={course.title}
-          img={course.tumbImageAddress}
-          technologyList={course.technologyList}
-          description={course.describe}
-          teacherName={course.fullName}
-          likeCount={course.likeCount}
-          commandCount={course.commandCount}
-          courseRate={course.courseRate}
-          statusName={course.statusName}
-          price={course.cost}
-          currentRegistrants={course.currentRegistrants}
-          date={convertToJalali(course.lastUpdate)}
-          listStyle={listStyle}
-          isActive={course.isActive}
-          isExpire={course.isExpire}
-          />
-        ));
+  const handleRemoveFilter = () => {
+    setQueryValue('');
+    setTeacherId(null);
+    setCategoryQuery('');
+    setMinCost(null);
+    setMaxCost(null);
   };
+
+  const itemsPerPage = 8;
+  const handleViewSwitch = () => setViewMode(viewMode === 'table' ? 'grid' : 'table');
+
+  const handlePageClick = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+
+  const columns = [
+    {
+      name: 'عنوان',
+      selector: row => row.title,
+      sortable: true,
+    },
+    {
+      name: 'مدرس',
+      selector: row => row.fullName,
+      sortable: true,
+    },
+    {
+      name: 'قیمت',
+      selector: row => row.cost,
+      sortable: true,
+    },
+    {
+      name: 'آخرین آپدیت',
+      selector: row => moment(row.lastUpdate).format('jYYYY/jMM/jDD'),
+      sortable: true,
+    },
+    {
+      name: 'وضعیت',
+      selector: row => row.statusName,
+      sortable: true,
+    },
+    {
+      name: 'عملیات',
+      cell: row => (
+        <div className='d-flex justify-content-center align-items-center gap-1'>
+          <Link to={'/apps/Detail/' + row.courseId}>مشاهده</Link>
+          <Active
+            isActive={row.isActive}
+            id={row.courseId}
+            styled={{ minWidth: '50px', cursor: 'pointer', padding: '5px' }}
+            api="/Course/ActiveAndDeactiveCourse"
+            method="put"
+            text='غیر فعال'
+            text2='فعال'
+          />
+        </div>
+      )
+    }
+  ];
 
   return (
     <div className='container mt-4'>
-      {/* searchAndFilterSection */}
       <div className='d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3'>
         <SearchBox
-          width={"100%"} 
-          lgWidth={"160px"} 
+          width={"100%"}
+          lgWidth={"160px"}
           placeHolder='دنبال چی میگردی'
-          value={`${filterValue ? '' : queryValue}`}
-          onChange={handleSearch} 
+          value={queryValue}
+          onChange={handleSearch}
         />
         <SelectOpt
           width={"100%"}
           lgWidth={"160px"}
           placeholder='استاد دوره'
-          isTeacherSelect={true} 
-          onChange={(value) => setTeacherId(value)}
-          FilterValue={filterValue}
+          isTeacherSelect={true}
+          onChange={setTeacherId}
         />
         <SelectOpt
           width={"100%"}
           lgWidth={"160px"}
           placeholder='دسته‌بندی'
-          onChange={(value) => setCategoryQuery(value)} 
-          FilterValue={filterValue}
+          onChange={setCategoryQuery}
         />
-        <DateModal onFilter={filterByDateRange} />
-        <SelectOpt
+        {/* <DateModal onFilter={(startDate, endDate) => {}} /> */}
+        {/* <PriceFilter
           width={"100%"}
           lgWidth={"160px"}
-          placeholder="ترتیب نمایش"
-          isSortSelect={true}
-          onChange={(value) => setSorting(value)} 
-          FilterValue={filterValue}
-        />
-        <PriceFilter
-          width={"100%"}
-          lgWidth={"160px"}
-          onFilter={handlePriceFilter} />
-        <span className='d-lg-none text-muted position-relative' style={{bottom: '2px', right: '4px'}}>
-          تعداد {CourseListItem.length} نتیجه از {data?.totalCount || 0} دوره طبق جستجوی شما یافت شد
-        </span>
-        <span className='d-lg-none btn btn-light' onClick={handleRemoveFilter}>
+          onFilter={handlePriceFilter}
+        /> */}
+        <button className='btn btn-light' onClick={handleRemoveFilter}>
           حذف تمامی فیلتر
-        </span>
+        </button>
+        <button className='btn btn-primary' onClick={handleViewSwitch}>
+          {viewMode === 'table' ? 'نمایش به صورت شبکه' : 'نمایش به صورت جدول'}
+        </button>
       </div>
 
-      {/* filterActionSection */}
-      <div className='d-flex flex-wrap justify-content-end align-items-center mt-3'>
-        <span className='d-none d-lg-block text-muted me-auto'>
-          تعداد {CourseListItem.length} نتیجه از {data?.totalCount || 0} دوره طبق جستجوی شما یافت شد
-        </span>
-        <span className='d-none d-lg-block btn btn-light' onClick={handleRemoveFilter}>
-          حذف تمامی فیلتر
-        </span>
-
-
-        {/* additionalActionButtons */}
-        <div className='d-flex align-items-center gap-2'>
+      {isLoading && (
+        <div className="d-flex justify-content-center align-items-center mt-4">
+          <ThreeDots color="#007bff" height={80} width={80} />
         </div>
-      </div>
+      )}
+      {error && <p>خطایی رخ داده است...</p>}
 
-      {/* courseItemsSection */}
-      <div className='d-flex flex-wrap justify-content-center gap-4 mt-3'>
-        {renderCourses()}
-      </div>
-
-      {/* paginationSection */}
-      <Pagination
-        pageCount={Math.ceil(CourseListItem.length / itemsPerPage)}
-        handlePageClick={(data) => setCurrentPage(data.selected)}
-        currentPage={currentPage} 
-      />
+      <AnimatePresence>
+        {viewMode === 'table' ? (
+          <motion.div
+            key="table"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <DataTable
+              columns={columns}
+              data={CourseListItem}
+              pagination
+              paginationPerPage={itemsPerPage}
+              paginationRowsPerPageOptions={[8, 15, 30]}
+              responsive
+              highlightOnHover
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="grid"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <div className='d-flex flex-wrap justify-content-center gap-4 mt-3'>
+              {CourseListItem
+                .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+                .map((course) => (
+                  <motion.div
+                    key={course.courseId}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <CourseListItems
+                      courseId={course.courseId}
+                      title={course.title}
+                      img={course.tumbImageAddress}
+                      technologyList={course.technologyList}
+                      description={course.describe}
+                      teacherName={course.teacherName}
+                      likeCount={course.likeCount}
+                      commandCount={course.commandCount}
+                      courseRate={course.courseRate}
+                      statusName={course.statusName}
+                      price={course.cost}
+                      currentRegistrants={course.currentRegistrants}
+                      date={moment(course.lastUpdate).format('jYYYY/jMM/jDD')}
+                    />
+                  </motion.div>
+                ))}
+            </div>
+            <Pagination
+              pageCount={Math.ceil(CourseListItem.length / itemsPerPage)}
+              handlePageClick={handlePageClick}
+              currentPage={currentPage}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
