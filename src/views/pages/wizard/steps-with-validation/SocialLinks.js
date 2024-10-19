@@ -6,9 +6,11 @@ import { ArrowLeft } from 'react-feather'
 import { useForm, Controller } from 'react-hook-form'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { useDispatch, useSelector } from 'react-redux'
 
 // ** Reactstrap Imports
 import { Label, Row, Col, Button, Form } from 'reactstrap'
+import { setCreate } from '../../../../redux/CreateCourse'
 
 const defaultValues = {
   Describe: ''
@@ -23,9 +25,20 @@ const SocialLinks = ({ stepper }) => {
     formState: { errors }
   } = useForm({ defaultValues })
 
-  const onSubmit = data => {
+  const existingData = useSelector((state) => state.create.createList);
+  console.log(existingData);
+  const dispatch = useDispatch();
+
+  const onSubmit = (data) => {
     if (Object.values(data).every(field => field.length > 0)) {
+
+      const combinedData = {
+        ...existingData,
+        ...data,
+      };
       stepper.next()
+      dispatch(setCreate(combinedData))
+
     } else {
       for (const key in data) {
         if (data[key].length === 0) {

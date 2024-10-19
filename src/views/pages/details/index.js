@@ -111,7 +111,7 @@ const Product = props => {
           <h4 className='item-price me-1'>{cost} ريال</h4>
         </div>
         <CardText>
-         وضعیت : <span className={` ms-25 ${isActive ? 'text-success' : 'text-danger'} `}>{isActive ? 'فعال' : 'غیرفعال'} </span>
+         وضعیت : <span className={` ms-25 ${isActive ? 'text-success' : 'text-danger'} `}>{isActive ? 'فعال' : 'غیرفعال'}</span>
         </CardText>
         <CardText>{Description}</CardText>
         {preview ? (
@@ -145,16 +145,16 @@ const Product = props => {
               <span>{courseClassRoomName}</span>
             </div>
             <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
-              <span> تعداد گروه : {courseGroupTotal}</span>
+              <span> تعداد گروه : {courseGroupTotal ? courseGroupTotal : 0}</span>
             </div>
             <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
-              <span> تایپ دوره : {courseTypeName}</span>
+              <span> تایپ دوره : {courseTypeName ? courseTypeName : 0}</span>
             </div>
             <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
-              <span> لول دوره : {courseLevelName}</span>
+              <span> لول دوره : {courseLevelName ? courseLevelName : 0}</span>
             </div>
             <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
-              <span> وضعیت دوره : {courseStatusName}</span>
+              <span> وضعیت دوره : {courseStatusName ? courseStatusName : 0}</span>
             </div>
           </ul>
         <hr />

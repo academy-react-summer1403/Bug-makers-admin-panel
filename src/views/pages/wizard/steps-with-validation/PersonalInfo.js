@@ -15,12 +15,14 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from 'reactstrap'
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
+import { useDispatch, useSelector } from 'react-redux'
+import { setCreate } from '../../../../redux/CreateCourse'
 
 const defaultValues = {
   GoogleTitle: '',
   Title: '',
   MiniDescribe:'',
-  UniqeUrlString :''
+  CoursePrerequisiteId :''
 }
 
 const PersonalInfo = ({ stepper }) => {
@@ -29,7 +31,7 @@ const PersonalInfo = ({ stepper }) => {
     GoogleTitle: yup.string().required('تیتر گوگل الزامیست'),
     Title: yup.string().required('تیتر الزامیست '),
     MiniDescribe: yup.string().required('توضیح کوتاه الزامیست'),
-    UniqeUrlString: yup.string().required('شناسه الزامیست '),
+    CoursePrerequisiteId: yup.string().required('شناسه الزامیست '),
   })
 
   const {
@@ -41,9 +43,19 @@ const PersonalInfo = ({ stepper }) => {
     resolver: yupResolver(SignupSchema)
   })
 
-  const onSubmit = data => {
+  const existingData = useSelector((state) => state.create.createList);
+  const dispatch = useDispatch();
+
+  const onSubmit = (data) => {
     if (Object.values(data).every(field => field.length > 0)) {
+
+      const combinedData = {
+        ...existingData,
+        ...data,
+      };
       stepper.next()
+      dispatch(setCreate(combinedData))
+
     } else {
       for (const key in data) {
         if (data[key].length === 0) {
@@ -55,6 +67,8 @@ const PersonalInfo = ({ stepper }) => {
       }
     }
   }
+  
+  // const create = useSelector((state) => state.create.createList)
 
   const countryOptions = [
     { value: 'UK', label: 'UK' },
@@ -124,12 +138,12 @@ const PersonalInfo = ({ stepper }) => {
               شناسه یکتا 
             </Label>
             <Controller
-              id='UniqeUrlString'
-              name='UniqeUrlString'
+              id='CoursePrerequisiteId'
+              name='CoursePrerequisiteId'
               control={control}
-              render={({ field }) => <Input placeholder='Doe' invalid={errors.UniqeUrlString && true} {...field} />}
+              render={({ field }) => <Input placeholder='Doe' invalid={errors.CoursePrerequisiteId && true} {...field} />}
             />
-            {errors.UniqeUrlString && <FormFeedback>{errors.UniqeUrlString.message}</FormFeedback>}
+            {errors.CoursePrerequisiteId && <FormFeedback>{errors.CoursePrerequisiteId.message}</FormFeedback>}
           </Col>
         </Row>
         <div className='d-flex justify-content-between'>

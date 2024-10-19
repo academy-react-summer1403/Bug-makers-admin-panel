@@ -10,9 +10,11 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from 'reactstrap'
 import PickerRange from '../PickerRange'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Flatpickr from 'react-flatpickr'
+import { useDispatch, useSelector } from 'react-redux'
+import { setCreate } from '../../../../redux/CreateCourse'
 
 const defaultValues = {
-  TremId: '',
+  SessionNumber: '',
   Capacity: '',
   Cost: '',
   StartTime: ''
@@ -29,9 +31,20 @@ const Address = ({ stepper , onSaveData }) => {
     formState: { errors }
   } = useForm({ defaultValues })
 
-  const onSubmit = data => {
+  const existingData = useSelector((state) => state.create.createList);
+  console.log(existingData);
+  const dispatch = useDispatch();
+
+  const onSubmit = (data) => {
     if (Object.values(data).every(field => field.length > 0)) {
+
+      const combinedData = {
+        ...existingData,
+        ...data,
+      };
       stepper.next()
+      dispatch(setCreate(combinedData))
+
     } else {
       for (const key in data) {
         if (data[key].length === 0) {
@@ -84,18 +97,18 @@ const Address = ({ stepper , onSaveData }) => {
         </Row>
         <Row>
           <Col md='6' className='mb-1'>
-            <Label className='form-label' for='TremId'>
+            <Label className='form-label' for='SessionNumber'>
               تعداد جلسات
             </Label>
             <Controller
-              id='TremId'
-              name='TremId'
+              id='SessionNumber'
+              name='SessionNumber'
               control={control}
               render={({ field }) => (
-                <Input type='number' placeholder='تعداد جلسات را وارد کنید' invalid={errors.TremId && true} {...field} />
+                <Input type='number' placeholder='تعداد جلسات را وارد کنید' invalid={errors.SessionNumber && true} {...field} />
               )}
             />
-            {errors.TremId && <FormFeedback>{errors.TremId.message}</FormFeedback>}
+            {errors.SessionNumber && <FormFeedback>{errors.SessionNumber.message}</FormFeedback>}
           </Col>
           <Col md='6' className='mb-1'>
             <Label className='form-label' for='StartTime'>
