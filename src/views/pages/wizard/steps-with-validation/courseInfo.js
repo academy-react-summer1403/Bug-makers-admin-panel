@@ -58,7 +58,7 @@ const CourseInfo = ({ stepper }) => {
     })
 
     const teacherOptions = getDataCreated?.teachers.map(teacher => ({
-        value: teacher.fullName,
+        value: teacher.teacherId,
         label: teacher.fullName
     })) || []
 

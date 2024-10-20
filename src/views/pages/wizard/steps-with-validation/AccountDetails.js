@@ -12,15 +12,19 @@ import { ArrowLeft, ArrowRight } from 'react-feather'
 
 // ** Reactstrap Imports
 import { Form, Label, Input, Row, Col, Button, FormFeedback } from 'reactstrap'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setCreate } from '../../../../redux/CreateCourse'
 
-const defaultValues = {
-  Image: '',
-}
+
 
 const AccountDetails = ({ stepper }) => {
   const [preview, setPreview] = useState(null)
+
+  const course = useSelector((state) => state.CourseDetail.CourseList)
+
+  const defaultValues = {
+    Image: course.imageAddress ? course.imageAddress : '',
+  }
 
   const SignupSchema = yup.object().shape({
     Image: yup.mixed().required('عکس دوره الزامیست'),
@@ -57,29 +61,34 @@ const AccountDetails = ({ stepper }) => {
               Image
             </Label>
             <Controller
-              id='Image'
-              name='Image'
-              control={control}
-              render={({ field: { onChange, onBlur, ref } }) => (
-                <Input
-                  type='file'
-                  invalid={!!errors.Image}
-                  onChange={(e) => {
-                    const file = e.target.files[0]
-                    if (file) {
-                      onChange(file)
-                      setPreview(URL.createObjectURL(file)) // پیش‌نمایش فایل
-                    } else {
-                      onChange(null)
-                    }
-                  }}
-                  onBlur={onBlur}
-                  innerRef={ref}
-                />
-              )}
-            />
-            {errors.Image && <FormFeedback>{errors.Image.message}</FormFeedback>}
-            {preview && <img src={preview} alt="Preview" style={{ width: '80%', margin:'auto' ,display:'block' , marginTop: '10px' }} />}
+            id='Image'
+            name='Image'
+            control={control}
+            render={({ field: { onChange, onBlur, ref } }) => (
+              <Input
+                type='file'
+                invalid={!!errors.Image}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    onChange(file);
+                    setPreview(URL.createObjectURL(file));
+                  } else {
+                    onChange(null);
+                    setPreview(course.imageAddress ? course.imageAddress : null); 
+                  }
+                }}
+                onBlur={onBlur}
+                innerRef={ref}
+              />
+            )}
+          />
+          {preview ? (
+            <img src={preview} alt="Preview" style={{ width: '80%', margin: 'auto', display: 'block', marginTop: '10px' }} />
+          ) : course.imageAddress ? (
+            <img src={course.imageAddress} alt="Preview" style={{ width: '80%', margin: 'auto', display: 'block', marginTop: '10px' }} />
+          ) : null}
+
           </Col>
         </Row>
         <div className='d-flex justify-content-between'>

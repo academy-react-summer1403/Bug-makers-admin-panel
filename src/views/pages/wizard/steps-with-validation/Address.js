@@ -13,16 +13,18 @@ import Flatpickr from 'react-flatpickr'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCreate } from '../../../../redux/CreateCourse'
 
-const defaultValues = {
-  SessionNumber: '',
-  Capacity: '',
-  Cost: '',
-  StartTime: ''
-}
 
 const Address = ({ stepper , onSaveData }) => {
   const [picker, setPicker] = useState(new Date())
+  
+  const course = useSelector((state) => state.CourseDetail.CourseList)
 
+  const defaultValues = {
+    SessionNumber: '',
+    Capacity: '',
+    Cost: course.cost || '',
+    StartTime: course.startTime + course.endTime || '',
+  }
   // ** Hooks
   const {
     control,
@@ -89,7 +91,7 @@ const Address = ({ stepper , onSaveData }) => {
               name='Cost'
               control={control}
               render={({ field }) => (
-                <Input type='number' placeholder='قیمت را وارد کنید' invalid={errors.Cost && true} {...field} />
+                <Input type='number' placeholder='قیمت را وارد کنید' value={course.cost} invalid={errors.Cost && true} {...field} />
               )}
             />
             {errors.Cost && <FormFeedback>{errors.Cost.message}</FormFeedback>}

@@ -40,8 +40,24 @@ axiosInstance.interceptors.response.use(
         }
       });
     }
+    if (response.data.status === 200) {
+      const Message = response.data.message || "خطا: ورودی نامعتبر.";
+      Swal.fire({
+        title: 'تایید',
+        text: Message,
+        icon: 'success',
+        timer: 3000,
+        timerProgressBar: true,
+        showCloseButton: false,
+        showConfirmButton: false,
+        customClass: {
+          timerProgressBar: 'bg-success',
+        }
+      });
+    }
     return response;
   },
+  
   (error) => {
     if (error.response && error.response.status === 422) {
       const errorMessage = error.response.data.ErrorMessage || "خطا: ورودی نامعتبر.";

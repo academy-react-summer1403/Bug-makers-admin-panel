@@ -18,12 +18,7 @@ const WizardHorizontal = () => {
 
   // ** State
   const [stepper, setStepper] = useState(null)
-  const [formData, setFormData] = useState({})
 
-  // Handle saving data from each step
-  const handleSaveData = (data) => {
-    setFormData((prev) => ({ ...prev, ...data }))
-  }
 
   // Define steps for the wizard
   const steps = [
@@ -31,37 +26,37 @@ const WizardHorizontal = () => {
       id: 'uploadImage',
       title: 'افزودن عکس',
       subtitle: 'تصویر خود را انتخاب کنید.',
-      content: <AccountDetails stepper={stepper} onSaveData={handleSaveData} />
+      content: <AccountDetails stepper={stepper}  />
     },
     {
       id: 'courseInfoAll',
       title: 'مشخصات کلی دوره',
       subtitle: 'اطلاعات دوره را وارد کنید',
-      content: <PersonalInfo stepper={stepper} onSaveData={handleSaveData} />
+      content: <PersonalInfo stepper={stepper}  />
     },
     {
       id: 'courseInfo',
       title: 'اطلاعات دوره',
       subtitle: 'اضافه کردن آدرس',
-      content: <Address stepper={stepper} onSaveData={handleSaveData} />
+      content: <Address stepper={stepper} />
     },
     {
       id: 'Describe',
       title: 'توضیحات دوره',
       subtitle: 'متن خود را تایپ کنید',
-      content: <SocialLinks stepper={stepper} onSaveData={handleSaveData} />
+      content: <SocialLinks stepper={stepper}  />
     },
     {
       id: 'courseInfoDetail',
       title: 'جزییات دوره',
       subtitle: 'افزودن جزییات دوره',
-      content: <CourseInfo stepper={stepper} onSaveData={handleSaveData} />
+      content: <CourseInfo stepper={stepper}  />
     },
     {
       id: 'Preview',
       title: 'پیش نمایش دوره',
       subtitle: 'دوره خود را ببینید',
-      content: <Preview stepper={stepper} formData={formData} />
+      content: <Preview stepper={stepper}  />
     }
   ]
 

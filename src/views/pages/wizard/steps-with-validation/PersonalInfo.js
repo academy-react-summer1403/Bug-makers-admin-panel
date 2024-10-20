@@ -18,20 +18,24 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCreate } from '../../../../redux/CreateCourse'
 
-const defaultValues = {
-  GoogleTitle: '',
-  Title: '',
-  MiniDescribe:'',
-  CoursePrerequisiteId :''
-}
+
 
 const PersonalInfo = ({ stepper }) => {
+
+  const course = useSelector((state) => state.CourseDetail.CourseList)
+
+  const defaultValues = {
+    GoogleTitle: '',
+    Title: course.title,
+    MiniDescribe:'',
+    UniqeUrlString :''
+  }
   // ** Hooks
   const SignupSchema = yup.object().shape({
     GoogleTitle: yup.string().required('تیتر گوگل الزامیست'),
     Title: yup.string().required('تیتر الزامیست '),
     MiniDescribe: yup.string().required('توضیح کوتاه الزامیست'),
-    CoursePrerequisiteId: yup.string().required('شناسه الزامیست '),
+    UniqeUrlString: yup.string().required('شناسه الزامیست '),
   })
 
   const {
@@ -138,12 +142,12 @@ const PersonalInfo = ({ stepper }) => {
               شناسه یکتا 
             </Label>
             <Controller
-              id='CoursePrerequisiteId'
-              name='CoursePrerequisiteId'
+              id='UniqeUrlString'
+              name='UniqeUrlString'
               control={control}
-              render={({ field }) => <Input placeholder='Doe' invalid={errors.CoursePrerequisiteId && true} {...field} />}
+              render={({ field }) => <Input placeholder='Doe' invalid={errors.UniqeUrlString && true} {...field} />}
             />
-            {errors.CoursePrerequisiteId && <FormFeedback>{errors.CoursePrerequisiteId.message}</FormFeedback>}
+            {errors.UniqeUrlString && <FormFeedback>{errors.UniqeUrlString.message}</FormFeedback>}
           </Col>
         </Row>
         <div className='d-flex justify-content-between'>

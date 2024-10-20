@@ -12,11 +12,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Label, Row, Col, Button, Form } from 'reactstrap'
 import { setCreate } from '../../../../redux/CreateCourse'
 
-const defaultValues = {
-  Describe: ''
-}
 
 const SocialLinks = ({ stepper }) => {
+  const course = useSelector((state) => state.CourseDetail.CourseList)
+
+  const defaultValues = {
+    Describe: course.describe || ''
+  }
   // ** Hooks
   const {
     control,
