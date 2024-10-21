@@ -65,7 +65,12 @@ const CourseListItems = ({
             >
                 {isExpire === true ? 'منقضی شده' : 'جاری'}
             </span>
-            <CardImg top src={img ? img : img2} style={{ width: '100%', height: '253px' }} />
+            <CardImg
+                top
+                src={img}
+                style={{ width: '100%', height: '253px' }}
+                onError={(e) => { e.target.src = img2; }}
+            />
             <CardBody>
                 <CardTitle tag='h4'>{title ? title : 'نام پیدا نشد'}</CardTitle>
                 <CardText style={{ maxHeight: '3em', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={handleToggleDescription}>

@@ -13,6 +13,7 @@ import { object } from 'yup'
 import { useSelector } from 'react-redux'
 import { useMutation } from '@tanstack/react-query'
 import { updateCourse } from '../../../../@core/api/course/updateCourse'
+import { useNavigate } from 'react-router-dom';
 
 const defaultValues = {
 
@@ -30,21 +31,20 @@ const Preview = ({ stepper }) => {
   } = useForm({ defaultValues })
 
   const course = useSelector((state) => state.CourseDetail.CourseList)
+  console.log(course);
   const getData = useSelector((state) => state.create.createList)
+  console.log(getData);
+  const navigate = useNavigate();
 
   const mutation = useMutation({
-    mutationFn: (formData) => updateCourse(formData),
+    mutationFn: (formData) => updateCourse(formData , course),
     onSuccess: (data) => {
-      console.log('Course updated successfully:', data);
-      alert('Course updated successfully');
+      navigate('/apps/Course')
     },
     onError: (error) => {
-      console.error('Error updating course:', error);
-      alert('Error updating course');
     }
   });
   
-  console.log(new Date());
     // use date 
     const useDate = (date) => {
       if(!date) return 'تاریخ  وجود ندارد';
@@ -54,7 +54,9 @@ const Preview = ({ stepper }) => {
     if (Object.values(data).every(field => field.length > 0)) {
       const formData = new FormData();
 
-      formData.append('Id', course.courseId || 0);
+      if (course.courseId) {
+        formData.append('Id', course.courseId);
+      }
       formData.append('Title', getData.Title || '');
       formData.append('Describe', getData.Describe || '');
       formData.append('MiniDescribe', getData.MiniDescribe || '');
@@ -68,15 +70,17 @@ const Preview = ({ stepper }) => {
       formData.append('TeacherId', Number(getData.TeacherId.value) || 0);
       formData.append('Cost', Number(getData.Cost) || 0);
       formData.append('UniqeUrlString', getData.UniqeUrlString || '');
-      formData.append('Image', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
-      formData.append('StartTime',  getData.StartTime[0] );
-      formData.append('EndTime',  getData.StartTime[1] );
+      formData.append('Image', null);
+      formData.append('StartTime',  new Date(getData.StartTime[0]).toISOString() );
+      formData.append('EndTime',  new Date(getData.StartTime[1]).toISOString() );
       formData.append('GoogleSchema', null);
       formData.append('GoogleTitle', getData.GoogleTitle || '');
-      formData.append('CoursePrerequisiteId', course.courseId || 0);
+      if (course.courseId) {
+        formData.append('CoursePrerequisiteId', course.courseId || 0);
+      }
       formData.append('ShortLink', null);
       formData.append('TumbImageAddress', null);
-      formData.append('ImageAddress', null);
+      formData.append('ImageAddress',  getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
 
 
       mutation.mutate(formData);
@@ -92,51 +96,17 @@ const Preview = ({ stepper }) => {
       }
     }
   } 
+  const getDescribeText = (htmlString) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    return doc.body.textContent || "";
+  };
 
-//   Capacity: "100000"
-// ​
-// Category: Array [ {…} ]
-// ​
-// ClassId: Object { value: 1, label: "ClassRoom 1" }
-// ​
-// Cost: "10000"
-// ​
-// CourseLvlId: Object { value: 2, label: "متوسط" }
-// ​
-// CoursePrerequisiteId: "xxxc"
-// ​
-// CourseTypeId: Object { value: 1, label: "حضوری" }
-// ​
-// Describe: "<p>jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj</p>"
-// ​
-// GoogleTitle: "bjkjn"
-// ​
-// Image: File { name: "Screenshot 2024-02-18 223613.png", lastModified: 1708283173170, size: 5456, … }
-// ​
-// MiniDescribe: "xxcx"
-// ​
-// SessionNumber: "10"
-// ​
-// StartTime: Array [ Date Tue Oct 01 2024 00:00:00 GMT+0330 (Iran Standard Time), Date Fri Oct 04 2024 00:00:00 GMT+0330 (Iran Standard Time) ]
-// ​
-// TeacherId: Object { value: "محسن-اسفندیاری", label: "محسن-اسفندیاری" }
-// ​
-// Title: "xlmxx"
-// ​
-// TremId: Object { value: 2, label: "تابستان 1403" }
+  const describoptions = getDescribeText(getData?.Describe || '');
+  const currentDate = Date.now();
 
+  const imageUrl = getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image
 
-
-const getDescribeText = (htmlString) => {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlString, 'text/html');
-  return doc.body.textContent || "";
-};
-
-const describoptions = getDescribeText(getData?.Describe || '');
-const currentDate = Date.now();
-
-const imageUrl = getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image
   return (
     <Fragment>
       <div className='content-header'>

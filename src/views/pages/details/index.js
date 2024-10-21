@@ -87,7 +87,7 @@ const Product = props => {
 
   const handlingNavigate = (e) => {
     e.preventDefault();
-    navigate('/forms/wizard')
+    navigate('/apps/Course/editCourse')
     dispatch(setPreview(false))
   }
   

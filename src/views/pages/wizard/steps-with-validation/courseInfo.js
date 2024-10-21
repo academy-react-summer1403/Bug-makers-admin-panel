@@ -28,7 +28,6 @@ const CourseInfo = ({ stepper }) => {
     } = useForm({ defaultValues })
 
     const existingData = useSelector((state) => state.create.createList);
-    console.log(existingData);
     const dispatch = useDispatch();
 
       const onSubmit = (data) => {

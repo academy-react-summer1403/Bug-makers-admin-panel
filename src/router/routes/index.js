@@ -124,7 +124,11 @@ const Routes = [
   },
   {
     element: <EditCourse />,
-    path: '/forms/wizard'
+    path: '/apps/Course/editCourse'
+  },
+  {
+    element: <EditCourse />,
+    path: '/apps/Course/AddCourse'
   },
   {
     path: "/forgot-password",

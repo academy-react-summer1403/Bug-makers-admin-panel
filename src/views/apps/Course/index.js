@@ -187,7 +187,7 @@ const CoursePage = () => {
                     transition={{ duration: 0.3 }}
                   >
                     <CourseListItems
-                      courseId={course.courseId}
+                      id={course.courseId}
                       title={course.title}
                       img={course.tumbImageAddress}
                       technologyList={course.technologyList}
