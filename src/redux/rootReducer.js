@@ -9,6 +9,8 @@ import CourseSliceReducer from "./CourseSlice";
 import CourseDetailReducer from "./Course";
 import PreviewReducer from "./Preview";
 import createReducer from './CreateCourse'
+import blogSliceReducer from "./blogSlice";
+import blogDetailReducer from "./blogDetail";
 const rootReducer = { 
     navbar, 
     layout,
@@ -19,7 +21,9 @@ const rootReducer = {
     Course: CourseSliceReducer,
     CourseDetail: CourseDetailReducer,
     preview: PreviewReducer,
-    create : createReducer
+    create : createReducer,
+    blog : blogSliceReducer,
+    blogDetail : blogDetailReducer
 };
 
 export default rootReducer;

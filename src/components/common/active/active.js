@@ -7,11 +7,11 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss'; 
 
-const Active = ({ isActive, id, styled, api, method, text, text2 }) => {
+const Active = ({ isActive, id, styled, api, method, text, text2 , keyword}) => {
     const [isActived, setIsActived] = useState(isActive);
     
     const mutation = useMutation({
-        mutationFn: ({ id, active }) => addActive({ id, active, method, api }), 
+        mutationFn: ({ id, active }) => addActive({ id, active, method, api , keyword}), 
         onSuccess: () => {
             setIsActived(prev => !prev); 
         },

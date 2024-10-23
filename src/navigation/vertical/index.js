@@ -40,4 +40,24 @@ export default [
       }
     ]
   },
+  {
+    id: "blog",
+    title: "مقالات",
+    icon: <Book size={20} />,
+    navLink: "/apps/blog",
+    children:[
+      {
+        id: "blogList",
+        title: "مقاله ها",
+        icon: <Book size={20} />,
+        navLink: "/apps/blog",
+      },
+      {
+        id: "addBlog",
+        title: "ساخت مقاله جدید",
+        icon: <BookOpen size={20} />,
+        navLink: "/apps/blog/AddBlog",
+      }
+    ]
+  },
 ];

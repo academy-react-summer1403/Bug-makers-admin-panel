@@ -32,13 +32,15 @@ const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
 const Sample = lazy(() => import("../../pages/Sample"));
-const UserList = lazy(() => import('../../views//apps/user/list'))
-const UserView = lazy(() => import('../../views//apps/user/view'))
+const UserList = lazy(() => import('../../views/apps/user/list'))
+const UserView = lazy(() => import('../../views/apps/user/view'))
 const Email = lazy(() => import('../../views/apps/email'))
-const Course = lazy(() => import('../../views/apps//Course'))
+const Course = lazy(() => import('../../views/apps/Course'))
 const InvoicePreview = lazy(() => import('../../views/apps/invoice/preview'))
 const CourseDetail = lazy(() => import('../../views/apps/Course/CourseDetail/CourseDetail'))
 const EditCourse = lazy(() => import('../../views/pages/wizard'))
+const BlogPage = lazy(() => import('../../views/apps/blog'))
+const BlogDetail = lazy(() => import('../../views/apps/blog/CourseDetail/CourseDetail'))
 
 
 // ** Merge Routes
@@ -115,6 +117,10 @@ const Routes = [
     path: '/apps/Course'
   },
   {
+    element: <BlogPage />,
+    path: '/apps/blog'
+  },
+  {
     element: <InvoicePreview />,
     path: '/apps/invoice/preview/:id'
   },
@@ -129,6 +135,18 @@ const Routes = [
   {
     element: <EditCourse />,
     path: '/apps/Course/AddCourse'
+  },
+  {
+    element: <BlogDetail />,
+    path: '/apps/blogDetail/:id'
+  },
+  {
+    element: <EditCourse />,
+    path: '/apps/blog/editBlog'
+  },
+  {
+    element: <EditCourse />,
+    path: '/apps/blog/AddBlog'
   },
   {
     path: "/forgot-password",
