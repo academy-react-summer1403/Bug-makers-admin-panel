@@ -60,6 +60,7 @@ export const updateUser = createAsyncThunk('appUsers/updateUser', async (user, {
       isDelete: user.isDelete || false,
       isTecher: user.isTecher || false,
       isStudent: user.isStudent || false,
+      twoStepAuth: user.twoStepAuth || false,
       recoveryEmail: user.recoveryEmail || null,
       userAbout: user.userAbout || null,
       telegramLink: user.telegramLink || null,

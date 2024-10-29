@@ -15,9 +15,11 @@ import UsersList from '../../user/list/Table';
 import CourseUser from './CourseUser';
 import Active from '../../../../components/common/active/active';
 import DeleteGroup from '../../../../components/common/active/deleteGroup';
-import { getBlogDetail } from '../../../../@core/api/blog/courseDetail';
+import { getBlogDetail, getReplyCommentBlog } from '../../../../@core/api/blog/courseDetail';
 import { setBlogListDetail } from '../../../../redux/blogDetail';
 import BlogDetailPage from '../../../pages/blogDetail';
+import EditCommentForm from '../../../../components/common/modal/editComment';
+import { getComments } from '../../../../redux/comments';
 
 const BlogDetail = () => {
     const { id } = useParams();
@@ -33,13 +35,23 @@ const BlogDetail = () => {
             navigate('/not-found');
         },
     });
+    
+    const { data: Replaycomment } = useQuery({
+        queryKey: ['blogDetailReplayComment', id],
+        queryFn: () => getReplyCommentBlog(id),
+        enabled: !!id,
+        onError: () => {
+            navigate('/not-found');
+        },
+    });
 
+    console.log(Replaycomment);
 
     useEffect(() => {
         if (productDetail) {
             dispatch(setBlogListDetail(productDetail));
         }
-    }, [productDetail]);
+    }, [productDetail ]);
 
     const blog = useSelector((state) => state.blogDetail.blogList)
 console.log(blog);
@@ -88,7 +100,17 @@ console.log(blog);
                     </div>
                 </div>
             ),
-        },
+            
+        },    {
+            name: 'جزییات بیشتر',
+            minWidth: '20px',
+            cell: row => {
+              return(
+              <div >
+                <EditCommentForm size={'14px'} newsId={productDetail.detailsNewsDto.id} onClick={() => dispatch(getComments(row.userId))} selectedComment={row} />
+            </div>              
+            )}
+          }
 
         // {
         //     name: 'شناسه گروه',
@@ -117,33 +139,6 @@ console.log(blog);
         // },
     ];
     
-//     autor: "محمد-بکران"
-// ​​​
-// currentUserIsDissLike: false
-// ​​​
-// currentUserIsLike: false
-// ​​​
-// currentUserLikeId: "00000000-0000-0000-0000-000000000000"
-// ​​​
-// describe: "البیاتلبیالبایلبیابیتاب"
-// ​​​
-// dissLikeCount: 39
-// ​​​
-// id: "7ca476e7-1c31-ef11-b6c8-c6ea51a59bbe"
-// ​​​
-// inserDate: "2024-06-23T08:26:16.803"
-// ​​​
-// likeCount: 160
-// ​​​
-// newsId: "628410e3-9712-ef11-b6c2-f4b229435c5d"
-// ​​​
-// parentId: "00000000-0000-0000-0000-000000000000"
-// ​​​
-// pictureAddress: null
-// ​​​
-// replyCount: 594
-// ​​​
-// title: "تستتتتتتتتتتتتتت"
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', flexFlow: 'column wrap', alignItems: 'start', gap: '30px' }}>
@@ -178,7 +173,7 @@ console.log(blog);
             ) : (
                 <div style={{ margin: 'auto', fontSize: '30px', fontWeight: 700 }}>دوره ای پیدا نشد</div>
             )}
-            <CourseUser courseId={productDetail?.courseId} />
+            {/* <CourseUser courseId={productDetail?.courseId} /> */}
             <Card style={{width:'100%'}}>
                 <CardHeader tag='h4'>کامنت های این مقاله</CardHeader>
                 <div className='react-dataTable user-view-account-projects'>
@@ -187,6 +182,23 @@ console.log(blog);
                         responsive
                         columns={columns}
                         data={productDetail.commentDtos || []} 
+                        className='react-dataTable'
+                        pagination
+                        paginationRowsPerPageOptions={[8, 15, 30]}
+                        sortIcon={<ChevronDown size={10} />
+                        
+                    }
+                    />
+                </div>
+            </Card>
+            <Card style={{width:'100%'}}>
+                <CardHeader tag='h4'> ریپلای های این مقاله</CardHeader>
+                <div className='react-dataTable user-view-account-projects'>
+                    <DataTable
+                        noHeader
+                        responsive
+                        columns={columns}
+                        data={Replaycomment || []} 
                         className='react-dataTable'
                         sortIcon={<ChevronDown size={10} />}
                     />

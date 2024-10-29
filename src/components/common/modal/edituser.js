@@ -48,6 +48,7 @@ const EditUserExample = ({ onClick , size}) => {
     lName: Yup.string().required('نام خانوادگی الزامی است'),
     isStudent: Yup.boolean(),
     isTecher: Yup.boolean(),
+    twoStepAuth: Yup.boolean(),
     active: Yup.boolean(),
     gender: Yup.boolean(),
     userName: Yup.string().required('نام کاربری را وارد کنید'),
@@ -56,8 +57,8 @@ const EditUserExample = ({ onClick , size}) => {
       'at-least-one',
       'باید حداقل یکی از گزینه‌های دانش‌آموز یا معلم انتخاب شود',
       (values, context) => {
-        const { isStudent, isTecher } = context.parent;
-        return isStudent || isTecher;
+        const { isStudent, isTecher , twoStepAuth} = context.parent;
+        return isStudent || isTecher || twoStepAuth;
       }
     ),
   });
@@ -90,6 +91,7 @@ const EditUserExample = ({ onClick , size}) => {
     isDelete: user.isDelete || null,
     isTecher: user.isTecher || false,
     isStudent: user.isStudent || false,
+    twoStepAuth: user.twoStepAuth || false,
     recoveryEmail: user.recoveryEmail || null,
     userAbout: user.userAbout || null,
     telegramLink: user.telegramLink || null,
@@ -455,6 +457,15 @@ const EditUserExample = ({ onClick , size}) => {
                         onChange={handleChange}
                       />
                       دانش‌آموز
+                    </Label>
+                    <Label style={{ marginBottom: '0.5rem' }}>
+                      <Input
+                        type='checkbox'
+                        name='twoStepAuth'
+                        checked={values.twoStepAuth}
+                        onChange={handleChange}
+                      />
+                      احراز دوعاملی
                     </Label>
                     {errors.userType && <FormFeedback className="d-block">{errors.userType}</FormFeedback>}
                   </div>

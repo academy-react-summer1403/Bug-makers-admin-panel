@@ -5,7 +5,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup'; // Import Yup for validation
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { UpdateComment } from '../../../@core/api/blog/updateComment';
 // ** Reactstrap Imports
 import {
   Card,
@@ -25,38 +25,56 @@ import { Edit } from 'react-feather';
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss';
+import { useMutation } from '@tanstack/react-query';
 
-const EditCommentForm = ({ onClick, size, selectedComment }) => {
+const EditCommentForm = ({ onClick, size, selectedComment , newsId }) => {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
 
   // ** Validation Schema
   const validationSchema = Yup.object().shape({
-    commentTitle: Yup.string().required('تایتل کامنت الزامی است'),
+    title: Yup.string().required('تایتل کامنت الزامی است'),
     describe: Yup.string().required('متن کامنت الزامی است'),
-    courseTitle: Yup.string().required('نام دوره الزامی است')
+    title: Yup.string().required('نام دوره الزامی است')
   });
 
+  const updateComment = useMutation({
+    mutationKey:['updateComment'],
+    mutationFn: (data) => UpdateComment(data)
+  })
   // ** Form Submission
   const handleSubmit = (data) => {
-    const formattedData = {
-      ...data,
-      commentId: selectedComment.commentId,
-      courseId: selectedComment.courseId,
-      accept: selectedComment.accept
-    };
-    // ارسال دیتا برای آپدیت کامنت
-    dispatch(updateComment(formattedData));
+    // const formattedData = {
+    //   ...data,
+    //   commentId: selectedComment.commentId,
+    //   courseId: selectedComment.courseId,
+    //   accept: selectedComment.accept
+    // };
+    updateComment.mutate(data)
     setShow(false);
   };
 
+console.log(newsId);
   const defaultValue = {
-    fName: selectedComment.userFullName,
-    courseTitle: selectedComment.courseTitle,
-    commentTitle: selectedComment.commentTitle,
+    id: selectedComment.id,
+    newsId: newsId,
+    title: selectedComment.title,
     describe: selectedComment.describe,
-    accept: selectedComment.accept ? 'تایید شده' : 'رد شده',
-  };
+    accept: selectedComment.accept ? true : false,
+  }; 
+  // const defaultValue = {
+  //   id: selectedComment.id,
+  //   newsId: newsId
+  //   fName: selectedComment.autor,
+  //   courseTitle: selectedComment.title,
+  //   commentTitle: selectedComment.title,
+  //   describe: selectedComment.describe,
+  //   accept: selectedComment.accept ? true : false,
+  // }; 
+  
+  
+  
+
 
   return (
     <div
@@ -104,32 +122,18 @@ const EditCommentForm = ({ onClick, size, selectedComment }) => {
                   />
                 </div>
                 <div className='mb-1 w-40'>
-                  <Label className='form-label' for='courseTitle'>
+                  <Label className='form-label' for='title'>
                     نام دوره <span className='text-danger'>*</span>
                   </Label>
                   <Input
-                    id='courseTitle'
-                    name='courseTitle'
+                    id='title'
+                    name='title'
                     placeholder='نام دوره'
-                    value={values.courseTitle}
+                    value={values.title}
                     onChange={handleChange}
-                    invalid={touched.courseTitle && !!errors.courseTitle}
+                    invalid={touched.title && !!errors.title}
                   />
-                  {touched.courseTitle && errors.courseTitle && <FormFeedback>{errors.courseTitle}</FormFeedback>}
-                </div>
-                <div className='mb-1 w-40'>
-                  <Label className='form-label' for='commentTitle'>
-                    تایتل کامنت <span className='text-danger'>*</span>
-                  </Label>
-                  <Input
-                    id='commentTitle'
-                    name='commentTitle'
-                    placeholder='تایتل کامنت'
-                    value={values.commentTitle}
-                    onChange={handleChange}
-                    invalid={touched.commentTitle && !!errors.commentTitle}
-                  />
-                  {touched.commentTitle && errors.commentTitle && <FormFeedback>{errors.commentTitle}</FormFeedback>}
+                  {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
                 </div>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='describe'>

@@ -8,3 +8,10 @@ export const getBlogDetail = async (id) => {
     )
     return response.data
   }
+export const getReplyCommentBlog = async (id) => {
+
+    const response = await axiosInstance.get(
+      '/News/GetAdminRepliesComments?CommentId=' + id
+    )
+    return response.data
+  }

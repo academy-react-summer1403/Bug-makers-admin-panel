@@ -38,7 +38,7 @@ const CourseListItems = ({
         <Card style={{ maxHeight: '650px', width: '380px' }}>
             <Link       
                 color='primary'
-                to={'/apps/Detail/' + id} 
+                to={'/apps/blogDetail/' + id} 
                 onClick={handlePreview}
                 style={{ position: 'absolute', bottom: '60px', left: '20px', zIndex: 10, padding: '10px', borderRadius: '10px', background: 'purple', color: 'white' }}>
                 مشاهده

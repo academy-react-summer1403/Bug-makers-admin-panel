@@ -8,7 +8,7 @@ import DataTable from 'react-data-table-component';
 import SelectOpt from '../../../components/common/modal/Select/SelectOpt';
 import DateModal from '../../../components/Date/Date';
 import PriceFilter from '../../../components/PriceFilter/PriceFilter';
-// import blogListItems from './blogListItems ';
+import CourseListItems from './CourseListItems ';
 import moment from 'moment-jalaali';
 import Active from '../../../components/common/active/active';
 import { ThreeDots } from 'react-loader-spinner';
@@ -175,9 +175,7 @@ const BlogPage = () => {
             exit={{ opacity: 0, y: -20 }}
           >
             <div className='d-flex flex-wrap justify-content-center gap-4 mt-3'>
-              {blogListItem
-                .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-                .map((course) => (
+              {blogListItem.news.map((course) => (
                   <motion.div
                     key={course.courseId}
                     initial={{ opacity: 0, y: 20 }}
@@ -185,29 +183,24 @@ const BlogPage = () => {
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    {/* <blogListItems
+                    <CourseListItems
                       id={course.id}
                       title={course.title}
-                      img={course.tumbImageAddress}
-                      technologyList={course.technologyList}
-                      description={course.describe}
-                      teacherName={course.teacherName}
-                      likeCount={course.likeCount}
-                      commandCount={course.commandCount}
-                      courseRate={course.courseRate}
-                      statusName={course.statusName}
-                      price={course.cost}
-                      currentRegistrants={course.currentRegistrants}
-                      date={moment(course.lastUpdate).format('jYYYY/jMM/jDD')}
-                    /> */}
+                      img={course.currentImageAddressTumb}
+                      // technologyList={course.technologyList}
+                      description={course.miniDescribe}
+                      teacherName={course.addUserFullName}
+                      // likeCount={course.likeCount}
+                      // commandCount={course.commandCount}
+                      // courseRate={course.courseRate}
+                      // statusName={course.statusName}
+                      // price={course.cost}
+                      // currentRegistrants={course.currentRegistrants}
+                      // date={moment(course.lastUpdate).format('jYYYY/jMM/jDD')}
+                    />
                   </motion.div>
                 ))}
             </div>
-            <Pagination
-              pageCount={Math.ceil(blogListItem.length / itemsPerPage)}
-              handlePageClick={handlePageClick}
-              currentPage={currentPage}
-            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -216,3 +209,51 @@ const BlogPage = () => {
 };
 
 export default BlogPage;
+
+// addUserFullName: "محمد-بکران"
+// ​​
+// addUserProfileImage: "https://classapi.sepehracademy.ir/\\Pictures\\ProfileImageThumbnail\\blank-thumbnail_a7933341-6005-415e-acb5-ec4391699414.jpg"
+// ​​
+// currentDissLikeCount: 74
+// ​​
+// currentImageAddressTumb: "https://classapi.sepehracademy.ir/\\Pictures\\NewsThumbnail\\Screenshot (209)_d5473b2c-3251-4073-8c53-f1049925f7da.png"
+// ​​
+// currentLikeCount: 177
+// ​​
+// currentRate: 3
+// ​​
+// currentUserFavoriteId: "3eddc0fd-d495-ef11-b6e6-82fc07f68400"
+// ​​
+// currentUserIsDissLike: false
+// ​​
+// currentUserIsLike: false
+// ​​
+// currentUserRateNumber: 3
+// ​​
+// currentUserSetRate: true
+// ​​
+// currentView: 199
+// ​​
+// id: "0d85ac8d-7c39-ef11-b6ca-c84ec5106ca4"
+// ​​
+// insertDate: "2024-07-04T00:10:59.67"
+// ​​
+// isActive: true
+// ​​
+// isCurrentUserFavorite: true
+// ​​
+// keyword: "اخبار نابغه"
+// ​​
+// likeId: "00000000-0000-0000-0000-000000000000"
+// ​​
+// miniDescribe: "ری اکت (React) یک کتابخانه جاوا اسکریپتی برای ساخت رابط کاربری بوده که برای ایجاد برنامه‌های تحت وب با استفاده از کامپوننت‌ها، قابل استفاده است."
+// ​​
+// newsCatregoryId: 19
+// ​​
+// newsCatregoryName: "دسته بندی نابغه"
+// ​​
+// title: "ری اکت چیست؟"
+// ​​
+// totalCount: 0
+// ​​
+// updateDate: "2024-10-14T00:21:41.377"
