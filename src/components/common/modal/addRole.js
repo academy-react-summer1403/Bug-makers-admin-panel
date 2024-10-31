@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup'; // Import Yup for validation
 import { addRole } from '../../../views/apps/user/store/index';
-import { Switch } from '@mui/material'; // سوییچ از MUI
+import { Switch } from '@mui/material'; 
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -49,7 +49,7 @@ const AddRole = ({ onClick, size }) => {
   const defaultValue = {
     roleId: user.RoleId,
     userId: user.id,
-    enable: false // مقدار پیش‌فرض برای enable
+    enable: false 
   };
 
   const [show, setShow] = useState(false);

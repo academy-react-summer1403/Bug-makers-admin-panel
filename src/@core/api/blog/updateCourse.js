@@ -1,10 +1,9 @@
-import { useSelector } from "react-redux";
 import axiosInstance from "../../interceptor/interceptor";
 
-export const updateCourse = async (formData , course) => {
+export const updateBlog = async (formData , course) => {
 
-    const method = Array.isArray(course) && course.length > 0 ? 'put' : 'post';
-    const url = '/Course'
+    const method = course  ? 'put' : 'post';
+    const url = '/News/UpdateNews'
 
     const response = await axiosInstance[method](url, formData, {
         headers: {

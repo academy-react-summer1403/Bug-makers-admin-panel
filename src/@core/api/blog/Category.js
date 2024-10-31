@@ -1,6 +1,6 @@
 import axiosInstance from "../../interceptor/interceptor";
 
-export const getCategoryList = async () => {
-  const response = await axiosInstance.get('/Home/GetTechnologies');
+export const getCategoryListBlog = async () => {
+  const response = await axiosInstance.get('/News/GetListNewsCategory');
   return response.data;
 };

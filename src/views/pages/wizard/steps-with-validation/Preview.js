@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 
 // ** Third Party Components
 import { ArrowLeft } from 'react-feather'
@@ -10,17 +10,22 @@ import moment from 'moment-jalaali';
 import { Label, Row, Col, Button, Form, Input, FormFeedback } from 'reactstrap'
 import Product from '../../details'
 import { object } from 'yup'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@tanstack/react-query'
 import { updateCourse } from '../../../../@core/api/course/updateCourse'
 import { useNavigate } from 'react-router-dom';
-
+import { updateBlog } from '../../../../@core/api/blog/updateCourse';
+import { setCreate } from '../../../../redux/CreateCourse';
+import { setCourseListDetail } from '../../../../redux/Course';
+import { AddBlog } from '../../../../@core/api/blog/addBlog';
 const defaultValues = {
 
 }
 
 const Preview = ({ stepper }) => {
 
+
+  const [addBlog, setAddBlog] = useState(true)
 
   // ** Hooks
   const {
@@ -33,15 +38,39 @@ const Preview = ({ stepper }) => {
   const course = useSelector((state) => state.CourseDetail.CourseList)
   console.log(course);
   const getData = useSelector((state) => state.create.createList)
-  console.log(getData);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const mutation = useMutation({
-    mutationFn: (formData) => updateCourse(formData , course),
-    onSuccess: (data) => {
-      navigate('/apps/Course')
+    mutationFn: (formData) => {
+      if (course.courseId || window.location.pathname === '/apps/Course/AddCourse') {
+        return updateCourse(formData, course);
+      }  if (course.id) {
+        return updateBlog(formData, course);
+      }
+      else if(window.location.pathname === '/apps/blog/AddBlog'){
+        return AddBlog(formData, course);
+      }
+    },
+    onSuccess: () => {
+      if(course.courseId){
+        setTimeout(() => {
+          dispatch(setCourseListDetail([]))
+        }, 3000);
+        return navigate('/apps/Course');
+      } else if(course.id){
+        setTimeout(() => {
+          dispatch(setCourseListDetail([]))
+        }, 3000);
+        return navigate('/apps/blog');
+      } else if(window.location.pathname === '/apps/blog/AddBlog'){
+        setTimeout(() => {
+          dispatch(setCourseListDetail([]))
+        }, 3000);
+        return navigate('/apps/blog');
+      }
     },
     onError: (error) => {
+      console.error(error);
     }
   });
   
@@ -50,52 +79,89 @@ const Preview = ({ stepper }) => {
       if(!date) return 'تاریخ  وجود ندارد';
       return moment(date).format('jYYYY/jMM/jDD'); 
     }
-  const onSubmit = data => {
-    if (Object.values(data).every(field => field.length > 0)) {
-      const formData = new FormData();
-
-      if (course.courseId) {
-        formData.append('Id', course.courseId);
-      }
-      formData.append('Title', getData.Title || '');
-      formData.append('Describe', getData.Describe || '');
-      formData.append('MiniDescribe', getData.MiniDescribe || '');
-      formData.append('Capacity', Number(getData.Capacity) || 0);
-      formData.append('CourseTypeId', Number(getData.CourseTypeId.value) || 0);
-      formData.append('SessionNumber', getData.SessionNumber || '');
-      formData.append('CurrentCoursePaymentNumber', 0);
-      formData.append('TremId', Number(getData.TremId.value) || 0);
-      formData.append('ClassId', Number(getData.ClassId.value) || 0);
-      formData.append('CourseLvlId', Number(getData.CourseLvlId.value) || 0);
-      formData.append('TeacherId', Number(getData.TeacherId.value) || 0);
-      formData.append('Cost', Number(getData.Cost) || 0);
-      formData.append('UniqeUrlString', getData.UniqeUrlString || '');
-      formData.append('Image', null);
-      formData.append('StartTime',  new Date(getData.StartTime[0]).toISOString() );
-      formData.append('EndTime',  new Date(getData.StartTime[1]).toISOString() );
-      formData.append('GoogleSchema', null);
-      formData.append('GoogleTitle', getData.GoogleTitle || '');
-      if (course.courseId) {
-        formData.append('CoursePrerequisiteId', course.courseId || 0);
-      }
-      formData.append('ShortLink', null);
-      formData.append('TumbImageAddress', null);
-      formData.append('ImageAddress',  getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
-
-
-      mutation.mutate(formData);
-      alert('submited')
-    } else {
-      for (const key in data) {
-        if (data[key].length === 0) {
-          setError(key, {
-            type: 'manual',
-            message: `Please enter a valid ${key} url`
-          })
+    const onSubmit = (data) => {
+      if (Object.values(data).every(field => field.length > 0)) {
+        const formData = new FormData();
+  
+        if (course.courseId || window.location.pathname === '/apps/Course/AddCourse') {
+          if(course.courseId){
+          formData.append('Id', course.courseId);
+          }
+          formData.append('Title', getData.Title || '');
+          formData.append('Describe', getData.Describe || '');
+          formData.append('MiniDescribe', getData.MiniDescribe || '');
+          formData.append('Capacity', Number(getData.Capacity) || 0);
+          formData.append('CourseTypeId', Number(getData.CourseTypeId.value) || 0);
+          formData.append('SessionNumber', getData.SessionNumber || '');
+          formData.append('CurrentCoursePaymentNumber', 0);
+          formData.append('TremId', Number(getData.TremId.value) || 0);
+          formData.append('ClassId', Number(getData.ClassId.value) || 0);
+          formData.append('CourseLvlId', Number(getData.CourseLvlId.value) || 0);
+          formData.append('TeacherId', Number(getData.TeacherId.value) || 0);
+          formData.append('Cost', Number(getData.Cost) || 0);
+          formData.append('UniqeUrlString', getData.UniqeUrlString || '');
+          formData.append('Image', null);
+          formData.append('StartTime', new Date(getData.StartTime[0]).toISOString());
+          formData.append('EndTime', new Date(getData.StartTime[1]).toISOString());
+          formData.append('GoogleSchema', null);
+          formData.append('GoogleTitle', getData.GoogleTitle || '');
+          if (course.courseId) {
+            formData.append('CoursePrerequisiteId', course.courseId || 0);
+          }
+          formData.append('ShortLink', null);
+          formData.append('TumbImageAddress', null);
+          formData.append('ImageAddress', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
+        } 
+        else if (course.id) {
+          if(course.id){
+          formData.append('Id', course.id);
+          }
+          if(course.id){
+          formData.append('SlideNumber', getData.SlideNumber || 1);
+          }
+          if(course.id){
+          formData.append('CurrentImageAddress', getData.Image || '');
+          }
+          if(course.id){
+          formData.append('CurrentImageAddressTumb', getData.Image || '');
+          }
+          if(course.id){
+          formData.append('Active', getData.active || true);
+          }
+          formData.append('Title', getData.Title || '');
+          formData.append('GoogleTitle', getData.GoogleTitle || '');
+          formData.append('GoogleDescribe', getData.GoogleDescribe || '');
+          formData.append('MiniDescribe', getData.MiniDescribe || '');
+          formData.append('Describe', getData.Describe || '');
+          formData.append('Keyword', getData.UniqeUrlString || '');
+          formData.append('IsSlider', getData.isSlider || true);
+          formData.append('NewsCatregoryId', getData.Category[0].value || 1);
+          formData.append('Image', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
+        } else if(window.location.pathname === '/apps/blog/AddBlog'){
+          formData.append('Title', getData.Title || '');
+          formData.append('GoogleTitle', getData.GoogleTitle || '');
+          formData.append('GoogleDescribe', getData.GoogleDescribe || '');
+          formData.append('MiniDescribe', getData.MiniDescribe || '');
+          formData.append('Describe', getData.Describe || '');
+          formData.append('Keyword', getData.UniqeUrlString || '');
+          formData.append('IsSlider', getData.isSlider || true);
+          formData.append('NewsCatregoryId', getData.Category[0].value || 1);
+          formData.append('Image', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
+        }
+  
+        mutation.mutate(formData);
+        alert('Submitted');
+      } else {
+        for (const key in data) {
+          if (data[key].length === 0) {
+            setError(key, {
+              type: 'manual',
+              message: `Please enter a valid ${key} url`
+            });
+          }
         }
       }
-    }
-  } 
+    };
   const getDescribeText = (htmlString) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');

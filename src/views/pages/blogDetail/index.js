@@ -89,7 +89,7 @@ const BlogDetailPage = props => {
 
   const handlingNavigate = (e) => {
     e.preventDefault();
-    navigate('/apps/Course/editCourse')
+    navigate('/apps/blog/editBlog')
     dispatch(setPreview(false))
   }
   

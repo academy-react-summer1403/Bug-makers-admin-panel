@@ -27,6 +27,8 @@ const BlogDetail = () => {
     const dispatch = useDispatch();
     const [isExpend, setIsExpend] = useState(false);
 
+  const course = useSelector((state) => state.CourseDetail.CourseList)
+  console.log(course);
     const { data: productDetail, isLoading, isError } = useQuery({
         queryKey: ['blogDetail', id],
         queryFn: () => getBlogDetail(id),
@@ -36,6 +38,10 @@ const BlogDetail = () => {
         },
     });
     
+    useEffect(() => {
+        dispatch(setCourseListDetail(productDetail?.detailsNewsDto))
+    }, [productDetail])
+
     const { data: Replaycomment } = useQuery({
         queryKey: ['blogDetailReplayComment', id],
         queryFn: () => getReplyCommentBlog(id),

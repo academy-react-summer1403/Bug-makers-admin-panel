@@ -74,24 +74,14 @@ const BlogPage = () => {
       name: 'دسته بندی مقاله',
       selector: row => row.newsCatregoryName,
       sortable: true,
-    },
-    // {
-    //   name: 'آخرین آپدیت',
-    //   selector: row => moment(row.lastUpdate).format('jYYYY/jMM/jDD'),
-    //   sortable: true,
-    // },
-    // {
-    //   name: 'وضعیت',
-    //   selector: row => row.statusName,
-    //   sortable: true,
-    // },
+    },    
     {
       name: 'عملیات',
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
           <Link to={'/apps/blogDetail/' + row.id}>مشاهده</Link>
           <Active
-            isActive={row.isActive}
+            isActive={row.active}
             keyword={row.keyword}
             id={row.id}
             styled={{ minWidth: '50px', cursor: 'pointer', padding: '5px' }}

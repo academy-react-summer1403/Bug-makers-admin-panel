@@ -28,7 +28,7 @@ const PersonalInfo = ({ stepper }) => {
     GoogleTitle: '',
     Title: course.title,
     MiniDescribe:'',
-    UniqeUrlString :''
+    UniqeUrlString :'' || course.keyword
   }
   // ** Hooks
   const SignupSchema = yup.object().shape({

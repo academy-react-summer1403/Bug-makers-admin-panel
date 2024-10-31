@@ -3,9 +3,10 @@ import axiosInstance from "../../interceptor/interceptor";
 
 export const updateCourse = async (formData , course) => {
 
-    const method = Array.isArray(course) && course.length > 0 ? 'put' : 'post';
+    const method = course?.courseId ? 'put' : 'post';
     const url = '/Course'
 
+    console.log(course);
     const response = await axiosInstance[method](url, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',

@@ -21,9 +21,8 @@ const AccountDetails = ({ stepper }) => {
   const [preview, setPreview] = useState(null)
 
   const course = useSelector((state) => state.CourseDetail.CourseList)
-
   const defaultValues = {
-    Image: course.imageAddress ? course.imageAddress : '',
+    Image: course.imageAddress ? course.imageAddress : '' || course.currentImageAddressTumb ? course.currentImageAddressTumb : '',
   }
 
   const SignupSchema = yup.object().shape({
@@ -75,7 +74,7 @@ const AccountDetails = ({ stepper }) => {
                     setPreview(URL.createObjectURL(file));
                   } else {
                     onChange(null);
-                    setPreview(course.imageAddress ? course.imageAddress : null); 
+                    setPreview(course.imageAddress ? course.imageAddress : null || course.currentImageAddressTumb ? course.currentImageAddressTumb : null); 
                   }
                 }}
                 onBlur={onBlur}
@@ -85,8 +84,8 @@ const AccountDetails = ({ stepper }) => {
           />
           {preview ? (
             <img src={preview} alt="Preview" style={{ width: '80%', margin: 'auto', display: 'block', marginTop: '10px' }} />
-          ) : course.imageAddress ? (
-            <img src={course.imageAddress} alt="Preview" style={{ width: '80%', margin: 'auto', display: 'block', marginTop: '10px' }} />
+          ) : course.imageAddress || course.currentImageAddressTumb ? (
+            <img src={course.imageAddress || course.currentImageAddressTumb} alt="Preview" style={{ width: '80%', margin: 'auto', display: 'block', marginTop: '10px' }} />
           ) : null}
 
           </Col>
