@@ -26,6 +26,7 @@ import EditCourse from '../../../components/common/modal/editCourse';
 import { useSelected } from 'slate-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPreview } from '../../../redux/Preview';
+import CreateCategoryBlog from '../../../components/common/modal/createCategoryBlog';
 
 const BlogDetailPage = props => {
   // ** Props
@@ -92,6 +93,8 @@ const BlogDetailPage = props => {
     navigate('/apps/blog/editBlog')
     dispatch(setPreview(false))
   }
+
+  
   
   // handle state 
   return (
@@ -172,8 +175,8 @@ const BlogDetailPage = props => {
         {preview ? (
         <div className='d-flex flex-column flex-sm-row pt-1' >
           <AddCategory uuid={id} />
-          <AddGroupCourse />
-
+          {/* <AddGroupCourse /> */}
+          <CreateCategoryBlog />
           <Active 
             isActive={false}
             id={id} 
