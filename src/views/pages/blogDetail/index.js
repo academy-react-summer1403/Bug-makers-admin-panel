@@ -174,10 +174,10 @@ const BlogDetailPage = props => {
         <hr />
         {preview ? (
         <div className='d-flex flex-column flex-sm-row pt-1' >
-          <AddCategory uuid={id} />
+          {/* <AddCategory uuid={id} /> */}
           {/* <AddGroupCourse /> */}
-          <CreateCategoryBlog />
-          <Active 
+          {/* <CreateCategoryBlog /> */}
+          {/* <Active 
             isActive={false}
             id={id} 
             api="/Course/DeleteCourse" 
@@ -185,7 +185,7 @@ const BlogDetailPage = props => {
             styled={{ minWidth: '50px' , cursor: 'pointer', padding: '10px' }} 
             text='حذف دوره'
             text2='افزودن به دورها'
-          />
+          /> */}
           <Active 
             isActive={isActive} 
             keyword={keyword}

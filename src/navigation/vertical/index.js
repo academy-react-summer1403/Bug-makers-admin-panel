@@ -43,7 +43,19 @@ export default [
         title: "مدیریت گروه ها",
         icon: <BookOpen size={20} />,
         navLink: "/apps/groupsManagement",
-      }
+      },
+      {
+        id: "courseReserve",
+        title: "مدیریت رزرو ها",
+        icon: <BookOpen size={20} />,
+        navLink: "/apps/Course/CourseReserve",
+      },
+      {
+        id: "commentMng",
+        title: "مدیریت کامنت دوره ها",
+        icon: <BookOpen size={20} />,
+        navLink: "/apps/Course/CommentMng",
+      },
     ]
   },
   {
@@ -63,6 +75,12 @@ export default [
         title: "ساخت مقاله جدید",
         icon: <BookOpen size={20} />,
         navLink: "/apps/blog/AddBlog",
+      },
+      {
+        id: "categories",
+        title: "مدیریت دسته بندی های مقاله",
+        icon: <BookOpen size={20} />,
+        navLink: "/apps/CategoryNews",
       }
     ]
   },

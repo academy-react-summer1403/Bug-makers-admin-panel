@@ -42,6 +42,9 @@ const EditCourse = lazy(() => import('../../views/pages/wizard'))
 const BlogPage = lazy(() => import('../../views/apps/blog'))
 const BlogDetail = lazy(() => import('../../views/apps/blog/CourseDetail/CourseDetail'))
 const Groups = lazy(() => import('../../views/pages/groupPage/groupPage')) 
+const CatNews = lazy(() => import('../../views/pages/catNews/catNews')) 
+const CourseReserve = lazy(() => import('../../views/pages/Course/CourseReserve/CourseReserve')) 
+const CommentMngForCourseAdmin = lazy(() => import('../../views/pages/Course/commentMng/commentMng')) 
 
 // ** Merge Routes
 const Routes = [
@@ -137,6 +140,14 @@ const Routes = [
     path: '/apps/Course/AddCourse'
   },
   {
+    element: <CourseReserve />,
+    path: '/apps/Course/CourseReserve'
+  },
+  {
+    element: <CommentMngForCourseAdmin />,
+    path: '/apps/Course/CommentMng'
+  },
+  {
     element: <Groups />,
     path: '/apps/groupsManagement'
   },
@@ -151,6 +162,10 @@ const Routes = [
   {
     element: <EditCourse />,
     path: '/apps/blog/AddBlog'
+  },
+  {
+    element: <CatNews />,
+    path: '/apps/CategoryNews'
   },
   {
     path: "/forgot-password",
