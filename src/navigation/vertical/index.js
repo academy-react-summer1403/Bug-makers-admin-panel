@@ -37,6 +37,12 @@ export default [
         title: "ساخت دوره جدید",
         icon: <BookOpen size={20} />,
         navLink: "/apps/Course/AddCourse",
+      },
+      {
+        id: "groups",
+        title: "مدیریت گروه ها",
+        icon: <BookOpen size={20} />,
+        navLink: "/apps/groupsManagement",
       }
     ]
   },

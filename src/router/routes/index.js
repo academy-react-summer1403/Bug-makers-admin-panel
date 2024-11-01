@@ -41,7 +41,7 @@ const CourseDetail = lazy(() => import('../../views/apps/Course/CourseDetail/Cou
 const EditCourse = lazy(() => import('../../views/pages/wizard'))
 const BlogPage = lazy(() => import('../../views/apps/blog'))
 const BlogDetail = lazy(() => import('../../views/apps/blog/CourseDetail/CourseDetail'))
-
+const Groups = lazy(() => import('../../views/pages/groupPage/groupPage')) 
 
 // ** Merge Routes
 const Routes = [
@@ -135,6 +135,10 @@ const Routes = [
   {
     element: <EditCourse />,
     path: '/apps/Course/AddCourse'
+  },
+  {
+    element: <Groups />,
+    path: '/apps/groupsManagement'
   },
   {
     element: <BlogDetail />,

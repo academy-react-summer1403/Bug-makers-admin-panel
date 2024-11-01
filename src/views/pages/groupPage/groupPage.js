@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { setCourseList } from '../../../redux/CourseSlice';
 import { getCourseListWithPagination } from '../../../@core/api/course/getCourseListWithPagination';
 import SearchBox from '../../../components/common/modal/SearchBox/SearchBox';
@@ -8,7 +8,6 @@ import DataTable from 'react-data-table-component';
 import SelectOpt from '../../../components/common/modal/Select/SelectOpt';
 import DateModal from '../../../components/Date/Date';
 import PriceFilter from '../../../components/PriceFilter/PriceFilter';
-import CourseListItems from './CourseListItems ';
 import moment from 'moment-jalaali';
 import Active from '../../../components/common/active/active';
 import { ThreeDots } from 'react-loader-spinner';
@@ -17,8 +16,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { getBlogListWithPagination } from '../../../@core/api/blog/getCourseListWithPagination';
 import { setBlogList } from '../../../redux/blogSlice';
+import { getGroupData } from '../../../@core/api/groupPage/groupPage';
+import { Button } from 'react-bootstrap';
+import { deleteGroup } from '../../../@core/api/course/deleteGroup';
+import { deleteGroupPage } from '../../../@core/api/groupPage/deleteGroup';
+import Swal from 'sweetalert2';
+import { title } from 'process';
+import EditGroup from '../../../components/common/modal/editGroup';
 
-const BlogPage = () => {
+const GroupPage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
   const [teacherId, setTeacherId] = useState(null);
   const [queryValue, setQueryValue] = useState('');
@@ -29,11 +35,10 @@ const BlogPage = () => {
 
   const dispatch = useDispatch();
   const blogListItem = useSelector((state) => state.blog.blogList);
-  console.log(blogListItem.news);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['getblog', queryValue, teacherId, categoryQuery, minCost, maxCost, currentPage],
-    queryFn: () => getBlogListWithPagination(queryValue,  currentPage, itemsPerPage, ''),
+    queryKey: ['getGroup', queryValue, teacherId, categoryQuery, minCost, maxCost, currentPage],
+    queryFn: () => getGroupData(queryValue,  currentPage, itemsPerPage, ''),
     keepPreviousData: true,
   });
 
@@ -59,37 +64,58 @@ const BlogPage = () => {
     setCurrentPage(selectedPage.selected);
   };
 
+  const deleteGroupId = useMutation({
+    mutationKey:['deleteGroupWithId'],
+    mutationFn: (id) => deleteGroupPage(id),
+  })
+
+  const handleDelete = (row) => {
+    Swal.fire({
+      title: 'از حذف این گروه مطمئنی؟',
+      text: "این عمل غیرقابل بازگشت است!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'بله، حذف کن!',
+      cancelButtonText: 'خیر، انصراف',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteGroupId.mutate(row.groupId)
+      }
+    });
+  }
+  
   const columns = [
     {
-      name: 'عنوان',
-      selector: row => row.title,
+      name: 'نام گروه',
+      selector: row => row.groupName,
       sortable: true,
     },
     {
-      name: 'نام نویسنده مقاله',
-      selector: row => row.addUserFullName,
+      name: 'نام دوره',
+      selector: row => row.courseName,
       sortable: true,
     },
     {
-      name: 'دسته بندی مقاله',
-      selector: row => row.newsCatregoryName,
+      name: 'نام تیچر ',
+      selector: row => row.teacherName,
+      sortable: true,
+    },
+    {
+      name: 'ظرفیت دوره',
+      selector: row => row.courseCapacity,
+      sortable: true,
+    },
+    {
+      name: 'ظرفیت گروه',
+      selector: row => row.groupCapacity,
       sortable: true,
     },    
     {
       name: 'عملیات',
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
-          <Link to={'/apps/blogDetail/' + row.id}>مشاهده</Link>
-          <Active
-            isActive={row.active}
-            keyword={row.keyword}
-            id={row.id}
-            styled={{ minWidth: '50px', cursor: 'pointer', padding: '5px' }}
-            api="/Course/ActiveAndDeactiveCourse"
-            method="put"
-            text='غیر فعال'
-            text2='فعال'
-          />
+          <EditGroup id={row.groupId} CourseId={row.courseId} GroupName={row.groupName} size='14px' GroupCapacity={row.groupCapacity} />
+          <Button size='sm' variant='danger' onClick={() => handleDelete(row)}>حذف گروه</Button>
         </div>
       )
     }
@@ -127,9 +153,6 @@ const BlogPage = () => {
         <button className='btn btn-light' onClick={handleRemoveFilter}>
           حذف تمامی فیلتر
         </button>
-        <button className='btn btn-primary' onClick={handleViewSwitch}>
-          {viewMode === 'table' ? 'نمایش به صورت شبکه' : 'نمایش به صورت جدول'}
-        </button>
       </div>
 
       {isLoading && (
@@ -149,7 +172,7 @@ const BlogPage = () => {
           >
             <DataTable
               columns={columns}
-              data={blogListItem.news}
+              data={data?.courseGroupDtos}
               pagination
               paginationPerPage={itemsPerPage}
               paginationRowsPerPageOptions={[8, 15, 30]}
@@ -164,7 +187,7 @@ const BlogPage = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
           >
-            <div className='d-flex flex-wrap justify-content-center gap-4 mt-3'>
+            {/* <div className='d-flex flex-wrap justify-content-center gap-4 mt-3'>
               {blogListItem.news.map((course) => (
                   <motion.div
                     key={course.courseId}
@@ -177,20 +200,20 @@ const BlogPage = () => {
                       id={course.id}
                       title={course.title}
                       img={course.currentImageAddressTumb}
-                      // technologyList={course.technologyList}
+                      technologyList={course.technologyList}
                       description={course.miniDescribe}
                       teacherName={course.addUserFullName}
-                      // likeCount={course.likeCount}
-                      // commandCount={course.commandCount}
-                      // courseRate={course.courseRate}
-                      // statusName={course.statusName}
-                      // price={course.cost}
-                      // currentRegistrants={course.currentRegistrants}
-                      // date={moment(course.lastUpdate).format('jYYYY/jMM/jDD')}
+                      likeCount={course.likeCount}
+                      commandCount={course.commandCount}
+                      courseRate={course.courseRate}
+                      statusName={course.statusName}
+                      price={course.cost}
+                      currentRegistrants={course.currentRegistrants}
+                      date={moment(course.lastUpdate).format('jYYYY/jMM/jDD')}
                     />
                   </motion.div>
                 ))}
-            </div>
+            </div> */}
           </motion.div>
         )}
       </AnimatePresence>
@@ -198,4 +221,4 @@ const BlogPage = () => {
   );
 };
 
-export default BlogPage;
+export default GroupPage;
