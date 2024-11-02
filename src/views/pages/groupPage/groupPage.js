@@ -23,6 +23,7 @@ import { deleteGroupPage } from '../../../@core/api/groupPage/deleteGroup';
 import Swal from 'sweetalert2';
 import { title } from 'process';
 import EditGroup from '../../../components/common/modal/editGroup';
+import AddGroupCourse from '../../../components/common/modal/AddGroup';
 
 const GroupPage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -121,6 +122,10 @@ const GroupPage = () => {
     }
   ];
 
+  const {data : course } = useQuery({
+    queryKey:['getCourses'],
+    queryFn:getCourseListWithPagination
+  })
   return (
     <div className='container mt-4'>
       <div className='d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3'>
@@ -131,6 +136,7 @@ const GroupPage = () => {
           value={queryValue}
           onChange={handleSearch}
         />
+        <AddGroupCourse courses={course?.courseDtos} />
         <SelectOpt
           width={"100%"}
           lgWidth={"160px"}

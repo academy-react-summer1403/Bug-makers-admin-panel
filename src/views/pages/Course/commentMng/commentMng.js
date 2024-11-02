@@ -14,9 +14,9 @@ import { Badge, Button } from 'reactstrap';
 import { Dropdown, FormSelect } from 'react-bootstrap';
 import ReactSelect from 'react-select';
 import { getUserComment } from '../../../../@core/api/course/commentMng/user';
-import { Menu, MessageCircle, Minus } from 'react-feather';
+import { Edit, Menu, MessageCircle, Minus } from 'react-feather';
 import ShowReplay from '../../../../components/common/modal/showReplay';
-import { acceptComment, deleteCommentApi, deleteCommentApiFull } from '../../../../@core/api/course/commentMng/acceptComment';
+import { acceptComment, deleteCommentApi, deleteCommentApiFull, updatingComment } from '../../../../@core/api/course/commentMng/acceptComment';
 import UpdateComment from '../../../../components/common/modal/updateComment';
 const CommentMngForCourseAdmin = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -156,7 +156,22 @@ const CommentMngForCourseAdmin = () => {
           <Dropdown.Item onClick={() => handleDeleteFull(row)}>حذف کامنت</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
-      <UpdateComment CommentId={row.commentId}  CourseId={row.courseId} Title={row.commentTitle} Describe={row.describe} />
+      <UpdateComment 
+         CommentId={row.commentId}  
+         CourseId={row.courseId} 
+         Title={row.commentTitle} 
+         Describe={row.describe} 
+         topic='بروزرسانی کامنت'
+         Api={updatingComment}
+         KeyMutate={'updateComment'}
+         icon={
+          <Edit 
+            size={'14px'} 
+            className='m-2 cursor-pointer' 
+            style={{ marginTop: '2px' }} 
+          />
+        } 
+         />
 
         </div>
       )

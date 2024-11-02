@@ -16,7 +16,7 @@ export const deleteCommentApiFull = async ( commentId) => {
 const response = await axiosInstance.delete(url);
     return response.data;
 };
-export const updateComment = async (formData) => {
+export const updatingComment = async (formData) => {
     const url = `/Course/UpdateCourseComment`;
 const response = await axiosInstance.put(url , formData);
     return response.data;

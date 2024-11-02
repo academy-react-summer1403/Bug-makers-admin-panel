@@ -11,6 +11,7 @@ import PreviewReducer from "./Preview";
 import createReducer from './CreateCourse'
 import blogSliceReducer from "./blogSlice";
 import blogDetailReducer from "./blogDetail";
+import LoginSliceReducer from './Login'
 const rootReducer = { 
     navbar, 
     layout,
@@ -23,7 +24,8 @@ const rootReducer = {
     preview: PreviewReducer,
     create : createReducer,
     blog : blogSliceReducer,
-    blogDetail : blogDetailReducer
+    blogDetail : blogDetailReducer,
+    LoginState : LoginSliceReducer,
 };
 
 export default rootReducer;

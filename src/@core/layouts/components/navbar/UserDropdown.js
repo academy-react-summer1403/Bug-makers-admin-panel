@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 // ** Custom Components
 import Avatar from "@components/avatar";
-
+import { useQuery } from '@tanstack/react-query';
 // ** Third Party Components
 import {
   User,
@@ -26,8 +26,18 @@ import {
 
 // ** Default Avatar Image
 import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
+import { getProfileInfo } from "../../../api/getProfile/getProfile";
+import { useSelector } from "react-redux";
+
 
 const UserDropdown = () => {
+  const {data} = useQuery({
+    queryKey:['getProfileInfo'],
+    queryFn: getProfileInfo
+  })
+
+  const login = useSelector((state) => state.LoginState.Data)
+  console.log(login);
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle
@@ -37,11 +47,11 @@ const UserDropdown = () => {
         onClick={(e) => e.preventDefault()}
       >
         <div className="user-nav d-sm-flex d-none">
-          <span className="user-name fw-bold">John Doe</span>
-          <span className="user-status">Admin</span>
+          <span className="user-name fw-bold">{data?.fName + ' ' + data?.lName}</span>
+          <span className="user-status">ادمین</span>
         </div>
         <Avatar
-          img={defaultAvatar}
+          img={data?.currentPictureAddress}
           imgHeight="40"
           imgWidth="40"
           status="online"

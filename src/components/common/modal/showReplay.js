@@ -38,6 +38,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { updateGroupWithId } from '../../../@core/api/groupPage/updateGroup';
 import { getReplayComment } from '../../../@core/api/course/commentMng/showReplay';
 import { ThreeDots } from 'react-loader-spinner';
+import UpdateComment from './updateComment';
+import { replayComment } from '../../../@core/api/course/commentMng/replyComment';
 
 const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptCommentShowAll , deleteComment}) => {
   const [show, setShow] = useState(false);  
@@ -45,6 +47,7 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
   const [tooltipOpenCheck, setTooltipOpenCheck] = useState(false);
   const [tooltipِDelete, setTooltipDelete] = useState(false);
 
+  const [addComment, setAddComment] = useState(false)
   const toggleX = () => setTooltipOpenX(!tooltipOpenX);
   const toggleCheck = () => setTooltipOpenCheck(!tooltipOpenCheck);
   const toggleDelete = () => setTooltipDelete(!tooltipِDelete);
@@ -145,6 +148,20 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
         </div>
       </div>
       )
+    },
+    {
+      name: 'پاسخ',
+      cell: row => (
+          <UpdateComment 
+            Api={replayComment} 
+            CommentId={row.id} 
+            CourseId={row.courseId}
+            topic='پاسخ به کامنت'  
+            icon={
+              <Button KeyMutate={'replayComment'} color='primary' >پاسخ</Button>
+            }
+          />
+      )
     }
   ];
 
@@ -169,7 +186,7 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
-        className=' modal-xl'
+        className='modal-dialog-centered modal-xl'
         backdrop='static'
         keyboard={false}
       >
@@ -181,17 +198,31 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
+            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' ,flexFlow:'column wrap '}}
           >
-            <DataTable
-              columns={columns}
-              data={data}
-              pagination
-              paginationPerPage={itemsPerPage}
-              paginationRowsPerPageOptions={[8, 15, 30]}
-              responsive
-              highlightOnHover
-              noDataComponent={<Badge>این کامنت هیچ ریپلای نخورده</Badge>}
-            />
+          {isLoading ? (
+                <ThreeDots 
+                  height="80" 
+                  width="80" 
+                  radius="9"
+                  color="blue" 
+                  ariaLabel="three-dots-loading" 
+                  wrapperStyle={{}} 
+                  wrapperClass="" 
+                  visible={true}
+                />
+              ) : (
+                <DataTable
+                  columns={columns}
+                  data={data}
+                  pagination
+                  paginationPerPage={itemsPerPage}
+                  paginationRowsPerPageOptions={[8, 15, 30]}
+                  responsive
+                  highlightOnHover
+                  noDataComponent={<Badge>این کامنت هیچ ریپلای نخورده</Badge>}
+                />
+              )}
           </motion.div>
       </AnimatePresence>
         </ModalBody>

@@ -10,8 +10,9 @@ import { Button, Modal, ModalBody, ModalHeader, Row, Col, Card, Input, Label } f
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss';
 import { addGroupCourse } from '../../../@core/api/course/addGroupCourse';
+import { FormSelect } from 'react-bootstrap';
 
-const AddGroupCourse = ({ onClick, size }) => {
+const AddGroupCourse = ({ onClick, size , courses }) => {
   const courseDetail = useSelector(state => state.CourseDetail.CourseList);
   const dispatch = useDispatch();
 
@@ -83,6 +84,7 @@ const AddGroupCourse = ({ onClick, size }) => {
                         style={{width:'300px'}}
                       />
                     </Col>
+                      {courseDetail?.courseId ? (
                     <Col md="6">
                       <Label for='courseId'>شناسه دوره</Label>
                       <Input
@@ -94,6 +96,16 @@ const AddGroupCourse = ({ onClick, size }) => {
                         style={{width:'300px'}}
                       />
                     </Col>
+                    ) : (
+                      <Col md='6'>
+                      <Label for='courseId'>شناسه دوره</Label>
+                      <FormSelect   onChange={handleChange}  id='courseId' name='courseId' value={values.courseId} style={{width:'300px'}} className=' mt-1'>
+                        {courses?.map((item) => (
+                          <option key={item.courseId}  value={item.courseId}>{item.title}</option>
+                        ))}
+                      </FormSelect>
+                      </Col>
+                    )}
                     <Col md="6">
                       <Label for='groupCapacity'>ظرفیت گروه</Label>
                       <Input

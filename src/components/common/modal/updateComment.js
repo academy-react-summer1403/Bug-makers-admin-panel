@@ -33,9 +33,10 @@ import { Archive, Edit, Linkedin } from 'react-feather';
 import '@styles/react/libs/react-select/_react-select.scss'
 import { useMutation } from '@tanstack/react-query';
 import { updateGroupWithId } from '../../../@core/api/groupPage/updateGroup';
-import { updateComment } from '../../../@core/api/course/commentMng/acceptComment';
+import { updatingComment } from '../../../@core/api/course/commentMng/acceptComment';
+import { replayComment } from '../../../@core/api/course/commentMng/replyComment';
 
-const UpdateComment = ({ CommentId , CourseId , Describe , Title}) => {
+const UpdateComment = ({ CommentId , CourseId , Describe , Title , icon , Api , KeyMutate , topic}) => {
   // ** Validation Schema
   const validationSchema = Yup.object().shape({
 
@@ -50,8 +51,8 @@ const UpdateComment = ({ CommentId , CourseId , Describe , Title}) => {
     };
 
     const updateCommentData = useMutation({
-        mutationKey:['updateGroupId'],
-        mutationFn: (formData) => updateComment(formData),
+        mutationKey:[KeyMutate],
+        mutationFn: (formData) => Api(formData),
         onSuccess:() => {
             setShow(false)
         }
@@ -64,6 +65,7 @@ const UpdateComment = ({ CommentId , CourseId , Describe , Title}) => {
         formData.append('Title',values.Title)
         formData.append('Describe',values.Describe)
 
+        console.log(formData);
         // send Api 
         updateCommentData.mutate(formData)
     }
@@ -79,7 +81,9 @@ const UpdateComment = ({ CommentId , CourseId , Describe , Title}) => {
         alignItems: 'center'
       }}
     >
-      <Edit size={'14px'} className='m-2 cursor-pointer' style={{marginTop: '2px'}} onClick={() => setShow(true)} />
+      <div onClick={() => setShow(true)}>
+        {icon} 
+      </div>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
@@ -103,7 +107,7 @@ const UpdateComment = ({ CommentId , CourseId , Describe , Title}) => {
               <Form style={{  display : 'flex', justifyContent : 'center' , flexFlow: 'row wrap', gap: '14px'}}>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='Title'>
-                     نام گروه <span className='text-danger'>*</span>
+                      عنوان کامنت <span className='text-danger'>*</span>
                   </Label>
                   <Input
                     id='Title'
@@ -117,7 +121,7 @@ const UpdateComment = ({ CommentId , CourseId , Describe , Title}) => {
                 </div>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='Describe'>
-                     ظرفیت گروه<span className='text-danger'>*</span>
+                       {topic}<span className='text-danger'>*</span>
                   </Label>
                   <Input
                     id='Describe'

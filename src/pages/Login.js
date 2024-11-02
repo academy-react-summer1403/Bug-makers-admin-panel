@@ -31,6 +31,8 @@ import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setLoginData } from "../redux/Login";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -38,12 +40,16 @@ const Login = () => {
 const [password, setPassword] = useState('')
 
 
+const dispatch = useDispatch();
+
 const loginMutation = useMutation({
   mutationFn: async (user) => {
     const response = await axios.post(
       'https://classapi.sepehracademy.ir/api/Sign/Login',
       user
     );
+
+    dispatch(setLoginData(response.data))
     return response.data;
   },
   onSuccess: (data) => {
