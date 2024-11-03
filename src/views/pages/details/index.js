@@ -51,6 +51,8 @@ const Product = props => {
     courseCommentTotal,
     isActive,
     courseTeches, 
+    params,
+    params2
   } = props
 
   // ** State
@@ -173,7 +175,7 @@ const Product = props => {
         {preview ? (
         <div className='d-flex flex-column flex-sm-row pt-1' >
           <AddCategory uuid={id} />
-          <AddGroupCourse />
+          <AddGroupCourse  id={params} teacherId={params2}/>
 
           <Active 
             isActive={false}

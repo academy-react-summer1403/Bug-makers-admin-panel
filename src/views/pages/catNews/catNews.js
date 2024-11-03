@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { setCourseList } from '../../../redux/CourseSlice';
 import { getCourseListWithPagination } from '../../../@core/api/course/getCourseListWithPagination';
 import SearchBox from '../../../components/common/modal/SearchBox/SearchBox';
@@ -37,6 +37,8 @@ const CatNews = () => {
     queryFn: getCategoryListBlog,
     keepPreviousData: true,
   });
+
+  const queryClient = useQueryClient();
 
   const [filteredData, setFilteredData] = useState([]);
 

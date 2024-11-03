@@ -31,7 +31,7 @@ import { Archive, Edit, Linkedin } from 'react-feather';
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateGroupWithId } from '../../../@core/api/groupPage/updateGroup';
 import { updatingComment } from '../../../@core/api/course/commentMng/acceptComment';
 import { replayComment } from '../../../@core/api/course/commentMng/replyComment';
@@ -50,11 +50,13 @@ const UpdateComment = ({ CommentId , CourseId , Describe , Title , icon , Api , 
     Describe: Describe || ''
     };
 
+    const queryClient = useQueryClient()
     const updateCommentData = useMutation({
         mutationKey:[KeyMutate],
         mutationFn: (formData) => Api(formData),
         onSuccess:() => {
             setShow(false)
+              queryClient.invalidateQueries('getCommentCourseAdmin')
         }
     })
   

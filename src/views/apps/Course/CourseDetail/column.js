@@ -7,9 +7,17 @@ import { getUser, deleteUser } from '../../user/store/index';
 import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical, UserPlus } from 'react-feather';
 import { Badge, Button } from 'reactstrap';
 import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { deleteCourseReserve } from '../../../../@core/api/course/courseReserve';
 
 // Custom Menu component
-const CustomMenu = ({ user, onEdit, onDelete, rowId }) => {
+const CustomMenu = ({ user, onEdit, onDelete, rowId , id }) => {
+
+  console.log(id);
+  const mutation = useMutation({
+    mutationKey:['deleteReserve'],
+    mutationFn: (id) => deleteCourseReserve(id)
+  })
   const [open, setOpen] = useState(false);
 
   return (
@@ -21,7 +29,7 @@ const CustomMenu = ({ user, onEdit, onDelete, rowId }) => {
           <div  onClick={onEdit}>
             <EditUserExample size={'14px'} user={user} /> 
           </div>
-          <div onClick={onDelete}>
+          <div onClick={() => mutation.mutate(id)}>
             <Trash2 size={14}/>
           </div>
     </div>
@@ -166,7 +174,7 @@ export const columns = [
       <CustomMenu
       user={row} 
       onEdit={() => store.dispatch(getUser(row.studentId))}
-      onDelete={() => store.dispatch(deleteUser(row.studentId))}
+      id={row.courseUserId}
       rowId={row.studentId}
       />
     ),

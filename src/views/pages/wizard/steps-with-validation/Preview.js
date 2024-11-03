@@ -18,6 +18,7 @@ import { updateBlog } from '../../../../@core/api/blog/updateCourse';
 import { setCreate } from '../../../../redux/CreateCourse';
 import { setCourseListDetail } from '../../../../redux/Course';
 import { AddBlog } from '../../../../@core/api/blog/addBlog';
+import { addCategory } from '../../../../@core/api/course/addCategroy';
 const defaultValues = {
 
 }
@@ -38,9 +39,11 @@ const Preview = ({ stepper }) => {
   const course = useSelector((state) => state.CourseDetail.CourseList)
   console.log(course);
   const getData = useSelector((state) => state.create.createList)
+  console.log(getData);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const mutation = useMutation({
+    
     mutationFn: (formData) => {
       if (course.courseId || window.location.pathname === '/apps/Course/AddCourse') {
         return updateCourse(formData, course);
@@ -53,6 +56,8 @@ const Preview = ({ stepper }) => {
     },
     onSuccess: () => {
       if(course.courseId){
+        // const numericTechIds = getData?.Category.map(item => item.value); 
+        // await addCategory(numericTechIds.map(techId => ({ techId })), uuid); 
         setTimeout(() => {
           dispatch(setCourseListDetail([]))
         }, 3000);
@@ -100,7 +105,7 @@ const Preview = ({ stepper }) => {
           formData.append('TeacherId', Number(getData.TeacherId.value) || 0);
           formData.append('Cost', Number(getData.Cost) || 0);
           formData.append('UniqeUrlString', getData.UniqeUrlString || '');
-          formData.append('Image', null);
+          formData.append('Image', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
           formData.append('StartTime', new Date(getData.StartTime[0]).toISOString());
           formData.append('EndTime', new Date(getData.StartTime[1]).toISOString());
           formData.append('GoogleSchema', null);
@@ -109,7 +114,7 @@ const Preview = ({ stepper }) => {
             formData.append('CoursePrerequisiteId', course.courseId || 0);
           }
           formData.append('ShortLink', null);
-          formData.append('TumbImageAddress', null);
+          formData.append('TumbImageAddress', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
           formData.append('ImageAddress', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
         } 
         else if (course.id) {

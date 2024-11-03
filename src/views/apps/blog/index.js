@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { getBlogListWithPagination } from '../../../@core/api/blog/getCourseListWithPagination';
 import { setBlogList } from '../../../redux/blogSlice';
+import { FormSelect } from 'react-bootstrap';
 
 const BlogPage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -26,14 +27,15 @@ const BlogPage = () => {
   const [maxCost, setMaxCost] = useState(null);
   const [viewMode, setViewMode] = useState('table');
   const [currentPage, setCurrentPage] = useState(0);
+  const [active, setActive] = useState()
 
   const dispatch = useDispatch();
   const blogListItem = useSelector((state) => state.blog.blogList);
   console.log(blogListItem.news);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['getblog', queryValue, teacherId, categoryQuery, minCost, maxCost, currentPage],
-    queryFn: () => getBlogListWithPagination(queryValue,  currentPage, itemsPerPage, ''),
+    queryKey: ['getblog', queryValue, teacherId, categoryQuery, minCost, active, currentPage],
+    queryFn: () => getBlogListWithPagination(queryValue,  currentPage, itemsPerPage, active),
     keepPreviousData: true,
   });
 
@@ -81,11 +83,11 @@ const BlogPage = () => {
         <div className='d-flex justify-content-center align-items-center gap-1'>
           <Link to={'/apps/blogDetail/' + row.id}>مشاهده</Link>
           <Active
-            isActive={row.active}
+            isActive={row.isActive}
             keyword={row.keyword}
             id={row.id}
             styled={{ minWidth: '50px', cursor: 'pointer', padding: '5px' }}
-            api="/Course/ActiveAndDeactiveCourse"
+            api="News/ActiveDeactiveNews"
             method="put"
             text='غیر فعال'
             text2='فعال'
@@ -105,6 +107,11 @@ const BlogPage = () => {
           value={queryValue}
           onChange={handleSearch}
         />
+        <FormSelect value={active} onChange={() => setActive(e.target.value)} placeholder={'وضعیت'}    style={{width:'200px'}}>
+          <option  >انتخاب کنید</option>
+          <option value={true} onClick={() => setActive(true)}>تاییده شده </option>
+          <option value={false} onClick={() => setActive(false)}>در انتظار تایید</option>
+        </FormSelect>
         <SelectOpt
           width={"100%"}
           lgWidth={"160px"}

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup'; // Import Yup for validation
-import { useMutation } from '@tanstack/react-query'; // Import React Query
+import { useMutation, useQueryClient } from '@tanstack/react-query'; // Import React Query
 import axios from 'axios'; // Import Axios
 import { Button, Modal, ModalBody, ModalHeader, Row, Col, Card, Input, Label } from 'reactstrap';
 
@@ -12,7 +12,7 @@ import '@styles/react/libs/react-select/_react-select.scss';
 import { addGroupCourse } from '../../../@core/api/course/addGroupCourse';
 import { FormSelect } from 'react-bootstrap';
 
-const AddGroupCourse = ({ onClick, size , courses }) => {
+const AddGroupCourse = ({ onClick, size , courses , id , teacherId}) => {
   const courseDetail = useSelector(state => state.CourseDetail.CourseList);
   const dispatch = useDispatch();
 
@@ -21,12 +21,15 @@ const AddGroupCourse = ({ onClick, size , courses }) => {
     groupName: Yup.string().required('نام گروه اجباریست'),
     groupCapacity: Yup.number().required('باید عدد باشد').positive().integer(),
   });
+  const queryClient = useQueryClient();
 
   // ** Form Submission with React Query and Axios
   const mutation = useMutation({
     mutationFn: async (data) => addGroupCourse(data),
     onSuccess: () => {
       setShow(false)
+      queryClient.invalidateQueries(['getGroup',teacherId ,id]);
+
     },
   });
 

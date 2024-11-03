@@ -31,7 +31,7 @@ import { Archive, Edit, Linkedin } from 'react-feather';
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateGroupWithId } from '../../../@core/api/groupPage/updateGroup';
 
 const EditGroup = ({ size , id , CourseId , GroupCapacity , GroupName}) => {
@@ -53,11 +53,13 @@ const EditGroup = ({ size , id , CourseId , GroupCapacity , GroupName}) => {
     GroupCapacity: GroupCapacity || 0
     };
 
+    const queryClient = useQueryClient();
     const updateGroup = useMutation({
         mutationKey:['updateGroupId'],
         mutationFn: (formData) => updateGroupWithId(formData),
         onSuccess:() => {
             setShow(false)
+              queryClient.invalidateQueries('courseReserve')
         }
     })
   

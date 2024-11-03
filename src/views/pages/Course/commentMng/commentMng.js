@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import SearchBox from '../../../../components/common/modal/SearchBox/SearchBox';
 import DataTable from 'react-data-table-component';
 import SelectOpt from '../../../../components/common/modal/Select/SelectOpt';
@@ -64,12 +64,16 @@ const CommentMngForCourseAdmin = () => {
   };
 
 
+  const queryClient = useQueryClient();
   // accept commet 
   const acceptCommentShowAll = useMutation({
     mutationKey: ['acceptingComment'],
     mutationFn: ({ commentId }) => {
       return acceptComment( commentId);
-    },
+
+    },onSuccess: () => {
+        queryClient.invalidateQueries('getCommentCourseAdmin')
+      }
   });
   // reject comment 
   const deleteComment = useMutation({
@@ -77,6 +81,9 @@ const CommentMngForCourseAdmin = () => {
     mutationFn: ({ commentId }) => {
       return deleteCommentApi( commentId);
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries('getCommentCourseAdmin')
+    }
   });
   // delete comment 
   const deleteCommentFull = useMutation({
@@ -84,6 +91,9 @@ const CommentMngForCourseAdmin = () => {
     mutationFn: ({ commentId }) => {
       return deleteCommentApiFull(commentId);
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries('getCommentCourseAdmin')
+    }
   });
   
   // update comment 
@@ -92,6 +102,9 @@ const CommentMngForCourseAdmin = () => {
     mutationFn: (formData) => {
       return acceptComment(formData);
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries('getCommentCourseAdmin')
+    }
   });
   
 

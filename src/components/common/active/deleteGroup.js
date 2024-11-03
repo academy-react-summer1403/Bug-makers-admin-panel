@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Badge } from 'react-bootstrap';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteGroup } from '../../../@core/api/course/deleteGroup';
 
-const DeleteGroup = ({ isActive, Id, styled, api, text, text2 }) => {
+const DeleteGroup = ({ isActive, Id, styled, api, text, text2  , id , teacherId}) => {
+
+    const queryClient = useQueryClient();
     const [isActived, setIsActived] = useState(isActive);
     const mutation = useMutation({
         mutationFn: (formData) => deleteGroup(formData),
         onSuccess: () => {
             setIsActived(prev => !prev);
+            queryClient.invalidateQueries(['getGroup',teacherId ,id]);
         },
         onError: (error) => {
             console.error('Error updating status:', error);

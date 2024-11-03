@@ -3,7 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, Nav, NavItem, NavLink, TabConten
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import classnames from 'classnames';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addCategoryBlog, getCategoryListBlog, updateCategoryBlog } from '../../../@core/api/blog/Category';
 import { getCategoryId } from '../../../@core/api/blog/Category'; 
 
@@ -16,6 +16,7 @@ const UpdateCat = ({selectData}) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
+  const queryClient = useQueryClient();
 
   const validationSchema2 = Yup.object({
     selectedCategory: Yup.string().required('لطفاً یک دسته بندی انتخاب کنید'),
@@ -43,7 +44,10 @@ console.log(getCategoryIdData);
 
     const UpdateCategory = useMutation({
         mutationKey:['updateCategoryes'],
-        mutationFn: (formData) => updateCategoryBlog(formData)
+        mutationFn: (formData) => updateCategoryBlog(formData),
+        onSuccess: () => {
+          queryClient.invalidateQueries('getCategory')
+        }
     })
   const handleSubmit2 = (values) => {
     setShow(false)

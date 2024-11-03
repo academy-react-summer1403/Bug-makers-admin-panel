@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { setCourseList } from '../../../redux/CourseSlice';
 import { getCourseListWithPagination } from '../../../@core/api/course/getCourseListWithPagination';
 import SearchBox from '../../../components/common/modal/SearchBox/SearchBox';
@@ -65,9 +65,14 @@ const GroupPage = () => {
     setCurrentPage(selectedPage.selected);
   };
 
+  const queryClient = useQueryClient();
+
   const deleteGroupId = useMutation({
     mutationKey:['deleteGroupWithId'],
     mutationFn: (id) => deleteGroupPage(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries('getGroup',  queryValue, teacherId, categoryQuery, minCost, maxCost, currentPage)    
+    }
   })
 
   const handleDelete = (row) => {
@@ -115,7 +120,7 @@ const GroupPage = () => {
       name: 'عملیات',
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
-          <EditGroup id={row.groupId} CourseId={row.courseId} GroupName={row.groupName} size='14px' GroupCapacity={row.groupCapacity} />
+          <EditGroup  id={row.groupId} CourseId={row.courseId} GroupName={row.groupName} size='14px' GroupCapacity={row.groupCapacity} />
           <Button size='sm' variant='danger' onClick={() => handleDelete(row)}>حذف گروه</Button>
         </div>
       )

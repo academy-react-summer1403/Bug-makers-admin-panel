@@ -7,7 +7,7 @@ export const addActive = async ({ id, active, method, api , keyword }) => {
         if (keyword) { 
             const formData = new FormData();
             formData.append('Active', active);
-            formData.append('id', id);
+            formData.append('Id', id);
             data = formData;
         } else {
             data = { active, id }; 

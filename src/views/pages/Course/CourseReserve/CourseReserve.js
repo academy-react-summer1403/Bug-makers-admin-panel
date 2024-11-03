@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import SearchBox from '../../../../components/common/modal/SearchBox/SearchBox';
 import DataTable from 'react-data-table-component';
 import { ThreeDots } from 'react-loader-spinner';
@@ -23,10 +23,15 @@ const CourseReserve = () => {
   });
 
 
+  const queryClient = useQueryClient();
+
 //   delete reserve 
     const deleteReserve = useMutation({
         mutationKey:['deleteReserved'],
-        mutationFn: (id) => deleteCourseReserve(id)
+        mutationFn: (id) => deleteCourseReserve(id),
+        onSuccess: () => {
+          queryClient.invalidateQueries('courseReserve')
+        }
     })
 
     const handleDelete = (row) => {

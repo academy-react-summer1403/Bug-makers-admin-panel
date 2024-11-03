@@ -34,7 +34,7 @@ import {
 import { Archive, Check, Delete, Edit, Eye, Linkedin, X } from 'react-feather';
 
 // ** Styles
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { updateGroupWithId } from '../../../@core/api/groupPage/updateGroup';
 import { getReplayComment } from '../../../@core/api/course/commentMng/showReplay';
 import { ThreeDots } from 'react-loader-spinner';
@@ -56,6 +56,8 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
     queryFn:() => getReplayComment(commentId , courseId),
     enabled : show,
   })
+
+  const queryClient = useQueryClient()
 
   const itemsPerPage = 8;
 
