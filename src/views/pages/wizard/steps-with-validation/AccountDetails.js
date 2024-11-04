@@ -11,16 +11,22 @@ import { useForm, Controller } from 'react-hook-form'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 
 // ** Reactstrap Imports
-import { Form, Label, Input, Row, Col, Button, FormFeedback } from 'reactstrap'
+// import { Form, Label, Input, Row, Col, Button, FormFeedback } from 'reactstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCreate } from '../../../../redux/CreateCourse'
 import { useMutation } from '@tanstack/react-query'
 import { uploadImage } from '../../../../@core/api/course/uploadImage'
+// ** Reactstrap Imports
+import { Card, CardHeader, CardTitle, CardBody, Button, ListGroup, ListGroupItem } from 'reactstrap'
 
+// ** Third Party Imports
+import { useDropzone } from 'react-dropzone'
+import { FileText, X, DownloadCloud } from 'react-feather'
 
 
 const AccountDetails = ({ stepper }) => {
   const [preview, setPreview] = useState(null)
+  const [files, setFiles] = useState([])
 
   const course = useSelector((state) => state.CourseDetail.CourseList)
   const defaultValues = {
@@ -55,70 +61,94 @@ const AccountDetails = ({ stepper }) => {
 
   const onSubmit = (data) => {
     if (isObjEmpty(errors)) {
-      console.log(data.Image);
       stepper.next()
       const formData = new FormData();
-      formData.append('image', data.Image)
+      formData.append('image', files[0])
       mutation.mutate(formData)
       // dispatch(setCreate(data))
     }
   }
 
-  return (
-    <Fragment>
-      <div className='content-header'>
-        <h5 className='mb-0'>عکس دوره</h5>
-        <small className='text-muted'>عکس دوره خود را انتخاب کنید</small>
-      </div>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Row>
-          <Col md='6' className='mb-1  w-100'>
-            <Label className='form-label' for='Image'>
-              Image
-            </Label>
-            <Controller
-            id='Image'
-            name='Image'
-            control={control}
-            render={({ field: { onChange, onBlur, ref } }) => (
-              <Input
-                type='file'
-                invalid={!!errors.Image}
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    onChange(file);
-                    setPreview(URL.createObjectURL(file));
-                  } else {
-                    onChange(null);
-                    setPreview(course.imageAddress ? course.imageAddress : null || course.currentImageAddressTumb ? course.currentImageAddressTumb : null); 
-                  }
-                }}
-                onBlur={onBlur}
-                innerRef={ref}
-              />
-            )}
-          />
-          {preview ? (
-            <img src={preview} alt="Preview" style={{ width: '80%', margin: 'auto', display: 'block', marginTop: '10px' }} />
-          ) : course.imageAddress || course.currentImageAddressTumb ? (
-            <img src={course.imageAddress || course.currentImageAddressTumb} alt="Preview" style={{ width: '80%', margin: 'auto', display: 'block', marginTop: '10px' }} />
-          ) : null}
 
-          </Col>
-        </Row>
-        <div className='d-flex justify-content-between'>
-          <Button color='secondary' className='btn-prev' outline disabled>
-            <ArrowLeft size={14} className='align-middle me-sm-25 me-0' />
-            <span className='align-middle d-sm-inline-block d-none'>Previous</span>
-          </Button>
-          <Button type='submit' color='primary' className='btn-next'>
-            <span className='align-middle d-sm-inline-block d-none'>Next</span>
-            <ArrowRight size={14} className='align-middle ms-sm-25 ms-0' />
-          </Button>
+  console.log(files);
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: acceptedFiles => {
+      setFiles([...files, ...acceptedFiles.map(file => Object.assign(file))])
+    }
+  })
+
+  const renderFilePreview = file => {
+    if (file.type.startsWith('image')) {
+      return <img className='rounded' alt={file.name} src={URL.createObjectURL(file)} height='28' width='28' />
+    } else {
+      return <FileText size='28' />
+    }
+  }
+
+  const handleRemoveFile = file => {
+    const uploadedFiles = files
+    const filtered = uploadedFiles.filter(i => i.name !== file.name)
+    setFiles([...filtered])
+  }
+
+  const renderFileSize = size => {
+    if (Math.round(size / 100) / 10 > 1000) {
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`
+    } else {
+      return `${(Math.round(size / 100) / 10).toFixed(1)} kb`
+    }
+  }
+
+  const fileList = files.map((file, index) => (
+    <ListGroupItem key={`${file.name}-${index}`} className='d-flex align-items-center justify-content-between'>
+      <div className='file-details d-flex align-items-center'>
+        <div className='file-preview me-1'>{renderFilePreview(file)}</div>
+        <div>
+          <p className='file-name mb-0'>{file.name}</p>
+          <p className='file-size mb-0'>{renderFileSize(file.size)}</p>
         </div>
-      </Form>
-    </Fragment>
+      </div>
+      <Button color='danger' outline size='sm' className='btn-icon' onClick={() => handleRemoveFile(file)}>
+        <X size={14} />
+      </Button>
+    </ListGroupItem>
+  ))
+
+  const handleRemoveAllFiles = () => {
+    setFiles([])
+  }
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle tag='h4'>Multiple</CardTitle>
+      </CardHeader>
+      <CardBody>
+        <div {...getRootProps({ className: 'dropzone' })}>
+          <input {...getInputProps()} />
+          <div className='d-flex align-items-center justify-content-center flex-column'>
+            <DownloadCloud size={64} />
+            <h5>فایل را وارد کنید</h5>
+            <p className='text-secondary'>
+              وارد کن  {' '}
+              <a href='/' onClick={e => e.preventDefault()}>
+                جستجو
+              </a>{' '}
+            </p>
+          </div>
+        </div>
+        {files.length ? (
+          <Fragment>
+            <ListGroup className='my-2'>{fileList}</ListGroup>
+            <div className='d-flex justify-content-end'>
+              <Button className='me-1' color='danger' outline onClick={handleRemoveAllFiles}>
+                حذف همه
+              </Button>
+              <Button color='primary' onClick={onSubmit}>آپلود فایل</Button>
+            </div>
+          </Fragment>
+        ) : null}
+      </CardBody>
+    </Card>
   )
 }
 

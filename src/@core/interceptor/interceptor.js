@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use(
     if (response.data.success) {
       Swal.fire({
         title: response.data.message,
-        icon: 'success',
+        icon: "success",
         timer: 3000,
         timerProgressBar: true,
         showCloseButton: false,

@@ -8,15 +8,21 @@ import { Row, Col } from 'reactstrap'
 import StatsHorizontal from '@components/widgets/stats/StatsHorizontal'
 
 // ** Icons Imports
-import { User, UserPlus, UserCheck, UserX } from 'react-feather'
+import { User, UserPlus, UserCheck, UserX, Book, Globe } from 'react-feather'
 
 // ** Styles
 import '@styles/react/apps/app-users.scss'
 
 import { useSelector } from 'react-redux'
-
+import { useQuery } from '@tanstack/react-query'
+import { getLandingReport } from '../../../../@core/api/blog/landing/report'
+import { GiTeacher } from "react-icons/gi";
 const UsersList = () => {
-  const userStore = useSelector(state => state.users); // Renamed here
+
+  const {data } = useQuery({
+    queryKey:['getLandingReport'],
+    queryFn:getLandingReport
+  })
   return (
     <div className='app-user-list'>
       <Row>
@@ -25,31 +31,31 @@ const UsersList = () => {
             color='primary'
             statTitle='تعداد کل کاربران'
             icon={<User size={20} />}
-            renderStats={<h3 className='fw-bolder mb-75'>{userStore.data.length}</h3>} 
+            renderStats={<h3 className='fw-bolder mb-75'>{data?.studentCount}</h3>} 
           />
         </Col>
         <Col lg='3' sm='6'>
           <StatsHorizontal
             color='danger'
-            statTitle='Paid Users'
-            icon={<UserPlus size={20} />}
-            renderStats={<h3 className='fw-bolder mb-75'></h3>}
+            statTitle='تعداد کل دوره ها'
+            icon={<Book  size={20} />}
+            renderStats={<h3 className='fw-bolder mb-75'>{data?.courseCount}</h3>}
           />
         </Col>
         <Col lg='3' sm='6'>
           <StatsHorizontal
             color='success'
-            statTitle='Active Users'
-            icon={<UserCheck size={20} />}
-            renderStats={<h3 className='fw-bolder mb-75'>19,860</h3>}
+            statTitle='تعداد کل خبر ها'
+            icon={<Globe size={20} />}
+            renderStats={<h3 className='fw-bolder mb-75'>{data?.newsCount}</h3>}
           />
         </Col>
         <Col lg='3' sm='6'>
           <StatsHorizontal
             color='warning'
-            statTitle='Pending Users'
-            icon={<UserX size={20} />}
-            renderStats={<h3 className='fw-bolder mb-75'>237</h3>}
+            statTitle='تعداد معلم ها'
+            icon={<GiTeacher size={20} />}
+            renderStats={<h3 className='fw-bolder mb-75'>{data?.teacherCount}</h3>}
           />
         </Col>
       </Row>

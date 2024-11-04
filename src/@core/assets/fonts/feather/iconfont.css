@@ -8,19 +8,21 @@
   url('fonts/feather.svg?t=1525787366991#feather') format('svg'); /* iOS 4.1- */
 }
 
-.feather {
+@font-face {
+  font-family: sans;
+  src: url('fonts/IRANSans.ttf');
+}
+body {
   /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'feather' !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'sans' !important;
+}
+.navigation{
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'sans' !important;
+}
+.dropdown-user{
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'sans' !important;
 }
 
 .icon-alert-octagon:before { content: "\e81b"; }
