@@ -14,6 +14,8 @@ import { ArrowLeft, ArrowRight } from 'react-feather'
 import { Form, Label, Input, Row, Col, Button, FormFeedback } from 'reactstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCreate } from '../../../../redux/CreateCourse'
+import { useMutation } from '@tanstack/react-query'
+import { uploadImage } from '../../../../@core/api/course/uploadImage'
 
 
 
@@ -38,12 +40,27 @@ const AccountDetails = ({ stepper }) => {
     resolver: yupResolver(SignupSchema),
   })
 
+  const mutation = useMutation({
+    mutationKey:['sendImage'],
+    mutationFn: (formData) => uploadImage(formData),
+    onSuccess: (data) => {
+      const urlMatch = data.match(/href="([^"]+)"/);
+      const imageUrl = urlMatch ? urlMatch[1] : null;
+      if (imageUrl) {
+        dispatch(setCreate({ imageUrl }));
+      }
+    }
+  })
   const dispatch = useDispatch()
 
   const onSubmit = (data) => {
     if (isObjEmpty(errors)) {
+      console.log(data.Image);
       stepper.next()
-      dispatch(setCreate(data))
+      const formData = new FormData();
+      formData.append('image', data.Image)
+      mutation.mutate(formData)
+      // dispatch(setCreate(data))
     }
   }
 

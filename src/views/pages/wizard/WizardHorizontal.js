@@ -13,6 +13,7 @@ import CourseInfo from './steps-with-validation/CourseInfo'
 import Preview from './steps-with-validation/Preview'
 import { useSelector } from 'react-redux'
 import BlogSeo from './steps-with-validation/blogseo'
+import AddCategoryStep3 from './steps-with-validation/addCategory'
 
 const WizardHorizontal = () => {
   // ** Ref
@@ -20,8 +21,9 @@ const WizardHorizontal = () => {
 
   // ** State
   const [stepper, setStepper] = useState(null)
+  const [cat, setCat] = useState([])
 
-
+  console.log(cat);
   // Define steps for the wizard
   const course = useSelector((state) => state.CourseDetail.CourseList)
   // if(window.location.pathname)
@@ -64,7 +66,13 @@ const WizardHorizontal = () => {
         id: 'Preview',
         title: 'پیش نمایش دوره',
         subtitle: 'دوره خود را ببینید',
-        content: <Preview stepper={stepper} />
+        content: <Preview stepper={stepper} setCat={setCat} />
+      },
+      {
+        id: 'AddCategory',
+        title: 'دسته بندی دوره',
+        subtitle: 'دسته بندی دوره را اضافه کنید',
+        content: <AddCategoryStep3 stepper={stepper} cat={cat} />
       }
     ];
   } else if(window.location.pathname === '/apps/blog/editBlog' || window.location.pathname === '/apps/blog/AddBlog') {

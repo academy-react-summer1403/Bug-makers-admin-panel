@@ -23,7 +23,7 @@ const defaultValues = {
 
 }
 
-const Preview = ({ stepper }) => {
+const Preview = ({ stepper , setCat }) => {
 
 
   const [addBlog, setAddBlog] = useState(true)
@@ -54,10 +54,10 @@ const Preview = ({ stepper }) => {
         return AddBlog(formData, course);
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      stepper.next()
+      setCat(data.id)
       if(course.courseId){
-        // const numericTechIds = getData?.Category.map(item => item.value); 
-        // await addCategory(numericTechIds.map(techId => ({ techId })), uuid); 
         setTimeout(() => {
           dispatch(setCourseListDetail([]))
         }, 3000);
@@ -73,6 +73,7 @@ const Preview = ({ stepper }) => {
         }, 3000);
         return navigate('/apps/blog');
       }
+
     },
     onError: (error) => {
       console.error(error);
@@ -105,7 +106,7 @@ const Preview = ({ stepper }) => {
           formData.append('TeacherId', Number(getData.TeacherId.value) || 0);
           formData.append('Cost', Number(getData.Cost) || 0);
           formData.append('UniqeUrlString', getData.UniqeUrlString || '');
-          formData.append('Image', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
+          formData.append('Image', getData?.imageUrl instanceof File ? URL.createObjectURL(getData?.imageUrl) : getData?.imageUrl);
           formData.append('StartTime', new Date(getData.StartTime[0]).toISOString());
           formData.append('EndTime', new Date(getData.StartTime[1]).toISOString());
           formData.append('GoogleSchema', null);
@@ -114,8 +115,8 @@ const Preview = ({ stepper }) => {
             formData.append('CoursePrerequisiteId', course.courseId || 0);
           }
           formData.append('ShortLink', null);
-          formData.append('TumbImageAddress', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
-          formData.append('ImageAddress', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
+          formData.append('TumbImageAddress', getData?.imageUrl instanceof File ? URL.createObjectURL(getData?.imageUrl) : getData?.imageUrl);
+          formData.append('ImageAddress', getData?.imageUrl instanceof File ? URL.createObjectURL(getData?.imageUrl) : getData?.imageUrl);
         } 
         else if (course.id) {
           if(course.id){
@@ -125,10 +126,10 @@ const Preview = ({ stepper }) => {
           formData.append('SlideNumber', getData.SlideNumber || 1);
           }
           if(course.id){
-          formData.append('CurrentImageAddress', getData.Image || '');
+          formData.append('CurrentImageAddress', getData.imageUrl || '');
           }
           if(course.id){
-          formData.append('CurrentImageAddressTumb', getData.Image || '');
+          formData.append('CurrentImageAddressTumb', getData.imageUrl || '');
           }
           if(course.id){
           formData.append('Active', getData.active || true);
@@ -141,7 +142,7 @@ const Preview = ({ stepper }) => {
           formData.append('Keyword', getData.UniqeUrlString || '');
           formData.append('IsSlider', getData.isSlider || true);
           formData.append('NewsCatregoryId', getData.Category[0].value || 1);
-          formData.append('Image', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
+          formData.append('Image', getData?.imageUrl instanceof File ? URL.createObjectURL(getData?.imageUrl) : getData?.imageUrl);
         } else if(window.location.pathname === '/apps/blog/AddBlog'){
           formData.append('Title', getData.Title || '');
           formData.append('GoogleTitle', getData.GoogleTitle || '');
@@ -151,11 +152,10 @@ const Preview = ({ stepper }) => {
           formData.append('Keyword', getData.UniqeUrlString || '');
           formData.append('IsSlider', getData.isSlider || true);
           formData.append('NewsCatregoryId', getData.Category[0].value || 1);
-          formData.append('Image', getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image);
+          formData.append('Image', getData?.imageUrl instanceof File ? URL.createObjectURL(getData?.imageUrl) : getData?.imageUrl);
         }
   
         mutation.mutate(formData);
-        alert('Submitted');
       } else {
         for (const key in data) {
           if (data[key].length === 0) {
@@ -176,7 +176,7 @@ const Preview = ({ stepper }) => {
   const describoptions = getDescribeText(getData?.Describe || '');
   const currentDate = Date.now();
 
-  const imageUrl = getData?.Image instanceof File ? URL.createObjectURL(getData?.Image) : getData?.Image
+  const imageUrl = getData?.imageUrl instanceof File ? URL.createObjectURL(getData?.imageUrl) : getData?.imageUrl
 
   return (
     <Fragment>

@@ -16,7 +16,6 @@ const defaultValues = {
     ClassId: '',
     CourseTypeId: '',
     TremId: '',
-    Category: []
 }
 
 const CourseInfo = ({ stepper }) => {
@@ -130,24 +129,6 @@ const CourseInfo = ({ stepper }) => {
                     </Col>
                 </Row>
                 <Row>
-                    <Col md='6' className='mb-1'>
-                        <Label className='form-label' for='Category'>
-                            دسته بندی
-                        </Label>
-                        <Controller
-                            name="Category"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    isMulti
-                                    isClearable={false}
-                                    theme={selectThemeColors}
-                                    options={categoryOptions}
-                                />
-                            )}
-                        />
-                    </Col>
                     <Col md='6' className='mb-1'>
                         <Label className='form-label' for='ClassId'>
                             کلاس
