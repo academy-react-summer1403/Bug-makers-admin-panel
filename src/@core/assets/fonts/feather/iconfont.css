@@ -24,6 +24,10 @@ body {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'sans' !important;
 }
+.Opt{
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'sans' !important;
+}
 
 .icon-alert-octagon:before { content: "\e81b"; }
 

@@ -12,6 +12,8 @@ import createReducer from './CreateCourse'
 import blogSliceReducer from "./blogSlice";
 import blogDetailReducer from "./blogDetail";
 import LoginSliceReducer from './Login'
+import userIdSliceReducer from './userId'
+import rolePageSliceReducer from './rolePage'
 const rootReducer = { 
     navbar, 
     layout,
@@ -26,6 +28,8 @@ const rootReducer = {
     blog : blogSliceReducer,
     blogDetail : blogDetailReducer,
     LoginState : LoginSliceReducer,
+    userId:userIdSliceReducer,
+    role:rolePageSliceReducer,
 };
 
 export default rootReducer;

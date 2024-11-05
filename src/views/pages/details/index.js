@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 // ** Third Party Components
@@ -115,7 +115,9 @@ const Product = props => {
         <CardText>
          وضعیت : <span className={` ms-25 ${isActive ? 'text-success' : 'text-danger'} `}>{isActive ? 'فعال' : 'غیرفعال'}</span>
         </CardText>
-        <CardText>{Description}</CardText>
+        <CardText >
+        <div dangerouslySetInnerHTML={{ __html: Description }} />        
+        </CardText>
         {preview ? (
         <ul className='product-features list-unstyled d-flex align-items-center gap-2'>
             <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>

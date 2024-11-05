@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 // ** Reactstrap Imports
@@ -34,21 +34,29 @@ import { Edit, Trash, Settings, MessageSquare, ChevronRight } from 'react-feathe
 import DataTable from 'react-data-table-component'
 import moment from 'moment-jalaali';
 
-// ** Images
-import CourseItem from '../../../../components/common/modal/CourseItem'
+import { useDispatch, useSelector } from 'react-redux'
 import { useQuery } from '@tanstack/react-query'
-import { getUser } from '../store'
-import { useSelector } from 'react-redux'
+import { getUserById } from '../../../../@core/api/user/getUserById'
+import { setRolePage } from '../../../../redux/rolePage'
 
-const SecurityTab = () => {
+const MyCourse = () => {
 
   const useDate = (date) => {
     if(!date) return 'تاریخ  وجود ندارد';
     return moment(date).format('jYYYY/jMM/jDD'); 
   }
   // ** Hooks
-  const user = useSelector(state => state.user.selectUser)
-  console.log(user);
+  const userId = useSelector((state) => state.userId.userId)
+  const { data } = useQuery({
+    queryKey:['getUserByIdPage'],
+    queryFn: () => getUserById(userId),
+    enabled: !!userId
+  })
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setRolePage(data))
+  }, [data])
+
   // ** Columns for DataTable
   const columns = [
     {
@@ -72,13 +80,13 @@ const SecurityTab = () => {
   ];
 
   // ** Render
-  if (user.isTecher === true) {
+  if (data?.isTecher === true) {
     return (
       <div className='w-100'>
       <DataTable
         title="دوره‌های شما"
         columns={columns}
-        data={user?.courses}
+        data={data?.courses}
         pagination
         responsive={true}
         className='react-dataTable'
@@ -86,7 +94,7 @@ const SecurityTab = () => {
       />
       </div>
     )
-  } else if (user?.courses?.length === 0) {
+  } else if (data?.courses?.length === 0) {
     return (
       <div>
         <h1>شما هیج دوره‌ای را ثبت نکردید</h1>
@@ -97,4 +105,4 @@ const SecurityTab = () => {
   return null; 
 }
 
-export default SecurityTab
+export default MyCourse

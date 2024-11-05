@@ -1,23 +1,25 @@
-// ** React Imports
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-
-// ** Core Layout Import
-// !Do not remove the Layout import
-import Layout from "@layouts/VerticalLayout";
-
-// ** Menu Items Array
-import navigation from "@src/navigation/vertical";
+import Layout from "@layouts/VerticalLayout"; // Layout import
+import { useSelector } from 'react-redux'; // برای دسترسی به استیت‌های Redux
+import { userData } from "../navigation/vertical";
 
 const VerticalLayout = (props) => {
-  // const [menuData, setMenuData] = useState([])
+  const [menuData, setMenuData] = useState([]);
 
-  // ** For ServerSide navigation
-  // useEffect(() => {
-  //   axios.get(URL).then(response => setMenuData(response.data))
-  // }, [])
+  // از useSelector برای دسترسی به state استفاده کنید
+  const items = useSelector((state) => state.role.rolePage);
+  // const isAdmin = items?.roles?.some(role => role.roleName === "Administrator");
+
+  useEffect(() => {
+    console.log("Items:", items);  // بررسی داده‌های items
+    const data = userData(items);  
+    setMenuData(data);
+  }, [items]);
+  
 
   return (
-    <Layout menuData={navigation} {...props}>
+    <Layout menuData={menuData} {...props}>
       <Outlet />
     </Layout>
   );

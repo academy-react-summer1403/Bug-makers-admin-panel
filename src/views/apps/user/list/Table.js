@@ -116,9 +116,9 @@ const CustomHeader = ({
 
   const toggleModal = () => setModal(!modal);
 
-  const handleRoleChange = (role) => {
-    setCurrentRole(role);
-    toggleModal(); // Close modal after selecting a role
+  const handleRoleChange = (e) => {
+    const selectedRole = roleOptions.find(role => role.value === e.target.value);
+    setCurrentRole(selectedRole);
   };
   const handleClearFilters = () => {
     setSearchTerm("");
@@ -144,33 +144,21 @@ const CustomHeader = ({
   return (
 <div className="invoice-list-table-header  w-100 me-1 ms-50 align-items-center mt-2 mb-75" >
   <Row style={{justifyContent : 'end' , alignItems : 'center' , display : 'flex' , height:'100px'}}>
-          {/* Trigger to open modal */}
-          <Button color="primary" style={{ width : '200px' , position :'absolute' , right: '20px'}} onClick={toggleModal}>
-            {currentRole ? currentRole.label : "انتخاب نقش"}
-          </Button>
-
-    {/* Modal for role selection */}
-    <Modal isOpen={modal} toggle={toggleModal}>
-      <ModalHeader toggle={toggleModal}>انتخاب نقش</ModalHeader>
-      <ModalBody>
-        {/* You can map over roleOptions to show them as a list */}
-        {roleOptions.map((role) => (
-          <Button
-            key={role.value}
-            color="primary"
-            className="mb-2 w-100"
-            onClick={() => handleRoleChange(role)}
-          >
-            {role.label}
-          </Button>
-        ))}
-      </ModalBody>
-      <ModalFooter>
-        <Button color="secondary" onClick={toggleModal}>
-          بیخیال
-        </Button>
-      </ModalFooter>
-    </Modal>
+  <select
+          className="form-control "
+          value={currentRole ? currentRole.value : ''}
+          onChange={handleRoleChange}
+          style={{ width: '200px', position: 'absolute', right: '20px' }}
+        >
+          <option className='Opt' value="" disabled>
+            انتخاب نقش
+          </option>
+          {roleOptions.map((role) => (
+            <option key={role.value} className='Opt' value={role.value}>
+              {role.label}
+            </option>
+          ))}
+        </select>
         {/* Remove All Filters Button */}
         <Button
           style={{position : 'absolute', top : '0' , right : 0}}
@@ -261,7 +249,6 @@ const UsersList = () => {
 
   // ** User filter options
   const roleOptions = [
-    { value: '', label: 'انتخاب نقش' },
     { value: '1', label: 'ادمین' },
     { value: '2', label: 'معلم' },
     { value: '3', label: 'کارمند.ادمین' },

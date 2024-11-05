@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Card,
   CardHeader,
@@ -6,8 +8,23 @@ import {
   CardText,
   CardLink,
 } from "reactstrap";
+import { setRolePage } from "../redux/rolePage";
+import { useQuery } from "@tanstack/react-query";
+import { getUserById } from "../@core/api/user/getUserById";
 
 const Home = () => {
+
+  const userId = useSelector((state) => state.userId.userId)
+  const { data } = useQuery({
+    queryKey:['getUserByIdPage'],
+    queryFn: () => getUserById(userId),
+    enabled: !!userId
+  })
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setRolePage(data))
+  }, [data])
   return (
     <div>
       <Card>

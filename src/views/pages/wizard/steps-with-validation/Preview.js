@@ -19,6 +19,7 @@ import { setCreate } from '../../../../redux/CreateCourse';
 import { setCourseListDetail } from '../../../../redux/Course';
 import { AddBlog } from '../../../../@core/api/blog/addBlog';
 import { addCategory } from '../../../../@core/api/course/addCategroy';
+import { htmlToText } from 'html-to-text';
 const defaultValues = {
 
 }
@@ -36,13 +37,20 @@ const Preview = ({ stepper , setCat }) => {
     formState: { errors }
   } = useForm({ defaultValues })
 
+  
   const course = useSelector((state) => state.CourseDetail.CourseList)
   console.log(course);
   const getData = useSelector((state) => state.create.createList)
   console.log(getData);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+
+  const textObject = htmlToText(getData?.Describe, {
+    wordwrap: 130
+  });
   const mutation = useMutation({
+    
     
     mutationFn: (formData) => {
       if (course.courseId || window.location.pathname === '/apps/Course/AddCourse') {
@@ -80,6 +88,7 @@ const Preview = ({ stepper , setCat }) => {
     }
   });
   
+
     // use date 
     const useDate = (date) => {
       if(!date) return 'تاریخ  وجود ندارد';
@@ -190,7 +199,7 @@ const Preview = ({ stepper , setCat }) => {
           cost={getData?.Cost || 'N/A'}
           courseLevelName={getData?.CourseLvlId?.label || 'N/A'}
           courseTypeName={getData?.CourseTypeId?.label || 'N/A'}
-          Description={describoptions || 'N/A'}
+          Description={getData?.Describe || 'N/A'}
           Date={currentDate || 'N/A'}
           startTime={getData?.StartTime?.[0] || 'N/A'}
           endTime={getData?.StartTime?.[1] || 'N/A'}

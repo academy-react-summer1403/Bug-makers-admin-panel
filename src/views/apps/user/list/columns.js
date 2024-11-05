@@ -4,9 +4,13 @@ import EditUserExample from '../../../../components/common/modal/edituser';
 import AddRole from '../../../../components/common/modal/addRole';
 import { store } from '@store/store';
 import { getUser, deleteUser } from '../store';
-import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical, UserPlus } from 'react-feather';
+import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical, UserPlus, X } from 'react-feather';
 import { Badge, Button } from 'reactstrap';
 import { useState } from 'react';
+import { FaUserShield } from "react-icons/fa";
+import { PiStudent } from "react-icons/pi";
+import { GiTeacher } from "react-icons/gi";
+import { GrUserAdmin } from "react-icons/gr";
 
 // Custom Menu component
 const CustomMenu = ({ user, onEdit, onDelete, rowId }) => {
@@ -87,22 +91,36 @@ const renderClient = row => {
 
 const renderRole = row => {
   const roleObj = {
-    subscriber: { class: 'text-primary', icon: User },
-    maintainer: { class: 'text-success', icon: Database },
-    editor: { class: 'text-info', icon: Edit2 },
-    author: { class: 'text-warning', icon: Settings },
-    admin: { class: 'text-danger', icon: Slack },
+    TournamentAdmin: { class: 'text-primary', icon: User },
+    Administrator: { class: 'text-primary', icon: GrUserAdmin },
+    Teacher: { class: 'text-info', icon: GiTeacher },
+    EmployeeWriter: { class: 'text-success', icon: Database },
+    Referee: { class: 'text-danger', icon: FaUserShield },
+    Student: { class: 'text-warning', icon: PiStudent },
   };
 
-  const Icon = roleObj[row.userRoles] ? roleObj[row.userRoles].icon : Edit2;
+  const roles = row.userRoles ? row.userRoles.split(',').map(role => role.trim()) : [];
 
   return (
     <span className="text-truncate text-capitalize align-middle">
-      <Icon size={18} className={`${roleObj[row.userRoles] ? roleObj[row.userRoles].class : ''} me-50`} />
-      {row.userRoles ? row.userRoles : 'کاربر هیچ دسترسی ندارد'}
+      {roles.length > 0 ? (
+        roles.map(role => {
+          const { class: roleClass, icon: RoleIcon } = roleObj[role] || {}; 
+          return (
+            roleObj[role] && ( 
+              <span key={role} className="d-inline-flex align-items-center me-1 cursor-pointer" title={role}>
+                <RoleIcon size={18} className={`${roleClass} me-50`} /> 
+              </span>
+            )
+          );
+        })
+      ) : (
+        <X color='red' />
+      )}
     </span>
   );
 };
+
 
 const statusObj = {
   pending: 'light-warning',
@@ -114,7 +132,7 @@ export const columns = [
   {
     name: 'کاربران',
     sortable: true,
-    minWidth: '30px',
+    maxWidth: '420px',
     sortField: 'fullName',
     selector: row => row.userRoles.split(',')[0],
     cell: row => (
@@ -126,8 +144,10 @@ export const columns = [
             className="user_name text-truncate text-body"
             onClick={() => store.dispatch(getUser(row.id))}
           >
-            <span className="fw-bolder">{row.fname + ' ' + row.lname}</span>
-          </NavLink>
+        <span className="fw-bolder  text-truncate" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {row.fname + ' ' + row.lname}
+        </span>
+                  </NavLink>
           <small className="text-truncate text-muted mb-0">{row.gmail}</small>
         </div>
       </div>
@@ -136,10 +156,10 @@ export const columns = [
   {
     name: 'نقش ',
     sortable: true,
-    minWidth: '172px',
+    maxWidth: '172px',
     sortField: 'role',
     selector: row => row.userRoles,
-    cell: row => renderRole(row),
+    cell: row => renderRole(row)
   },
   {
     name: 'تلفن همراه',

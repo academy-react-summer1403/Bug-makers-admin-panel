@@ -27,17 +27,25 @@ import {
 // ** Default Avatar Image
 import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
 import { getProfileInfo } from "../../../api/getProfile/getProfile";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserIdSlice } from "../../../../redux/userId";
+import { useEffect } from "react";
 
 
 const UserDropdown = () => {
+  const dispatch = useDispatch();
   const {data} = useQuery({
     queryKey:['getProfileInfo'],
-    queryFn: getProfileInfo
+    queryFn: getProfileInfo,
   })
 
+  useEffect(() => {
+    dispatch(setUserIdSlice(data?.userImage[0].userProfileId))
+  }, [data])
+  const userId = useSelector((state) => state.userId.userId)
+
+  console.log(userId);
   const login = useSelector((state) => state.LoginState.Data)
-  console.log(login);
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle

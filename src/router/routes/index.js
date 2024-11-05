@@ -45,7 +45,9 @@ const Groups = lazy(() => import('../../views/pages/groupPage/groupPage'))
 const CatNews = lazy(() => import('../../views/pages/catNews/catNews')) 
 const CourseReserve = lazy(() => import('../../views/pages/Course/CourseReserve/CourseReserve')) 
 const CommentMngForCourseAdmin = lazy(() => import('../../views/pages/Course/commentMng/commentMng')) 
-
+const CommentMngForCourseTeacher = lazy(() => import('../../views/pages/Course/commentMng/commentMngTeacher')) 
+const CommentMngForCourse = lazy(() => import('../../views/pages/Course/commentMng/AllCommentMng')) 
+const MyCourse = lazy(() => import('../../views/pages/Course/MyCourse/MyCourse'))
 // ** Merge Routes
 const Routes = [
   {
@@ -118,6 +120,18 @@ const Routes = [
   {
     element: <Course />,
     path: '/apps/Course'
+  },
+  {
+    element: <MyCourse />,
+    path: '/apps/MyCourse'
+  },
+  {
+    element: <CommentMngForCourseTeacher />,
+    path: '/apps/commentForTeacher'
+  },
+  {
+    element: <CommentMngForCourse />,
+    path: '/apps/allCommentMng'
   },
   {
     element: <BlogPage />,
