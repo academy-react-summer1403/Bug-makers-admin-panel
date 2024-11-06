@@ -62,8 +62,7 @@ const Address = ({ stepper , onSaveData }) => {
   return (
     <Fragment>
       <div className='content-header'>
-        <h5 className='mb-0'>Address</h5>
-        <small>Enter Your Address.</small>
+        <h5 className='mb-0'>اطلاعات دوره</h5>
       </div>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>

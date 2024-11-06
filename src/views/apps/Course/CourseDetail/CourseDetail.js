@@ -18,6 +18,7 @@ import DeleteGroup from '../../../../components/common/active/deleteGroup';
 import { deleteCourseReserve, getCourseReserveById } from '../../../../@core/api/course/courseReserve';
 import moment from 'moment-jalaali';
 import Swal from 'sweetalert2';
+import { ThreeDots } from 'react-loader-spinner';
 
 const CourseDetail = () => {
     const { id } = useParams();
@@ -86,8 +87,10 @@ const CourseDetail = () => {
     }, [productDetail]);
 
     if (isLoading) {
-        return <img src={loading} style={{ margin: 'auto', display: 'block', width: '80px', height: '80px' }} />;
-    }
+        return(
+        <div className="d-flex justify-content-center align-items-center mt-4">
+          <ThreeDots color="#007bff" height={80} width={80} />
+        </div>  )  }
 
     if (isError) {
         return <div>خطا در بارگذاری داده‌ها</div>;

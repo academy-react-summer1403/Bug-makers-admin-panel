@@ -20,6 +20,7 @@ import { setBlogListDetail } from '../../../../redux/blogDetail';
 import BlogDetailPage from '../../../pages/blogDetail';
 import EditCommentForm from '../../../../components/common/modal/editComment';
 import { getComments } from '../../../../redux/comments';
+import { ThreeDots } from 'react-loader-spinner';
 
 const BlogDetail = () => {
     const { id } = useParams();
@@ -61,9 +62,11 @@ const BlogDetail = () => {
 
     const blog = useSelector((state) => state.blogDetail.blogList)
 console.log(blog);
-    if (isLoading) {
-        return <img src={loading} style={{ margin: 'auto', display: 'block', width: '80px', height: '80px' }} />;
-    }
+if (isLoading) {
+    return(
+    <div className="d-flex justify-content-center align-items-center mt-4">
+      <ThreeDots color="#007bff" height={80} width={80} />
+    </div>  )  }
 
     if (isError) {
         return <div>خطا در بارگذاری داده‌ها</div>;

@@ -88,8 +88,7 @@ const CourseInfo = ({ stepper }) => {
     return (
         <Fragment>
             <div className='content-header'>
-                <h5 className='mb-0'>Personal Info</h5>
-                <small>Enter Your Personal Info.</small>
+                <h5 className='mb-0'>جزییات دوره</h5>
             </div>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Row>
@@ -186,10 +185,10 @@ const CourseInfo = ({ stepper }) => {
                 <div className='d-flex justify-content-between'>
                     <Button type='button' color='primary' className='btn-prev' onClick={() => stepper.previous()}>
                         <ArrowLeft size={14} className='align-middle me-sm-25 me-0' />
-                        <span className='align-middle d-sm-inline-block d-none'>Previous</span>
+                        <span className='align-middle d-sm-inline-block d-none'>قبلی</span>
                     </Button>
                     <Button type='submit' color='primary' className='btn-next'>
-                        <span className='align-middle d-sm-inline-block d-none'>Next</span>
+                        <span className='align-middle d-sm-inline-block d-none'>بعدی</span>
                         <ArrowRight size={14} className='align-middle ms-sm-25 ms-0' />
                     </Button>
                 </div>

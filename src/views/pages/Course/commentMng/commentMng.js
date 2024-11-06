@@ -54,6 +54,7 @@ const CommentMngForCourseAdmin = () => {
     setMaxCost(null);
     setQueryValueStatic('')
     setUser(null)
+    setAcceptSelect(null)
   };
 
   const itemsPerPage = 8;
@@ -227,6 +228,7 @@ const CommentMngForCourseAdmin = () => {
           ))}
         </FormSelect>
         <FormSelect value={acceptSelect} onChange={() => setAcceptSelect(e.target.value)} placeholder={'وضعیت'}    style={{width:'200px'}}>
+          <option >انتخاب کنید</option>
           <option value={true} onClick={() => setAcceptSelect(true)}>تاییده شده </option>
           <option value={false} onClick={() => setAcceptSelect(false)}>در انتظار تایید</option>
         </FormSelect>

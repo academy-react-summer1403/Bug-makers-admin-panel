@@ -157,10 +157,10 @@ const onSubmit = (e) => {
         >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
-              Welcome to Vuexy! 👋
+              به پنل ادمین خوش آمدید! 👋
             </CardTitle>
             <CardText className="mb-2">
-              Please sign-in to your account and start the adventure
+              لطفا ورود کنید
             </CardText>
             <Form
               className="auth-login-form mt-2"
@@ -168,7 +168,7 @@ const onSubmit = (e) => {
             >
               <div className="mb-1">
                 <Label className="form-label" for="login-email">
-                  Email
+                  ایمیل
                 </Label>
                 <Input
                   type="email"
@@ -181,10 +181,10 @@ const onSubmit = (e) => {
               <div className="mb-1">
                 <div className="d-flex justify-content-between">
                   <Label className="form-label" for="login-password">
-                    Password
+                    رمز عبور
                   </Label>
                   <Link to="/forgot-password">
-                    <small>Forgot Password?</small>
+                    <small>فراموشی رمز?</small>
                   </Link>
                 </div>
                 <InputPasswordToggle
@@ -196,21 +196,21 @@ const onSubmit = (e) => {
               <div className="form-check mb-1">
                 <Input type="checkbox" id="remember-me" />
                 <Label className="form-check-label" for="remember-me">
-                  Remember Me
+                  به خاطر بسپار
                 </Label>
               </div>
               <Button  type="submit"  color="primary" block>
-                Sign in
+                ورود
               </Button>
             </Form>
             <p className="text-center mt-2">
-              <span className="me-25">New on our platform?</span>
+              <span className="me-25">اکانتی ندارید؟</span>
               <Link to="/register">
-                <span>Create an account</span>
+                <span>ساخت اکانت جدید</span>
               </Link>
             </p>
             <div className="divider my-2">
-              <div className="divider-text">or</div>
+              <div className="divider-text">بقیه</div>
             </div>
             <div className="auth-footer-btn d-flex justify-content-center">
               <Button color="facebook">

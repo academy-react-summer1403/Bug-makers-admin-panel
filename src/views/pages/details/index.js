@@ -197,7 +197,7 @@ const Product = props => {
             text={preview === true ? 'غیر فعال' :  'در حال آپلود'}
             text2={preview  === true ? 'فعال' :  'در حال آپلود'}
           />
-          <PenTool onClick={handlingNavigate} />
+          <Button onClick={handlingNavigate} color='warning' style={{marginRight:'15px'}} >ویرایش دوره</Button>
           <UncontrolledButtonDropdown className='dropdown-icon-wrapper btn-share'>
             <DropdownMenu end>
               <DropdownItem tag='a' href='/' onClick={e => e.preventDefault()}>

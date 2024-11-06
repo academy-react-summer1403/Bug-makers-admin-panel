@@ -144,24 +144,7 @@ const BlogDetailPage = props => {
         </ul>) : (
           <></>
         )}
-        <hr />
-        <ul className='product-features list-unstyled d-flex  align-items-start  gap-4'>
-            <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
-              <span>{courseClassRoomName}</span>
-            </div>
-            <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
-              <span> تعداد گروه : {courseGroupTotal ? courseGroupTotal : 0}</span>
-            </div>
-            <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
-              <span> تایپ دوره : {courseTypeName ? courseTypeName : 0}</span>
-            </div>
-            <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
-              <span> لول دوره : {courseLevelName ? courseLevelName : 0}</span>
-            </div>
-            <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
-              <span> وضعیت دوره : {courseStatusName ? courseStatusName : 0}</span>
-            </div>
-          </ul>
+
         <hr />
         <ul className='product-features list-unstyled d-flex  align-items-start  gap-4'>
             <div className="d-flex  align-items-center flex-nowrap" style={{gap: '5px'}}>
@@ -196,7 +179,7 @@ const BlogDetailPage = props => {
             text={preview === true ? 'غیر فعال' :  'در حال آپلود'}
             text2={preview  === true ? 'فعال' :  'در حال آپلود'}
           />
-          <PenTool onClick={handlingNavigate} />
+          <Button color='warning' style={{marginRight:'10px'}} onClick={handlingNavigate} >ویرایش مقاله</Button>
           <UncontrolledButtonDropdown className='dropdown-icon-wrapper btn-share'>
             <DropdownMenu end>
               <DropdownItem tag='a' href='/' onClick={e => e.preventDefault()}>

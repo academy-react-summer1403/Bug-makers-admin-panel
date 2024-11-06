@@ -232,7 +232,7 @@ const UsersList = () => {
   // ** Get data on mount
   useEffect(() => {
     dispatch(getAllData());
-  }, [dispatch]); // فقط در زمان بارگذاری کامپوننت
+  }, [dispatch]); 
   
   useEffect(() => {
     dispatch(getData({
@@ -383,6 +383,7 @@ const UsersList = () => {
   return (
     <Fragment>
       <Card className='overflow-hidden'>
+
         <div className='react-dataTable'>
           <DataTable
             noHeader

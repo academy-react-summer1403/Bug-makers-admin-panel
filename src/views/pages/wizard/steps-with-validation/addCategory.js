@@ -11,10 +11,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setCreate } from '../../../../redux/CreateCourse'
 import { addCategory } from '../../../../@core/api/course/addCategroy'
 import { useNavigate } from 'react-router-dom'
+import * as Yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 const defaultValues = {
     Category: []
 }
+
+// Yup Validation Schema
+const validationSchema = Yup.object({
+    Category: Yup.array()
+        .min(1, 'لطفا حداقل یک دسته بندی را انتخاب کنید') // Validation to select at least one category
+        .required('انتخاب دسته بندی الزامی است') // Required validation
+})
 
 const AddCategoryStep3 = ({ stepper , cat }) => {
     const {
@@ -22,7 +31,10 @@ const AddCategoryStep3 = ({ stepper , cat }) => {
         setError,
         handleSubmit,
         formState: { errors }
-    } = useForm({ defaultValues })
+    } = useForm({
+        defaultValues,
+        resolver: yupResolver(validationSchema) // Applying validation schema to react-hook-form
+    })
 
     const navigate = useNavigate()
 
@@ -32,26 +44,20 @@ const AddCategoryStep3 = ({ stepper , cat }) => {
         navigate('/apps/Course')
     };
 
-
     const { data: getDataCreated } = useQuery({
         queryKey: ['getDataCreated'],
         queryFn: getAllDataCreateCourse
     })
-
-
 
     const categoryOptions = getDataCreated?.technologyDtos.map(category => ({
         value: category.id,
         label: category.techName
     })) || []
 
- 
-
     return (
         <Fragment>
             <div className='content-header'>
-                <h5 className='mb-0'>Personal Info</h5>
-                <small>Enter Your Personal Info.</small>
+                <h5 className='mb-0'>اضافه کردن دسته بندی</h5>
             </div>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Row>
@@ -72,6 +78,10 @@ const AddCategoryStep3 = ({ stepper , cat }) => {
                                 />
                             )}
                         />
+                        {/* Displaying validation error */}
+                        {errors.Category && (
+                            <span className='text-danger'>{errors.Category.message}</span>
+                        )}
                     </Col>
                 </Row>
                 <div className='d-flex justify-content-between'>

@@ -164,13 +164,12 @@ const SocialLinks = ({ stepper }) => {
   return (
     <div>
       <div className='content-header'>
-        <h5 className='mb-0'>Social Links</h5>
-        <small>Enter Your Social Links.</small>
+        <h5 className='mb-0'>توضیحات دوره</h5>
       </div>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
           <Col sm={12} style={{minHeight:'250px'}}>
-            <Label for='Describe'>Description</Label>
+            <Label for='Describe'>توضیحات</Label>
             <div id="editorjs" style={{minHeight: '300px'}}></div> {/* This is the container for Editor.js */}
             {errors.Describe && <span className='text-danger'>{errors.Describe.message}</span>}
           </Col>
@@ -178,10 +177,10 @@ const SocialLinks = ({ stepper }) => {
         <div className='d-flex justify-content-between'>
           <Button color='primary' className='btn-prev' onClick={() => stepper.previous()}>
             <ArrowLeft size={14} className='align-middle me-sm-25 me-0' />
-            <span className='align-middle d-sm-inline-block d-none'>Previous</span>
+            <span className='align-middle d-sm-inline-block d-none'>قبلی</span>
           </Button>
           <Button type='submit' color='primary' className='btn-submit'>
-            Next
+            بعدی
           </Button>
         </div>
       </Form>
