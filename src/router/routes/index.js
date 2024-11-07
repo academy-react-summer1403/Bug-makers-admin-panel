@@ -48,12 +48,20 @@ const CommentMngForCourseAdmin = lazy(() => import('../../views/pages/Course/com
 const CommentMngForCourseTeacher = lazy(() => import('../../views/pages/Course/commentMng/commentMngTeacher')) 
 const CommentMngForCourse = lazy(() => import('../../views/pages/Course/commentMng/AllCommentMng')) 
 const MyCourse = lazy(() => import('../../views/pages/Course/MyCourse/MyCourse'))
+const Ecommerce = lazy(() => import('../../views/pages/dashboard/ecommerce'))
+const Bullding = lazy(() => import('../../views/pages/building/building'))
+const Department = lazy(() => import('../../views/pages/Department/department'))
+const AssCourse = lazy(() => import('../../views/pages/assistanceCourse/assistanceCourse'))
 // ** Merge Routes
 const Routes = [
   {
     path: "/",
     index: true,
     element: <Navigate replace to={DefaultRoute} />,
+  },
+  {
+    path: "/dashBoard/ecommerce",
+    element: <Ecommerce />,
   },
   {
     path: "/home",
@@ -180,6 +188,18 @@ const Routes = [
   {
     element: <CatNews />,
     path: '/apps/CategoryNews'
+  },
+  {
+    element: <Bullding />,
+    path: '/building/list'
+  },
+  {
+    element: <Department />,
+    path: '/Department/list'
+  },
+  {
+    element: <AssCourse />,
+    path: '/AssCourse/list'
   },
   {
     path: "/forgot-password",

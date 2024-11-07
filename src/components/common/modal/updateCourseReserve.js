@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, Nav, NavItem, NavLink, TabContent, TabPane, FormGroup, Label, Input } from 'reactstrap';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
@@ -7,70 +7,80 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { addCategoryBlog, getCategoryListBlog, updateCategoryBlog } from '../../../@core/api/blog/Category';
 import { getCategoryId } from '../../../@core/api/blog/Category'; 
 import { getCourseReserveWithId } from '../../../@core/api/reserve/getReserveWithId';
+import { FormSelect } from 'react-bootstrap';
+import { getCourseDetail } from '../../../@core/api/course/courseDetail';
+import { getGroup } from '../../../@core/api/course/getGroup';
+import { ThreeDots } from 'react-loader-spinner';
+import ReactSelect from 'react-select';
+import { acceptReserve } from '../../../@core/api/reserve/acceptReserve';
+import { error } from 'jquery';
+import toast from 'react-hot-toast';
 
 
-const UpdateCourseReserve = ({selectData}) => {
+const UpdateCourseReserve = ({selected , studentId}) => {
   const [show, setShow] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
 
   const toggleTab = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
-
-
-  const validationSchema2 = Yup.object({
-    selectedCategory: Yup.string().required('لطفاً یک دسته بندی انتخاب کنید'),
-    categoryName: Yup.string().required('نام دسته بندی الزامی است'),
-    image: Yup.string().required('عکس الزامی است'),
-    iconAddress: Yup.string().required('آدرس ایکون الزامی است'),
-    iconName: Yup.string().required('نام ایکون الزامی است'),
-    googleTitle: Yup.string().required('تایتل گوگل الزامی است'),
-    GoogleDescription: Yup.string().required('توضیحات گوگل الزامی است'),
-  });
-
-  const { data : categoryList } = useQuery({
-    queryKey:['categoryList'],
-    queryFn: getCategoryListBlog
-  })
-
+  
   const [SelectId, setSelectId] = useState()
-  const { data : getCategoryIdData} = useQuery({
-    queryKey:['reserveIdList',SelectId],
-    queryFn: () => getCourseReserveWithId(SelectId),
-    enabled: !!SelectId
-})
-
-console.log(getCategoryIdData);
-
-    const UpdateCategory = useMutation({
-        mutationKey:['updateCategoryes'],
-        mutationFn: (formData) => updateCategoryBlog(formData)
-    })
-  const handleSubmit2 = (values) => {
-    setShow(false)
-    const formData = new FormData();
-    formData.append('Id', Number(getCategoryIdData.id))
-    formData.append('CategoryName', values.categoryName)
-    formData.append('Image', values.image || values.Image)
-    formData.append('IconAddress', values.iconAddress)
-    formData.append('IconName', values.iconName)
-    formData.append('GoogleTitle', values.googleTitle)
-    formData.append('GoogleDescribe', values.GoogleDescription)
-    UpdateCategory.mutate(formData)
-  }
-
+  const [courseData, setCourseData] = useState([])
+  const [teacherId, setTeacherId] = useState()
+  const [setGroupId, setSetGroupId] = useState()
+  const [groupIdState, setGroupIdState] = useState()
+  console.log(groupIdState);
   const handleModal = () => {
-    setSelectId(selectData)
+    setSelectId(selected)
     setShow(true)
   }
+  const {data : course } = useQuery({
+    queryKey:['getCourse'],
+    queryFn:() => getCourseDetail(SelectId),
+    enabled: !!SelectId,
+  })
+
+  useEffect(() => {
+    if(course){
+      setCourseData(course)
+      setTeacherId(course?.teacherId)
+    }
+  }, [course])
+
+  const {data : groupData , isLoading } = useQuery({
+    queryKey:['getGroup' , SelectId , teacherId ],
+  queryFn:() => getGroup(teacherId, SelectId),
+    enabled: !!SelectId && !!teacherId,
+  })
+
+  useEffect(() => {
+    if (groupData && groupData.length > 0) {
+      setGroupIdState(groupData[0].groupId);
+    }
+  }, [groupData]);  
+    const mutation = useMutation({
+      mutationKey: ['acceptReserve'],
+      mutationFn: (reserveData) => acceptReserve(reserveData),
+      onError:(error) => {
+        toast.error(error.response.data.ErrorMessage)
+      }
+    })
+  const handleSubmit = (values) => {
+    setShow(false)
+    console.log(values);
+    mutation.mutate(values)
+  }
+
+
   return (
     <div>
       <Button
         onClick={handleModal}
-        className='btn-cart me-0 me-sm-1 mb-1 mb-sm-0'
-        color='info'
+        style={{padding:'8px'}}
+        color='success'
       >
-         بروزرسانی آپدیت
+        تایید رزرو
       </Button>
 
       <Modal
@@ -81,103 +91,43 @@ console.log(getCategoryIdData);
         keyboard={false}
         style={{ width: '500px' }}
       >
-        <ModalHeader className='bg-transparent' toggle={() => setShow(false)}>مدیریت دسته بندی</ModalHeader>
+        <ModalHeader className='bg-transparent' toggle={() => setShow(false)}>گروه رزرو رو انتخاب کنید</ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
               <Formik
                 initialValues={{
-                  selectedCategory: getCategoryIdData?.id,
-                  categoryName: getCategoryIdData?.categoryName,
-                  image: getCategoryIdData?.image,
-                  iconAddress: getCategoryIdData?.iconAddress,
-                  iconName: getCategoryIdData?.iconName,
-                  googleTitle: getCategoryIdData?.googleTitle,
-                  GoogleDescription: getCategoryIdData?.googleDescribe,
+                  courseId: selected,
+                  courseGroupId : groupIdState || '',
+                  studentId : studentId
                 }}
-                validationSchema={validationSchema2}
-                onSubmit={handleSubmit2}
+                // validationSchema={validationSchema2}
+                onSubmit={handleSubmit}
                 enableReinitialize={true} 
               >
                 {({ errors, touched, handleChange, values }) => (
                   <Form>
-                    <FormGroup>
-                      <Label for="categoryName">نام دسته بندی</Label>
-                      <Input
-                        type="text"
-                        name="categoryName"
-                        id="categoryName"
-                        onChange={handleChange}
-                        value={values.categoryName}
-                      />
-                      {errors.categoryName && touched.categoryName && (
-                        <div className="text-danger">{errors.categoryName}</div>
-                      )}
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="image">عکس</Label>
-                      <Input
-                        type="text"
-                        name="image"
-                        id="image"
-                        onChange={handleChange}
-                        value={values.image}
-                      />
-                      {errors.image && touched.image && (
-                        <div className="text-danger">{errors.image}</div>
-                      )}
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="iconAddress">آدرس ایکون دسته بندی</Label>
-                      <Input
-                        type="text"
-                        name="iconAddress"
-                        id="iconAddress"
-                        onChange={handleChange}
-                        value={values.iconAddress}
-                      />
-                      {errors.iconAddress && touched.iconAddress && (
-                        <div className="text-danger">{errors.iconAddress}</div>
-                      )}
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="iconName">نام ایکون</Label>
-                      <Input
-                        type="text"
-                        name="iconName"
-                        id="iconName"
-                        onChange={handleChange}
-                        value={values.iconName}
-                      />
-                      {errors.iconName && touched.iconName && (
-                        <div className="text-danger">{errors.iconName}</div>
-                      )}
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="googleTitle">تایتل گوگل</Label>
-                      <Input
-                        type="text"
-                        name="googleTitle"
-                        id="googleTitle"
-                        onChange={handleChange}
-                        value={values.googleTitle}
-                      />
-                      {errors.googleTitle && touched.googleTitle && (
-                        <div className="text-danger">{errors.googleTitle}</div>
-                      )}
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="GoogleDescription">توضیحات گوگل</Label>
-                      <Input
-                        type="text"
-                        name="GoogleDescription"
-                        id="GoogleDescription"
-                        onChange={handleChange}
-                        value={values.GoogleDescription}
-                      />
-                      {errors.GoogleDescription && touched.GoogleDescription && (
-                        <div className="text-danger">{errors.GoogleDescription}</div>
-                      )}
-                    </FormGroup>
-                    <Button color="primary" type="submit">بروزرسانی</Button>
+                    {isLoading ? (
+                      <div className='d-flex justify-content-center'>
+                      <ThreeDots color='blue' />
+                      </div>
+                   ) : (
+                    <select
+                      className='w-100 '
+                      value={groupIdState}
+                      onChange={(e) => setGroupIdState(Number(e.target.value))}
+                    >
+                  {groupData?.length > 0 ? (
+                    groupData.map((item) => (
+                      <option key={item.groupId} value={item.groupId}>
+                        {item.groupName}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>گروهی برای این دوره ثبت نشد</option>
+                  )}
+
+                   </select>
+                   )}
+                    <Button style={{marginTop:'50px'}} color="primary" type="submit">تایید رزرو</Button>
                   </Form>
                 )}
               </Formik>

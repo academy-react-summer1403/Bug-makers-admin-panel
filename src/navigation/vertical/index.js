@@ -4,7 +4,6 @@ import Layout from "@layouts/VerticalLayout"; // Layout import
 import { Home, User, Mail, Book, BookOpen } from "react-feather";
 import { useSelector } from 'react-redux';
 
-// فرض کنید داده‌های کاربر (مثل roles) از API دریافت شده است
 export const userData = (items) => {
   const isAdmin = items?.roles?.some(role => role.roleName === "Administrator");
   const isTeacher = items?.roles?.some(role => role.roleName === "Teacher");
@@ -15,6 +14,14 @@ export const userData = (items) => {
       title: "خانه",
       icon: <Home size={20} />,
       navLink: "/home",
+      children:[
+        {
+          id: "ecommers",
+          title: " ها",
+          icon: <Book size={20} />,
+          navLink: "/dashBoard/ecommerce",
+        },
+      ]
     },
     {
       id: "user",
@@ -105,6 +112,25 @@ export const userData = (items) => {
       icon: <BookOpen size={20} />,
       navLink: "/apps/allCommentMng",
     }] : []),
+    {
+      id: "building",
+      title: "ساختمان پژوهشگاه",
+      icon: <BookOpen size={20} />,
+      navLink: "/building/list",
+    },
+    {
+      id: "Department",
+      title: "بخش های پژوهشگاه",
+      icon: <BookOpen size={20} />,
+      navLink: "/Department/list",
+    },
+    {
+      id: "AssCourse",
+      title: "منتور ها",
+      icon: <BookOpen size={20} />,
+      navLink: "/AssCourse/list",
+    }
   ];
+  
   return data;
 };

@@ -122,7 +122,7 @@ export const columns = [
   {
     name: 'کاربران',
     sortable: true,
-    minWidth: '30px',
+    width: '330px',
     sortField: 'fullName',
     selector: row => row.studentName,
     cell: row => (

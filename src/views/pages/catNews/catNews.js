@@ -88,6 +88,7 @@ const CatNews = () => {
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
           <UpdateCat selectData={row.id}  />
+          
         </div>
       )
     }

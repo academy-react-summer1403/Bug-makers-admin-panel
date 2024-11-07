@@ -109,7 +109,7 @@ const CourseReserve = () => {
       name: 'عملیات',
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
-            <UpdateCourseReserve selectData={row.reserveId} />
+            <UpdateCourseReserve selected={row.courseId} studentId={row.studentId} />
             <Button color='danger' size='sm' onClick={() => handleDelete(row)} >حذف رزرو</Button>
         </div>
       )
