@@ -2,43 +2,44 @@ import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Button, Label, Input, FormFeedback, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import * as Yup from 'yup';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UpdateBuildding } from '../../../@core/api/building/updateBuildding';
 import Map from '../map/map'; // Import Map component
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Flatpickr from 'react-flatpickr';
+import { UpdateAssWork } from '../../../@core/api/assWork/assWorkPage/updateAssWork';
+import { getAssCourse } from '../../../@core/api/assWork/getAssCourse';
 
-const EditBullding = ({ row, title }) => {
+const EditAssWork = ({ row, title }) => {
   const [show, setShow] = useState(false);
   const query = useQueryClient();
+    const [courseAss, setCourseAss] = useState()
 
+    const { data : courseAssData } = useQuery({
+        queryKey: ['getCourseAss'],
+        queryFn: getAssCourse,
+      });
   const defaultValue = row ? {
     id: row.id || null,
-    buildingName: row.buildingName || '',
-    floor: row.floor || 0,
-    latitude: row.latitude ? row.latitude.toString() : '',
-    longitude: row.longitude ? row.longitude.toString() : '',
-    workDate: row.workDate || '',  // Make sure it's in the correct format
-    active: row.active !== undefined ? row.active : true
+    worktitle: row.worktitle || '',
+    workDescribe: row.workDescribe || '',
+    workDate: row.workDate || '',
+    assistanceId: courseAss || '',
   } : {
-    buildingName: '',
-    floor: 0,
-    latitude: '',
-    longitude: '',
+    worktitle: '',
+    workDescribe: '',
     workDate: '',
-    active: true
+    assistanceId: courseAss
   };
 
   const validationSchema = Yup.object().shape({
-    buildingName: Yup.string().required('این فیلد الزامی است'),
-    floor: Yup.number().required('این فیلد الزامی است'),
-    workDate: Yup.date().required('تاریخ الزامی است'),
-    active: Yup.boolean(),
+    workDescribe: Yup.string().required('این فیلد الزامی است').min(5,'حداقل 5 کاراکتر'),
+    worktitle: Yup.string().required('این فیلد الزامی است').min(5,'حداقل 5 کاراکتر'),
   });
 
-  const updateBuildding = useMutation({
-    mutationKey: ['updateBuildding'],
-    mutationFn: (BulldingData) => UpdateBuildding(BulldingData, row),
+  const updateAssWork = useMutation({
+    mutationKey: ['updateAssWork'],
+    mutationFn: (BulldingData) => UpdateAssWork(BulldingData, row),
     onSuccess: () => {
       setShow(false);
       query.invalidateQueries('getBulding');
@@ -46,8 +47,7 @@ const EditBullding = ({ row, title }) => {
   });
 
   const handleSubmit = (values) => {
-    updateBuildding.mutate(values);
-    console.log(values);
+    updateAssWork.mutate(values);
   };
 
   return (
@@ -57,8 +57,8 @@ const EditBullding = ({ row, title }) => {
         <ModalHeader toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
           <div className="text-center mb-2">
-            <h1 className="mb-1">{row ? 'بروزرسانی  ساختمان' : 'افزودن ساختمان '} </h1>
-            <p>اطلاعات ساختمان را وارد کنید</p>
+            <h1 className="mb-1">{row ? 'بروزرسانی تعیین تسک ' : 'افزودن   تسک'} </h1>
+            <p>اطلاعات تسک را وارد کنید</p>
           </div>
           <Formik
             initialValues={defaultValue}
@@ -69,27 +69,28 @@ const EditBullding = ({ row, title }) => {
             {({ handleChange, values, errors, touched, setFieldValue }) => (
               <Form style={{ display: 'flex', justifyContent: 'center', flexFlow: 'row wrap', gap: '14px' }}>
                 <div className="mb-1 w-40">
-                  <Label for="buildingName">نام ساختمان <span className="text-danger">*</span></Label>
+                  <Label for="worktitle">نام تسک <span className="text-danger">*</span></Label>
                   <Input
-                    id="buildingName"
-                    name="buildingName"
-                    value={values.buildingName}
+                    id="worktitle"
+                    name="worktitle"
+                  style={{ width: '300px' }}
+                    value={values.worktitle}
                     onChange={handleChange}
-                    invalid={touched.buildingName && !!errors.buildingName}
+                    invalid={touched.worktitle && !!errors.worktitle}
                   />
-                  {touched.buildingName && errors.buildingName && <FormFeedback>{errors.buildingName}</FormFeedback>}
+                  {touched.worktitle && errors.worktitle && <FormFeedback>{errors.worktitle}</FormFeedback>}
                 </div>
                 <div className="mb-1 w-40">
-                  <Label for="floor">مساحت <span className="text-danger">*</span></Label>
+                  <Label for="workDescribe">توضیحات تسک <span className="text-danger">*</span></Label>
                   <Input
-                    id="floor"
-                    name="floor"
-                    type="number"
-                    value={values.floor}
+                    id="workDescribe"
+                    name="workDescribe"
+                  style={{ width: '300px' }}
+                    value={values.workDescribe}
                     onChange={handleChange}
-                    invalid={touched.floor && !!errors.floor}
+                    invalid={touched.workDescribe && !!errors.workDescribe}
                   />
-                  {touched.floor && errors.floor && <FormFeedback>{errors.floor}</FormFeedback>}
+                  {touched.workDescribe && errors.workDescribe && <FormFeedback>{errors.workDescribe}</FormFeedback>}
                 </div>
 
                 {/* Fix Flatpickr onChange */}
@@ -97,12 +98,11 @@ const EditBullding = ({ row, title }) => {
                   type="date"
                   name="workDate"
                   id="workDate"
-                  style={{ width: '250px' }}
+                  style={{ width: '300px' }}
                   placeholder="ساعت کاری را انتخاب کنید"
                   className="form-control"
                   value={values.workDate}
                   onChange={(date) => {
-                    // If using range, select the first date (0 index)
                     setFieldValue('workDate', date[0]);
                   }}
                   options={{
@@ -110,20 +110,16 @@ const EditBullding = ({ row, title }) => {
                     dateFormat: "Y-m-d"
                   }}
                 />
-
-                <div className="mb-1 w-40">
-                  <Label for="active">فعال کردن دوره؟<span className="text-danger">*</span></Label>
-                  <Input
-                    id="active"
-                    name="active"
-                    type="checkbox"
-                    checked={values.active}
-                    onChange={handleChange}
-                    invalid={touched.active && !!errors.active}
-                  />
-                  {touched.active && errors.active && <FormFeedback>{errors.active}</FormFeedback>}
-                </div>
-                <Map row={row} />
+                <Input
+                    type='select' 
+                    name='assistanceId'
+                    style={{width:'300px'}}
+                    onChange={(e) => setCourseAss(e.target.value)}
+                >
+                    {courseAssData?.map((item) => (
+                        <option key={item.id} value={item.id}>{item.courseName}</option>
+                    ))}
+                </Input>
 
                 <Button type="submit" color="primary">ارسال</Button>
                 <Button type="reset" color="secondary" outline onClick={() => setShow(false)}>انصراف</Button>
@@ -136,4 +132,4 @@ const EditBullding = ({ row, title }) => {
   );
 };
 
-export default EditBullding;
+export default EditAssWork;

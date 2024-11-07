@@ -72,8 +72,8 @@ const EditAssCourse = ({ row, title }) => {
         <ModalHeader toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
           <div className="text-center mb-2">
-            <h1 className="mb-1">بروزرسانی ساختمان</h1>
-            <p>اطلاعات ساختمان را وارد کنید</p>
+            <h1 className="mb-1"> {row ? 'بروزرسانی منتور ' : 'افزودن  منتور'}</h1>
+            <p>اطلاعات منتور را وارد کنید</p>
           </div>
           <Formik
             initialValues={defaultValue}

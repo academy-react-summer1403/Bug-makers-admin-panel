@@ -52,6 +52,8 @@ const Ecommerce = lazy(() => import('../../views/pages/dashboard/ecommerce'))
 const Bullding = lazy(() => import('../../views/pages/building/building'))
 const Department = lazy(() => import('../../views/pages/Department/department'))
 const AssCourse = lazy(() => import('../../views/pages/assistanceCourse/assistanceCourse'))
+const AssWork = lazy(() => import('../../views/pages/assWork/assWork'))
+const SocialGroup = lazy(() => import('../../views/pages/socailGroup/socialGroup'))
 // ** Merge Routes
 const Routes = [
   {
@@ -200,6 +202,14 @@ const Routes = [
   {
     element: <AssCourse />,
     path: '/AssCourse/list'
+  },
+  {
+    element: <AssWork />,
+    path: '/AssWork/list'
+  },
+  {
+    element: <SocialGroup />,
+    path: '/SocialGroup/list'
   },
   {
     path: "/forgot-password",

@@ -10,13 +10,15 @@ import { getDep } from '../../../@core/api/Department/getDep';
 import EditDep from '../../../components/common/modal/editDep';
 import { getAssCourse } from '../../../@core/api/assWork/getAssCourse';
 import EditAssCourse from '../../../components/common/modal/editAssCourse';
+import { getAssWork } from '../../../@core/api/assWork/assWorkPage/getAssWork';
+import EditAssWork from '../../../components/common/modal/editAssWork';
 
 const AssWork = () => {
   const itemsPerPage = 8;
 
   const { data } = useQuery({
-    queryKey: ['getAssC'],
-    queryFn: getAssCourse,
+    queryKey: ['getAssW'],
+    queryFn: getAssWork,
   });
 
 
@@ -26,8 +28,7 @@ const AssWork = () => {
   useEffect(() => {
     if (data) {
       const result = data.filter((row) =>
-        row.courseName.toLowerCase().includes(searchText.toLowerCase()) ||
-        row.userId.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+        row?.courseName.toLowerCase().includes(searchText.toLowerCase()) ||
         useDay(row.inserDate).toLowerCase().includes(searchText.toLowerCase()) 
       );
       setFilteredData(result);
@@ -41,25 +42,31 @@ const AssWork = () => {
   const columns = [
     {
       name: 'نام دوره',
-      width: '400px',
       selector: (row) => row.courseName,
     },
     {
       name: 'تاریخ انتشار',
-      width: '400px',
       selector: (row) => useDay(row.inserDate),
     },
     {
-      name: 'ایدی کاربر ',
-      width: '150px',
-      selector: (row) => row.userId,
+      name: 'عنوان تسک',
+      selector: (row) => row.worktitle,
       sortable: true,
+    },
+    {
+      name: 'توضیحات تسک',
+      selector: (row) => row.workDescribe,
+      sortable: true,
+    },
+    {
+      name: 'تاریخ انجام تسک',
+      selector: (row) => useDay(row.workDate),
     },
     {
       name: 'عملیات',
       cell: (row) => (
         <div className="d-flex justify-content-center align-items-center gap-1">
-          <EditAssCourse title={'ویرایش'} row={row} />
+          <EditAssWork title={'ویرایش'} row={row} />
         </div>
       ),
     },
@@ -68,11 +75,11 @@ const AssWork = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        <EditAssCourse title={'افزودن منتور'} />
+        <EditAssWork title={'افزودن تسک'} />
         <input
           type="search"
           className="form-control"
-          placeholder="جستجو بر اساس نام دوره  تاریخ انتشار یا آیدی کاربر..."
+          placeholder="جستجو بر اساس نام دوره  تاریخ انتشار   ..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />

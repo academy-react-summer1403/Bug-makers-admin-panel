@@ -129,6 +129,18 @@ export const userData = (items) => {
       title: "منتور ها",
       icon: <BookOpen size={20} />,
       navLink: "/AssCourse/list",
+    },
+    {
+      id: "AssWork",
+      title: "تعیین تسک",
+      icon: <BookOpen size={20} />,
+      navLink: "/AssWork/list",
+    },
+    {
+      id: "SocialGroup",
+      title: "گروه اجتماعی دوره ",
+      icon: <BookOpen size={20} />,
+      navLink: "/SocialGroup/list",
     }
   ];
   

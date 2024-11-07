@@ -54,8 +54,8 @@ const EditDep = ({ row, title }) => {
         <ModalHeader toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
           <div className="text-center mb-2">
-            <h1 className="mb-1">بروزرسانی ساختمان</h1>
-            <p>اطلاعات ساختمان را وارد کنید</p>
+            <h1 className="mb-1">{row ? 'بروزرسانی  بخش' : 'افزودن بخش '}</h1>
+            <p>اطلاعات بخش را وارد کنید</p>
           </div>
           <Formik
             initialValues={defaultValue}
