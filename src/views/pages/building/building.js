@@ -22,9 +22,9 @@ const Bullding = () => {
   useEffect(() => {
     if (data) {
       const result = data.filter((row) =>
-        row.buildingName.toLowerCase().includes(searchText.toLowerCase()) ||
+        row.buildingName?.toLowerCase().includes(searchText.toLowerCase()) ||
         useDay(row.workDate).toLowerCase().includes(searchText.toLowerCase()) ||
-        row.floor.toString().includes(searchText) 
+        row.floor?.toString().includes(searchText) 
       );
       setFilteredData(result);
     }

@@ -141,6 +141,32 @@ export const userData = (items) => {
       title: "گروه اجتماعی دوره ",
       icon: <BookOpen size={20} />,
       navLink: "/SocialGroup/list",
+    },
+    {
+      id: "Tournament",
+      title: "تورنومنت",
+      icon: <BookOpen size={20} />,
+      navLink: "/Tournament",
+      children:[
+        {
+           id: "tourList",
+            title: " لیست تورنومنت",
+            icon: <BookOpen size={20} />,
+            navLink: "/Tournament/list", 
+        },
+        {
+           id: "mainCheckList",
+            title: "چک لیست تورنومنت",
+            icon: <BookOpen size={20} />,
+            navLink: "/Tournament/MainCheckList", 
+        },
+        {
+           id: "Refere",
+            title: "داور ها",
+            icon: <BookOpen size={20} />,
+            navLink: "/Tournament/Refere", 
+        }
+      ]
     }
   ];
   

@@ -30,8 +30,8 @@ const SocialGroup = () => {
   useEffect(() => {
     if (data) {
       const result = data.filter((row) =>
-        row?.groupName.toLowerCase().includes(searchText.toLowerCase()) ||
-        row?.groupLink.toLowerCase().includes(searchText.toLowerCase()) 
+        row.groupName?.toLowerCase().includes(searchText.toLowerCase()) ||
+        row.groupLink?.toLowerCase().includes(searchText.toLowerCase()) 
             );
       setFilteredData(result);
     }

@@ -54,6 +54,9 @@ const Department = lazy(() => import('../../views/pages/Department/department'))
 const AssCourse = lazy(() => import('../../views/pages/assistanceCourse/assistanceCourse'))
 const AssWork = lazy(() => import('../../views/pages/assWork/assWork'))
 const SocialGroup = lazy(() => import('../../views/pages/socailGroup/socialGroup'))
+const Tournament = lazy(() => import('../../views/pages/tournoment/tournoment'))
+const MainCheckList = lazy(() => import('../../views/pages/tournoment/mainCheckList'))
+const Refere = lazy(() => import('../../views/pages/tournoment/Refre'))
 // ** Merge Routes
 const Routes = [
   {
@@ -210,6 +213,18 @@ const Routes = [
   {
     element: <SocialGroup />,
     path: '/SocialGroup/list'
+  },
+  {
+    element: <Tournament />,
+    path: '/Tournament/list'
+  },
+  {
+    element: <MainCheckList />,
+    path: '/Tournament/MainCheckList'
+  },
+  {
+    element: <Refere />,
+    path: '/Tournament/Refere'
   },
   {
     path: "/forgot-password",

@@ -3,23 +3,21 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { Badge } from 'reactstrap';
-import EditBullding from '../../../components/common/modal/editBullding';
-import Active from '../../../components/common/active/active';
 import moment from 'moment-jalaali';
-import { getDep } from '../../../@core/api/Department/getDep';
-import EditDep from '../../../components/common/modal/editDep';
-import { getAssCourse } from '../../../@core/api/assWork/getAssCourse';
-import EditAssCourse from '../../../components/common/modal/editAssCourse';
-import { getAssWork } from '../../../@core/api/assWork/assWorkPage/getAssWork';
-import EditAssWork from '../../../components/common/modal/editAssWork';
+import { getMainCheckList } from '../../../@core/api/Tournament/checkList/mainCheckList';
+import { FormSelect } from 'react-bootstrap';
+import EditTour from '../../../components/common/modal/editTour';
+import EditCheckList from '../../../components/common/modal/editCheckList';
 
-const AssWork = () => {
+const MainCheckList = () => {
   const itemsPerPage = 8;
 
   const { data } = useQuery({
-    queryKey: ['getAssW'],
-    queryFn: getAssWork,
+    queryKey: ['getCheckList'],
+    queryFn: getMainCheckList,
   });
+
+  const [isActive, setIsActive] = useState(null)
 
 
   const [searchText, setSearchText] = useState('');
@@ -27,46 +25,36 @@ const AssWork = () => {
 
   useEffect(() => {
     if (data) {
-      const result = data.filter((row) =>
-        row.courseName?.toLowerCase().includes(searchText.toLowerCase()) ||
-        useDay(row.inserDate).toLowerCase().includes(searchText.toLowerCase()) 
-      );
+      const result = data.filter((row) => {
+        const matchesSearchText = row.title?.toLowerCase().includes(searchText.toLowerCase())         
+        
+        return matchesSearchText ;
+      });
       setFilteredData(result);
     }
-  }, [searchText, data]);
+  }, [searchText, data, isActive]);
+  
   const useDay = (date) => {
     if(!date) return 'تاریخ  وجود ندارد';
     return moment(date).format('jYYYY/jMM/jDD'); 
   }
 
+
+  
   const columns = [
     {
-      name: 'نام دوره',
-      selector: (row) => row.courseName,
+      name: ' آیدی چک لیست',
+      selector: (row) => row.id,
     },
     {
-      name: 'تاریخ انتشار',
-      selector: (row) => useDay(row.inserDate),
-    },
-    {
-      name: 'عنوان تسک',
-      selector: (row) => row.worktitle,
-      sortable: true,
-    },
-    {
-      name: 'توضیحات تسک',
-      selector: (row) => row.workDescribe,
-      sortable: true,
-    },
-    {
-      name: 'تاریخ انجام تسک',
-      selector: (row) => useDay(row.workDate),
+      name: ' نام چک لیست',
+      selector: (row) => row.title,
     },
     {
       name: 'عملیات',
       cell: (row) => (
         <div className="d-flex justify-content-center align-items-center gap-1">
-          <EditAssWork title={'ویرایش'} row={row} />
+          <EditCheckList title={'ویرایش'} row={row} />
         </div>
       ),
     },
@@ -75,14 +63,15 @@ const AssWork = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        <EditAssWork title={'افزودن تسک'} />
+        <EditCheckList title={'افزودن تورنومنت '} />
         <input
           type="search"
           className="form-control"
-          placeholder="جستجو بر اساس نام دوره  تاریخ انتشار   ..."
+          placeholder="جستجو بر اساس نام تورنومنت      ..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
+
       </div>
 
       <AnimatePresence>
@@ -106,4 +95,4 @@ const AssWork = () => {
   );
 };
 
-export default AssWork;
+export default MainCheckList;

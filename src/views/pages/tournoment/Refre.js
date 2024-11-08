@@ -3,63 +3,57 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { Badge } from 'reactstrap';
-import EditBullding from '../../../components/common/modal/editBullding';
-import Active from '../../../components/common/active/active';
 import moment from 'moment-jalaali';
-import { getDep } from '../../../@core/api/Department/getDep';
-import EditDep from '../../../components/common/modal/editDep';
+import { getRefere } from '../../../@core/api/Tournament/Refere/getRefere';
+import { FormSelect } from 'react-bootstrap';
+import EditTour from '../../../components/common/modal/editTour';
+import EditCheckList from '../../../components/common/modal/editCheckList';
+import EditRefere from '../../../components/common/modal/editRefere';
 
-const Department = () => {
+const Refere = () => {
   const itemsPerPage = 8;
 
   const { data } = useQuery({
-    queryKey: ['getDepartment'],
-    queryFn: getDep,
+    queryKey: ['getRefere'],
+    queryFn: getRefere,
   });
-
+  
 
   const [searchText, setSearchText] = useState('');
-  const [filteredData, setFilteredData] = useState(data);
+  const [filteredData, setFilteredData] = useState(data?.list);
 
   useEffect(() => {
     if (data) {
-      const result = data.filter((row) =>
-        row.buildingName?.toLowerCase().includes(searchText.toLowerCase()) ||
-        useDay(row.insertDate).toLowerCase().includes(searchText.toLowerCase()) ||
-        row.depName?.toString().includes(searchText) 
+      const result = data.list.filter((row) =>
+        row.fullName?.toLowerCase().includes(searchText.toLowerCase())
       );
       setFilteredData(result);
     }
   }, [searchText, data]);
 
-  
   const useDay = (date) => {
-    if(!date) return 'تاریخ  وجود ندارد';
-    return moment(date).format('jYYYY/jMM/jDD'); 
-  }
+    if (!date) return 'تاریخ  وجود ندارد';
+    return moment(date).format('jYYYY/jMM/jDD');
+  };
 
   const columns = [
     {
-      name: 'نام ساختمان',
-      width: '400px',
-      selector: (row) => row.buildingName,
+      name: 'نام داور',
+      selector: (row) => row?.fullName,
     },
     {
-      name: 'تاریخ انتشار',
-      width: '400px',
-      selector: (row) => useDay(row.insertDate),
+      name: 'تعداد دوره ها',
+      selector: (row) => row?.courseCounts,
     },
     {
-      name: 'نام بخش',
-      width: '150px',
-      selector: (row) => row.depName,
-      sortable: true,
+      name: 'تعداد مقالات ',
+      selector: (row) => row?.newsCount,
     },
     {
       name: 'عملیات',
       cell: (row) => (
         <div className="d-flex justify-content-center align-items-center gap-1">
-          <EditDep title={'ویرایش'} row={row} />
+          <EditRefere title={'ویرایش'} row={row} />
         </div>
       ),
     },
@@ -68,11 +62,11 @@ const Department = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        <EditDep title={'ساخت بخش'} />
+        <EditRefere title={'افزودن تورنومنت '} />
         <input
           type="search"
           className="form-control"
-          placeholder="جستجو بر اساس نام بخش  کاری  ..."
+          placeholder="جستجو بر اساس نام داور ..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
@@ -86,7 +80,7 @@ const Department = () => {
         >
           <DataTable
             columns={columns}
-            data={filteredData} 
+            data={filteredData}  // استفاده از داده‌های فیلتر شده
             pagination
             paginationPerPage={itemsPerPage}
             paginationRowsPerPageOptions={[8, 15, 30]}
@@ -99,4 +93,4 @@ const Department = () => {
   );
 };
 
-export default Department;
+export default Refere;

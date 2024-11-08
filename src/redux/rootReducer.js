@@ -14,6 +14,7 @@ import blogDetailReducer from "./blogDetail";
 import LoginSliceReducer from './Login'
 import userIdSliceReducer from './userId'
 import rolePageSliceReducer from './rolePage'
+import TourGroupSliceReducer from './TourGroup'
 const rootReducer = { 
     navbar, 
     layout,
@@ -30,6 +31,7 @@ const rootReducer = {
     LoginState : LoginSliceReducer,
     userId:userIdSliceReducer,
     role:rolePageSliceReducer,
+    Tgroup : TourGroupSliceReducer
 };
 
 export default rootReducer;

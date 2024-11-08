@@ -26,8 +26,8 @@ const AssCourse = () => {
   useEffect(() => {
     if (data) {
       const result = data.filter((row) =>
-        row.courseName.toLowerCase().includes(searchText.toLowerCase()) ||
-        row.userId.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+        row.courseName?.toLowerCase().includes(searchText.toLowerCase()) ||
+        row.userId?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
         useDay(row.inserDate).toLowerCase().includes(searchText.toLowerCase()) 
       );
       setFilteredData(result);
