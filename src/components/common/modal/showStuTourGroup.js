@@ -42,7 +42,7 @@ import UpdateComment from './updateComment';
 import { replayComment } from '../../../@core/api/course/commentMng/replyComment';
 import { deleteTourGroup } from '../../../@core/api/Tournament/group/deleteTourGroup';
 import EditTourGroup from './updateTourGroup';
-import { deleteTourGroupStu, getTourGroupStu } from '../../../@core/api/Tournament/group/getGroupStu';
+import { UpdateTourGroupStu, deleteTourGroupStu, getTourGroupStu } from '../../../@core/api/Tournament/group/getGroupStu';
 import EditTourGroupStu from './EditTourGroupStu';
 const ShowStuTourGroup = ({group , isLoading , TourId}) => {
   const [show, setShow] = useState(false);  
@@ -112,8 +112,8 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
             <Button color='danger' style={{padding:'5px' , fontSize:'12px'}}  onClick={() => handleDelete(row)} >حذف دانش آموز</Button>
-            <EditTourGroupStu  color='info'  row={row} title={'ویرایش'} />
-            <EditTourGroupStu  color='success'   title={'افزودن دانش آموز'} />
+            <EditTourGroupStu api={UpdateTourGroupStu}  color='info'  row={row} title={'ویرایش'} />
+            <EditTourGroupStu api={UpdateTourGroupStu} color='success'   title={'افزودن دانش آموز'} />
         </div>
       )
     },
@@ -136,7 +136,7 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
       }}
       
     >
-      <User size={'14px'} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
+      <User size={'14px'}  className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
@@ -146,7 +146,7 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
       >
         <ModalHeader className='bg-transparent' toggle={() => setShow(false)}>دانشجو های این گروه</ModalHeader>
         <ModalBody  className="px-sm-5 mx-50 pb-5">
-        <EditTourGroupStu title='افزودن دانش آموز به گروه' color='success' />
+        <EditTourGroupStu api={UpdateTourGroupStu} title='افزودن دانش آموز به گروه' color='success' />
         <AnimatePresence>
           <motion.div
             key="table"

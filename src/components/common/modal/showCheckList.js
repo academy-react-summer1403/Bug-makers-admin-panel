@@ -45,7 +45,9 @@ import EditTourGroup from './updateTourGroup';
 import ShowStuTourGroup from './showStuTourGroup';
 import EditTourGroupStu from './EditTourGroupStu';
 import ShowTourGroupMentor from './showTourGroupMentor';
-const ShowGroupModal = ({group , isLoading , TourId}) => {
+import { deleteTourCheckList } from '../../../@core/api/Tournament/TourCheckList/deleteCheckList';
+import EditTourCheckList from './editCheckListTour';
+const ShowCheckList = ({group , isLoading , TourId}) => {
   const [show, setShow] = useState(false);  
   const [tooltipOpenX, setTooltipOpenX] = useState(false);
   const [tooltipOpenCheck, setTooltipOpenCheck] = useState(false);
@@ -69,8 +71,8 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
 
 
       const deleteTourGroupFn = useMutation({
-        mutationKey:['deleteGroupTour'],
-        mutationFn: (groupId) => deleteTourGroup(groupId),
+        mutationKey:['deleteCheckTour'],
+        mutationFn: (groupId) => deleteTourCheckList(groupId),
         onSuccess: () => {
             queryClient.invalidateQueries('group')
         }
@@ -90,42 +92,28 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
   const columns = [
 
     {
-      name: 'نام گروه',
-      width:'100px',
-      selector: row => row.groupName,
+      name: 'آیدی چک لیست',
+      selector: row => row.checkListId,
     },
     {
-      name: ' توضیحات گروه',
-      selector: row => row.describe,
+      name: 'نام چک لیست',
+      selector: row => row.checkListTitle,
     },
     {
-      name: 'نام تورنومنت',
-      selector: row => row.tournamentName,
+      name: 'تعداد امتیاز',
+      selector: row => row.scoreNumber,
     },
     {
-      name: 'تعداد  دانش آموز',
-      width:'100px',
-      selector: row => row.studentCount,
-    },
-    {
-      name: 'تعداد منتور',
-      width:'100px',
-      selector: row => row.mentorCount,
-    },
-    {
-      name: 'تاریخ انتشار گروه',
-      width:'100px',
-      selector: row => useDate(row.inserDate),
+      name: 'تاریخ انتشار چک لیست',
+      selector: row => useDate(row.checkListInsertDate),
     },
     {
       name: 'عملیات',
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
             <Button color='danger' style={{padding:'5px' , fontSize:'12px'}}  onClick={() => handleDelete(row)} >حذف گروه</Button>
-            <EditTourGroup color='info' TourId={TourId} row={row} title={'ویرایش'} />
-            <EditTourGroup color='success' TourId={TourId}  title={'ساخت گروه'} />.
-            <ShowStuTourGroup  group={row.id} />
-            <ShowTourGroupMentor  group={row.id} />
+            <EditTourCheckList color='info' TourId={TourId} row={row}  title={'ویرایش چک لیست'} />.
+            <EditTourCheckList color='success' TourId={TourId}  title={'ساخت چک لیست'} />.
         </div>
       )
     },
@@ -202,4 +190,4 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
     </div>
   );
 }
-export default ShowGroupModal;
+export default ShowCheckList;

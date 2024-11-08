@@ -16,6 +16,8 @@ import { useStateManager } from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTourGroup } from '../../../redux/TourGroup';
 import { useSelect } from '@nextui-org/react';
+import { getTourCheckList } from '../../../@core/api/Tournament/TourCheckList/getCheckList';
+import ShowCheckList from '../../../components/common/modal/showCheckList';
 
 const Tournament = () => {
   const itemsPerPage = 8;
@@ -39,7 +41,14 @@ const Tournament = () => {
     queryFn: () => getTourGroup(TourId),
     enabled: !!TourId
   });
+  // CheckList tour 
+  const { data : CheckList , isLoading : loading } = useQuery({
+    queryKey: ['getCheckList' ,TourId],
+    queryFn: () => getTourCheckList(TourId),
+    enabled: !!TourId
+  });
 
+  console.log(data);
   const dispatch = useDispatch()
   useEffect(() => {
     if(TourGroup){
@@ -101,6 +110,9 @@ const Tournament = () => {
         </div>
         <div onClick={() => setTourId(row.id)} className="d-flex justify-content-center align-items-center gap-1">
           <ShowGroupModal isLoading={isLoading} TourId={TourId} group={TourGroup} />
+          </div>
+        <div onClick={() => setTourId(row.id)} className="d-flex justify-content-center align-items-center gap-1">
+          <ShowCheckList isLoading={loading} TourId={TourId} group={CheckList} />
           </div>
           </div>
       ),

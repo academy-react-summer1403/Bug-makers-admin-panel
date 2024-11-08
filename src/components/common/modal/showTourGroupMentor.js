@@ -31,7 +31,7 @@ import {
 } from 'reactstrap'
 
 // ** Third Party Components
-import { Archive, Check, Delete, Edit, Eye, Linkedin, X } from 'react-feather';
+import { Archive, Check, Delete, Edit, Eye, Linkedin, User, X } from 'react-feather';
 
 // ** Styles
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -42,10 +42,12 @@ import UpdateComment from './updateComment';
 import { replayComment } from '../../../@core/api/course/commentMng/replyComment';
 import { deleteTourGroup } from '../../../@core/api/Tournament/group/deleteTourGroup';
 import EditTourGroup from './updateTourGroup';
-import ShowStuTourGroup from './showStuTourGroup';
+import { deleteTourGroupStu, getTourGroupStu } from '../../../@core/api/Tournament/group/getGroupStu';
 import EditTourGroupStu from './EditTourGroupStu';
-import ShowTourGroupMentor from './showTourGroupMentor';
-const ShowGroupModal = ({group , isLoading , TourId}) => {
+import { UpdateTourGroupMentor, deleteTourGroupMentor, getTourGroupMentor } from '../../../@core/api/Tournament/group/groupMentor';
+import { FaChalkboardTeacher } from "react-icons/fa";
+
+const ShowTourGroupMentor = ({group , isLoading , TourId}) => {
   const [show, setShow] = useState(false);  
   const [tooltipOpenX, setTooltipOpenX] = useState(false);
   const [tooltipOpenCheck, setTooltipOpenCheck] = useState(false);
@@ -68,9 +70,13 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
       }
 
 
-      const deleteTourGroupFn = useMutation({
-        mutationKey:['deleteGroupTour'],
-        mutationFn: (groupId) => deleteTourGroup(groupId),
+      const {data} = useQuery({
+        queryKey:['getMentorTourGroup' , group],
+        queryFn: () => getTourGroupMentor(group)
+      })
+      const deleteTourGroupStuFn = useMutation({
+        mutationKey:['deleteGroupTourMentor'],
+        mutationFn: (groupId) => deleteTourGroupMentor(groupId),
         onSuccess: () => {
             queryClient.invalidateQueries('group')
         }
@@ -82,50 +88,34 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
         acceptCommentShowAll.mutate({ commentId:row.id})
       }
       const handleDelete = (row) => {
-        deleteTourGroupFn.mutate(row.id)
+        deleteTourGroupStuFn.mutate(row.mentorGroupId)
       }
       const handleDeleteFull = (row) => {
-        deleteCommentApiFull.mutate(row.id)
+        deleteCommentApiFull.mutate(row.mentorGroupId)
       }
   const columns = [
-
     {
-      name: 'نام گروه',
-      width:'100px',
-      selector: row => row.groupName,
+      name: 'نام منتور',
+      selector: row => row.mentorName,
     },
     {
-      name: ' توضیحات گروه',
-      selector: row => row.describe,
+      name: 'آیدی کاربر',
+      selector: row => row.userId,
     },
     {
-      name: 'نام تورنومنت',
-      selector: row => row.tournamentName,
+      name: 'تاریخشه ',
+      selector: row => row.mentorHistoryCount,
     },
     {
-      name: 'تعداد  دانش آموز',
-      width:'100px',
-      selector: row => row.studentCount,
-    },
-    {
-      name: 'تعداد منتور',
-      width:'100px',
-      selector: row => row.mentorCount,
-    },
-    {
-      name: 'تاریخ انتشار گروه',
-      width:'100px',
-      selector: row => useDate(row.inserDate),
+      name: 'تعداد وظایف انجام شده ',
+      selector: row => row.mentorDoCount,
     },
     {
       name: 'عملیات',
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
-            <Button color='danger' style={{padding:'5px' , fontSize:'12px'}}  onClick={() => handleDelete(row)} >حذف گروه</Button>
-            <EditTourGroup color='info' TourId={TourId} row={row} title={'ویرایش'} />
-            <EditTourGroup color='success' TourId={TourId}  title={'ساخت گروه'} />.
-            <ShowStuTourGroup  group={row.id} />
-            <ShowTourGroupMentor  group={row.id} />
+            <Button color='danger' style={{padding:'5px' , fontSize:'12px'}}  onClick={() => handleDelete(row)} >حذف منتور</Button>
+            <EditTourGroupStu api={UpdateTourGroupMentor}  color='success'   title={'افزودن  منتور'} />
         </div>
       )
     },
@@ -148,7 +138,7 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
       }}
       
     >
-      <Button size={'14px'}  color='warning' className=' cursor-pointer' style={{marginTop: '2px', padding:'12px 5px'}} onClick={handleClick} >نمایش گروه</Button>
+      <FaChalkboardTeacher color='blue' title='منتور' size={'14px'} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
@@ -156,14 +146,9 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
         backdrop='static'
         keyboard={false}
       >
-        <ModalHeader className='bg-transparent' toggle={() => setShow(false)}>گروه های این تورنومنت</ModalHeader>
+        <ModalHeader className='bg-transparent' toggle={() => setShow(false)}>منتور های این گروه</ModalHeader>
         <ModalBody  className="px-sm-5 mx-50 pb-5">
-        <div className='d-flex gap-3' style={{flexFlow: 'row nowrap'}}>
-        {group == null ? (
-        <EditTourGroupStu title='افزودن دانش آموز به گروه' color='success' />
-        ) : null}
-        <EditTourGroup color='success' TourId={TourId}  title={'ساخت گروه'} />
-        </div>
+        <EditTourGroupStu api={UpdateTourGroupMentor} title='افزودن  منتور به گروه' color='success' />
         <AnimatePresence>
           <motion.div
             key="table"
@@ -186,13 +171,13 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
               ) : (
                 <DataTable
                   columns={columns}
-                  data={group}
+                  data={data}
                   pagination
                   paginationPerPage={itemsPerPage}
                   paginationRowsPerPageOptions={[8, 15, 30]}
                   responsive
                   highlightOnHover
-                  noDataComponent={<Badge color='warning'>این تورنومنت هیچ گروهی ندارد</Badge>}
+                  noDataComponent={<Badge color='warning'>این گروه هیچ منتوری ندارد</Badge>}
                 />
               )}
           </motion.div>
@@ -202,4 +187,4 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
     </div>
   );
 }
-export default ShowGroupModal;
+export default ShowTourGroupMentor;

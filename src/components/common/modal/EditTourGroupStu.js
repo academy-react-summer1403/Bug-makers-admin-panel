@@ -16,7 +16,7 @@ import { getTourGroup } from '../../../@core/api/Tournament/group/getGroup';
 import { useSelector } from 'react-redux';
 import { getUser } from '../../../@core/api/user/getUserById';
 
-const EditTourGroupStu = ({ row, title , data  , color}) => {
+const EditTourGroupStu = ({ row, title , data  , color , api}) => {
   const [show, setShow] = useState(false);
   const query = useQueryClient();
     const [group, setGroup] = useState()
@@ -31,9 +31,9 @@ const EditTourGroupStu = ({ row, title , data  , color}) => {
     studentId: row.studentId || '',
   } : {
     groupId:  Number(group),
-    studentId: Number(userList) ,
+    ...(api?.name === 'UpdateTourGroupMentor' ? { userId: Number(userList) } : { studentId: Number(userList) }),
 };
-
+console.log(api?.name);
 
   const validationSchema = Yup.object().shape({
   });
@@ -45,7 +45,7 @@ const EditTourGroupStu = ({ row, title , data  , color}) => {
 
   const updateAssWork = useMutation({
     mutationKey: ['updateAssWork'],
-    mutationFn: (BulldingData) => UpdateTourGroupStu(BulldingData, row),
+    mutationFn: (BulldingData) => api(BulldingData, row),
     onSuccess: () => {
       setShow(false);
       query.invalidateQueries('getBulding');
