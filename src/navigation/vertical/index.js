@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet } from "react-router-dom";
-import Layout from "@layouts/VerticalLayout"; // Layout import
 import { Home, User, Mail, Book, BookOpen } from "react-feather";
 import { useSelector } from 'react-redux';
 

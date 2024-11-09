@@ -12,6 +12,7 @@ import PublicRoute from "@components/routes/PublicRoute";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
+import PrivateRoute from "./privateRoute";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -58,27 +59,29 @@ const Tournament = lazy(() => import('../../views/pages/tournoment/tournoment'))
 const MainCheckList = lazy(() => import('../../views/pages/tournoment/mainCheckList'))
 const Refere = lazy(() => import('../../views/pages/tournoment/Refre'))
 // ** Merge Routes
+const token = localStorage.getItem('token');
+
 const Routes = [
   {
     path: "/",
     index: true,
-    element: <Navigate replace to={DefaultRoute} />,
+    element: token ? <Navigate replace to={DefaultRoute} /> : <Navigate to={'/login'} />,
   },
   {
     path: "/dashBoard/ecommerce",
-    element: <Ecommerce />,
+    element: token ? <Ecommerce /> : <Navigate to={'/login'} />,
   },
   {
     path: "/home",
-    element: <Home />,
+    element: token ? <Home /> : <Navigate to={'/login'} />,
   },
   {
     path: "/sample",
-    element: <Sample />,
+    element: token ? <Sample /> : <Navigate to={'/login'} />,
   },
   {
     path: "/second-page",
-    element: <SecondPage />,
+    element: token ? <SecondPage /> : <Navigate to={'/login'} />,
   },
   {
     path: "/login",
@@ -93,138 +96,6 @@ const Routes = [
     meta: {
       layout: "blank",
     },
-  },
-  {
-    element: <UserList />,
-    path: '/apps/user/list',
-  },
-  {
-    element: <UserView />,
-    path: '/apps/user/view/:id'
-  },
-  {
-    element: <Email />,
-    path: '/apps/email',
-    meta: {
-      appLayout: true,
-      className: 'email-application'
-    }
-  },
-  {
-    element: <Email />,
-    path: '/apps/email/:folder',
-    meta: {
-      appLayout: true,
-      className: 'email-application'
-    }
-  },
-  {
-    element: <Email />,
-    path: '/apps/email/label/:label',
-    meta: {
-      appLayout: true,
-      className: 'email-application'
-    }
-  },
-  {
-    element: <Email />,
-    path: '/apps/email/:filter'
-  },
-  {
-    element: <Course />,
-    path: '/apps/Course'
-  },
-  {
-    element: <MyCourse />,
-    path: '/apps/MyCourse'
-  },
-  {
-    element: <CommentMngForCourseTeacher />,
-    path: '/apps/commentForTeacher'
-  },
-  {
-    element: <CommentMngForCourse />,
-    path: '/apps/allCommentMng'
-  },
-  {
-    element: <BlogPage />,
-    path: '/apps/blog'
-  },
-  {
-    element: <InvoicePreview />,
-    path: '/apps/invoice/preview/:id'
-  },
-  {
-    element: <CourseDetail />,
-    path: '/apps/Detail/:id'
-  },
-  {
-    element: <EditCourse />,
-    path: '/apps/Course/editCourse'
-  },
-  {
-    element: <EditCourse />,
-    path: '/apps/Course/AddCourse'
-  },
-  {
-    element: <CourseReserve />,
-    path: '/apps/Course/CourseReserve'
-  },
-  {
-    element: <CommentMngForCourseAdmin />,
-    path: '/apps/Course/CommentMng'
-  },
-  {
-    element: <Groups />,
-    path: '/apps/groupsManagement'
-  },
-  {
-    element: <BlogDetail />,
-    path: '/apps/blogDetail/:id'
-  },
-  {
-    element: <EditCourse />,
-    path: '/apps/blog/editBlog'
-  },
-  {
-    element: <EditCourse />,
-    path: '/apps/blog/AddBlog'
-  },
-  {
-    element: <CatNews />,
-    path: '/apps/CategoryNews'
-  },
-  {
-    element: <Bullding />,
-    path: '/building/list'
-  },
-  {
-    element: <Department />,
-    path: '/Department/list'
-  },
-  {
-    element: <AssCourse />,
-    path: '/AssCourse/list'
-  },
-  {
-    element: <AssWork />,
-    path: '/AssWork/list'
-  },
-  {
-    element: <SocialGroup />,
-    path: '/SocialGroup/list'
-  },
-  {
-    element: <Tournament />,
-    path: '/Tournament/list'
-  },
-  {
-    element: <MainCheckList />,
-    path: '/Tournament/MainCheckList'
-  },
-  {
-    element: <Refere />,
-    path: '/Tournament/Refere'
   },
   {
     path: "/forgot-password",
@@ -247,7 +118,140 @@ const Routes = [
       layout: "blank",
     },
   },
+  {
+    element: token ? <UserList /> : <Navigate to={'/login'} />,
+    path: '/apps/user/list',
+  },
+  {
+    element: token ? <UserView /> : <Navigate to={'/login'} />,
+    path: '/apps/user/view/:id',
+  },
+  {
+    element: token ? <Email /> : <Navigate to={'/login'} />,
+    path: '/apps/email',
+    meta: {
+      appLayout: true,
+      className: 'email-application',
+    },
+  },
+  {
+    element: token ? <Email /> : <Navigate to={'/login'} />,
+    path: '/apps/email/:folder',
+    meta: {
+      appLayout: true,
+      className: 'email-application',
+    },
+  },
+  {
+    element: token ? <Email /> : <Navigate to={'/login'} />,
+    path: '/apps/email/label/:label',
+    meta: {
+      appLayout: true,
+      className: 'email-application',
+    },
+  },
+  {
+    element: token ? <Email /> : <Navigate to={'/login'} />,
+    path: '/apps/email/:filter',
+  },
+  {
+    element: token ? <Course /> : <Navigate to={'/login'} />,
+    path: '/apps/Course',
+  },
+  {
+    element: token ? <MyCourse /> : <Navigate to={'/login'} />,
+    path: '/apps/MyCourse',
+  },
+  {
+    element: token ? <CommentMngForCourseTeacher /> : <Navigate to={'/login'} />,
+    path: '/apps/commentForTeacher',
+  },
+  {
+    element: token ? <CommentMngForCourse /> : <Navigate to={'/login'} />,
+    path: '/apps/allCommentMng',
+  },
+  {
+    element: token ? <BlogPage /> : <Navigate to={'/login'} />,
+    path: '/apps/blog',
+  },
+  {
+    element: token ? <InvoicePreview /> : <Navigate to={'/login'} />,
+    path: '/apps/invoice/preview/:id',
+  },
+  {
+    element: token ? <CourseDetail /> : <Navigate to={'/login'} />,
+    path: '/apps/Detail/:id',
+  },
+  {
+    element: token ? <EditCourse /> : <Navigate to={'/login'} />,
+    path: '/apps/Course/editCourse',
+  },
+  {
+    element: token ? <EditCourse /> : <Navigate to={'/login'} />,
+    path: '/apps/Course/AddCourse',
+  },
+  {
+    element: token ? <CourseReserve /> : <Navigate to={'/login'} />,
+    path: '/apps/Course/CourseReserve',
+  },
+  {
+    element: token ? <CommentMngForCourseAdmin /> : <Navigate to={'/login'} />,
+    path: '/apps/Course/CommentMng',
+  },
+  {
+    element: token ? <Groups /> : <Navigate to={'/login'} />,
+    path: '/apps/groupsManagement',
+  },
+  {
+    element: token ? <BlogDetail /> : <Navigate to={'/login'} />,
+    path: '/apps/blogDetail/:id',
+  },
+  {
+    element: token ? <EditCourse /> : <Navigate to={'/login'} />,
+    path: '/apps/blog/editBlog',
+  },
+  {
+    element: token ? <EditCourse /> : <Navigate to={'/login'} />,
+    path: '/apps/blog/AddBlog',
+  },
+  {
+    element: token ? <CatNews /> : <Navigate to={'/login'} />,
+    path: '/apps/CategoryNews',
+  },
+  {
+    element: token ? <Bullding /> : <Navigate to={'/login'} />,
+    path: '/building/list',
+  },
+  {
+    element: token ? <Department /> : <Navigate to={'/login'} />,
+    path: '/Department/list',
+  },
+  {
+    element: token ? <AssCourse /> : <Navigate to={'/login'} />,
+    path: '/AssCourse/list',
+  },
+  {
+    element: token ? <AssWork /> : <Navigate to={'/login'} />,
+    path: '/AssWork/list',
+  },
+  {
+    element: token ? <SocialGroup /> : <Navigate to={'/login'} />,
+    path: '/SocialGroup/list',
+  },
+  {
+    element: token ? <Tournament /> : <Navigate to={'/login'} />,
+    path: '/Tournament/list',
+  },
+  {
+    element: token ? <MainCheckList /> : <Navigate to={'/login'} />,
+    path: '/Tournament/MainCheckList',
+  },
+  {
+    element: token ? <Refere /> : <Navigate to={'/login'} />,
+    path: '/Tournament/Refere',
+  },
 ];
+
 
 const getRouteMeta = (route) => {
   if (isObjEmpty(route.element.props)) {
