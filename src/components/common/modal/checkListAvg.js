@@ -42,10 +42,14 @@ import UpdateComment from './updateComment';
 import { replayComment } from '../../../@core/api/course/commentMng/replyComment';
 import { deleteTourGroup } from '../../../@core/api/Tournament/group/deleteTourGroup';
 import EditTourGroup from './updateTourGroup';
-import { UpdateTourGroupStu, deleteTourGroupStu, getTourGroupStu } from '../../../@core/api/Tournament/group/getGroupStu';
+import { deleteTourGroupStu, getTourGroupStu } from '../../../@core/api/Tournament/group/getGroupStu';
 import EditTourGroupStu from './EditTourGroupStu';
-import ShowCheckListAvg from './checkListAvg';
-const ShowStuTourGroup = ({group , isLoading , TourId}) => {
+import { UpdateTourGroupMentor, deleteTourGroupMentor, getTourGroupMentor } from '../../../@core/api/Tournament/group/groupMentor';
+import { FaChalkboardTeacher } from "react-icons/fa";
+import { getCheckListAvg } from '../../../@core/api/Tournament/group/checkListAvg';
+import EditAvgGroup from './EditAvgGroup';
+
+const ShowCheckListAvg = ({group , isLoading , TourId , userId}) => {
   const [show, setShow] = useState(false);  
   const [tooltipOpenX, setTooltipOpenX] = useState(false);
   const [tooltipOpenCheck, setTooltipOpenCheck] = useState(false);
@@ -69,12 +73,12 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
 
 
       const {data} = useQuery({
-        queryKey:['getStuTourGroup' , group],
-        queryFn: () => getTourGroupStu(group)
+        queryKey:['getListAvg' , group , TourId , userId],
+        queryFn: () => getCheckListAvg(group,TourId,userId)
       })
       const deleteTourGroupStuFn = useMutation({
-        mutationKey:['deleteGroupTourStu'],
-        mutationFn: (groupId) => deleteTourGroupStu(groupId),
+        mutationKey:['deleteGroupTourMentor'],
+        mutationFn: (groupId) => deleteTourGroupMentor(groupId),
         onSuccess: () => {
             queryClient.invalidateQueries('group')
         }
@@ -86,36 +90,36 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
         acceptCommentShowAll.mutate({ commentId:row.id})
       }
       const handleDelete = (row) => {
-        deleteTourGroupStuFn.mutate(row.id)
+        deleteTourGroupStuFn.mutate(row.mentorGroupId)
       }
       const handleDeleteFull = (row) => {
-        deleteCommentApiFull.mutate(row.id)
+        deleteCommentApiFull.mutate(row.mentorGroupId)
       }
   const columns = [
     {
-      name: 'نام دانش آموز',
-      selector: row => row.studentName,
+      name: 'نام چک لیست',
+      selector: row => row.title,
     },
     {
-      name: 'آیدی کاربر',
-      selector: row => row.studentId,
+      name: 'مقدار امتیاز کلی',
+      selector: row => row.scoreNumber,
     },
     {
-      name: 'آیدی گروه',
-      selector: row => row.groupId,
+      name: 'امتیاز داده شده ',
+      selector: row => row.setScoreNumber,
     },
     {
-      name: 'تاریخ انتشار گروه',
-      selector: row => useDate(row.insertDate),
+      name: 'وضعیت نمره دادن',
+      selector: row => row.isSet,
+      cell : row => (
+        <Badge color={row.isSet ? 'success' : 'danger'} >{row.isSet ? 'فعال' : 'غیر فعال'}</Badge>
+      )
     },
     {
       name: 'عملیات',
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
-            <Button color='danger' style={{padding:'5px' , fontSize:'12px'}}  onClick={() => handleDelete(row)} >حذف دانش آموز</Button>
-            <EditTourGroupStu api={UpdateTourGroupStu}  color='info'  row={row} title={'ویرایش'} />
-            <EditTourGroupStu api={UpdateTourGroupStu} color='success'   title={'افزودن دانش آموز'} />
-            <ShowCheckListAvg   TourId={TourId} userId={row.studentId}  group={group} />
+            <EditAvgGroup row={row} group={group}   color='success'   title={'ویرایش  نمره'} />
         </div>
       )
     },
@@ -138,7 +142,7 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
       }}
       
     >
-      <User size={'14px'}  className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
+      <FaChalkboardTeacher color='blue' title='منتور' size={'14px'} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
@@ -146,9 +150,9 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
         backdrop='static'
         keyboard={false}
       >
-        <ModalHeader className='bg-transparent' toggle={() => setShow(false)}>دانشجو های این گروه</ModalHeader>
+        <ModalHeader className='bg-transparent' toggle={() => setShow(false)}>چک لیست های این گروه</ModalHeader>
         <ModalBody  className="px-sm-5 mx-50 pb-5">
-        <EditTourGroupStu api={UpdateTourGroupStu} title='افزودن دانش آموز به گروه' color='success' />
+        <EditTourGroupStu api={UpdateTourGroupMentor} title='افزودن  چک لیست به گروه' color='success' />
         <AnimatePresence>
           <motion.div
             key="table"
@@ -177,7 +181,7 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
                   paginationRowsPerPageOptions={[8, 15, 30]}
                   responsive
                   highlightOnHover
-                  noDataComponent={<Badge color='warning'>این گروه هیچ دانشجویی ندارد</Badge>}
+                  noDataComponent={<Badge color='warning'>این گروه هیچ چک لیستی ندارد</Badge>}
                 />
               )}
           </motion.div>
@@ -187,4 +191,4 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
     </div>
   );
 }
-export default ShowStuTourGroup;
+export default ShowCheckListAvg;

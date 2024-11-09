@@ -45,6 +45,7 @@ import EditTourGroup from './updateTourGroup';
 import ShowStuTourGroup from './showStuTourGroup';
 import EditTourGroupStu from './EditTourGroupStu';
 import ShowTourGroupMentor from './showTourGroupMentor';
+import ShowCheckListAvg from './checkListAvg';
 const ShowGroupModal = ({group , isLoading , TourId}) => {
   const [show, setShow] = useState(false);  
   const [tooltipOpenX, setTooltipOpenX] = useState(false);
@@ -123,8 +124,8 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
         <div className='d-flex justify-content-center align-items-center gap-1'>
             <Button color='danger' style={{padding:'5px' , fontSize:'12px'}}  onClick={() => handleDelete(row)} >حذف گروه</Button>
             <EditTourGroup color='info' TourId={TourId} row={row} title={'ویرایش'} />
-            <EditTourGroup color='success' TourId={TourId}  title={'ساخت گروه'} />.
-            <ShowStuTourGroup  group={row.id} />
+            <EditTourGroup color='success' TourId={TourId}  title={'ساخت گروه'} />
+            <ShowStuTourGroup TourId={TourId}  group={row.id} />
             <ShowTourGroupMentor  group={row.id} />
         </div>
       )
