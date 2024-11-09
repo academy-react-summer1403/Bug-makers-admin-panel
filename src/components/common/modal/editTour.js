@@ -58,7 +58,7 @@ const EditTour = ({ row, title }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'start', gap: '6px', alignItems: 'center' }}>
-      <Button onClick={() => setShow(true)} color="primary">{title}</Button>
+      <Button  style={{marginTop: '2px', padding:'5px 5px', fontSize:'10px'}} onClick={() => setShow(true)} color="primary">{title}</Button>
       <Modal isOpen={show} toggle={() => setShow(!show)} className="modal-dialog-centered modal-lg" backdrop="static" keyboard={false}>
         <ModalHeader toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">

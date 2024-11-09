@@ -136,7 +136,7 @@ const ShowCheckList = ({group , isLoading , TourId}) => {
       }}
       
     >
-      <Button size={'14px'}  color='warning' className=' cursor-pointer' style={{marginTop: '2px', padding:'12px 5px'}} onClick={handleClick} >نمایش گروه</Button>
+      <Button size={'14px'}  color='warning' className=' cursor-pointer' style={{marginTop: '2px', padding:'5px 5px', fontSize:'10px'}} onClick={handleClick} >نمایش لیست</Button>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
