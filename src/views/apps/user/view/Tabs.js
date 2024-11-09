@@ -25,7 +25,7 @@ const UserTabs = ({ active, toggleTab }) => {
         <NavItem>
           <NavLink active={active === '1'} onClick={() => toggleTab('1')}>
             <User className='font-medium-3 me-50' />
-            <span className='fw-bold'>اکانت</span>
+            <span className='fw-bold'>کامنت</span>
           </NavLink>
         </NavItem>
         <NavItem style={{display : user.isTecher ? 'block' : 'none'}}>
@@ -49,7 +49,7 @@ const UserTabs = ({ active, toggleTab }) => {
         <NavItem>
           <NavLink active={active === '3'} onClick={() => toggleTab('3')}>
             <Bookmark className='font-medium-3 me-50' />
-            <span className='fw-bold'>Billing & Plans</span>
+            <span className='fw-bold'>پرداختی ها</span>
           </NavLink>
         </NavItem>
       </Nav>
@@ -57,13 +57,12 @@ const UserTabs = ({ active, toggleTab }) => {
         <TabPane tabId='1'>
           <UserProjectsList />
           <UserTimeline />
-          <InvoiceList />
         </TabPane>
         <TabPane tabId='2'>
           <SecurityTab />
         </TabPane>
         <TabPane tabId='3'>
-          <BillingPlanTab />
+        <InvoiceList />
         </TabPane>
         <TabPane tabId='4'>
           <Notifications />

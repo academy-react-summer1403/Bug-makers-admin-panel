@@ -24,6 +24,7 @@ import Swal from 'sweetalert2';
 import { title } from 'process';
 import EditGroup from '../../../components/common/modal/editGroup';
 import AddGroupCourse from '../../../components/common/modal/AddGroup';
+import { Skeleton } from '@mui/material';
 
 const GroupPage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -166,12 +167,7 @@ const GroupPage = () => {
         </button>
       </div>
 
-      {isLoading && (
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <ThreeDots color="#007bff" height={80} width={80} />
-        </div>
-      )}
-      {error && <p>خطایی رخ داده است...</p>}
+
 
       <AnimatePresence>
         {viewMode === 'table' ? (
@@ -189,6 +185,16 @@ const GroupPage = () => {
               paginationRowsPerPageOptions={[8, 15, 30]}
               responsive
               highlightOnHover
+              noDataComponent={
+                <div>
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              </div>
+            }
             />
           </motion.div>
         ) : (

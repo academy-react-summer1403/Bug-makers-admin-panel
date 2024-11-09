@@ -27,6 +27,7 @@ import { getCategoryId, getCategoryListBlog } from '../../../@core/api/blog/Cate
 import CreateCategoryBlog from '../../../components/common/modal/createCategoryBlog';
 import UpdateCat from '../../../components/common/modal/uodateCat';
 import { X } from 'react-feather';
+import Tooltip from '@mui/material/Tooltip';  // وارد کردن Tooltip از MUI
 
 const CatNews = () => {
     const [queryValue, setQueryValue] = useState('');
@@ -61,34 +62,69 @@ const CatNews = () => {
   const columns = [
     {
       name: 'نام دسته بندی',
-      width: '400px',
-      selector: row => row.categoryName,
-      sortable: true,
+      width:'150px',
+      selector: row => (
+        <Tooltip title={row.categoryName} placement="top">
+          <span>{row.categoryName}</span>
+        </Tooltip>
+      ),
     },
     {
       name: 'نام آیکون',
-      width: '400px',
-      selector: row => row.iconName,
-      sortable: true,
+      cell: row => (
+        <Tooltip title={row.iconName} placement="top-end">
+        <span
+          style={{
+            maxWidth: '150px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {row.iconName}
+        </span>
+        </Tooltip>
+      ),
     },
     {
       name: 'تایتل گوگل',
-      width: '150px',
-      selector: row => row.googleTitle,
-      sortable: true,
+      cell: row => (
+        <Tooltip title={row.googleTitle} placement="top-end">
+        <span
+          style={{
+            maxWidth: '150px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {row.googleTitle}
+        </span>
+        </Tooltip>
+      ),
     },
     {
       name: 'توضیحات گوگل',
-      width: '200px',
-      selector: row => row.googleDescribe,
-      sortable: true,
+      cell: row => (
+        <Tooltip title={row.googleDescribe} placement="top-end">
+        <span
+          style={{
+            maxWidth: '150px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {row.googleDescribe}
+        </span>
+        </Tooltip>
+      ),
     },
     {
       name: 'عملیات',
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
-          <UpdateCat selectData={row.id}  />
-          
+          <UpdateCat  selectData={row.id}  />
         </div>
       )
     }
@@ -96,18 +132,13 @@ const CatNews = () => {
 
   return (
     <div className='container mt-4'>
-      <div className='d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3'>
+      <div className=' d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3'>
         <SearchBox
           width={"100%"}
           lgWidth={"160px"}
           placeHolder='دنبال چی میگردی'
           value={queryValue}
           onChange={handleSearch}
-        />
-        <X className={`${queryValue ? 'block' : 'hidden'} cursor-pointer position-absolute right-0`}
-            size={14} 
-            color="black" 
-            onClick={() => setQueryValue('')}    
         />
         <CreateCategoryBlog />
       </div>
@@ -130,6 +161,7 @@ const CatNews = () => {
             columns={columns}
             data={filteredData}  // Use filtered data here
             pagination
+            
             paginationPerPage={itemsPerPage}
             paginationRowsPerPageOptions={[8, 15, 30]}
             responsive

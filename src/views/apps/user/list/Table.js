@@ -46,6 +46,8 @@ import {
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import { auto } from '@popperjs/core'
+import { BulletList } from 'react-content-loader'
+import { Skeleton } from '@mui/material'
 
 // ** Table Header
 const CustomHeader = ({
@@ -143,7 +145,7 @@ const CustomHeader = ({
   
   return (
 <div className="invoice-list-table-header  w-100 me-1 ms-50 align-items-center mt-2 mb-75" >
-  <Row style={{justifyContent : 'end' , alignItems : 'center' , display : 'flex' , height:'100px'}}>
+  <Row style={{justifyContent : 'end' , alignItems : 'center' , display : 'flex' , height:'50px'}}>
   <select
           className="form-control "
           value={currentRole ? currentRole.value : ''}
@@ -159,14 +161,6 @@ const CustomHeader = ({
             </option>
           ))}
         </select>
-        {/* Remove All Filters Button */}
-        <Button
-          style={{position : 'absolute', top : '0' , right : 0}}
-          color='primary'
-          onClick={handleClearFilters}
-        >
-          حذف فیلتر ها
-        </Button>
     <Col
       xl="6"
       className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
@@ -199,8 +193,17 @@ const CustomHeader = ({
           </DropdownMenu>
         </UncontrolledDropdown>
 
-        <Button className="add-new-user me-3   " style={{width: '150px'}} color="primary" onClick={toggleSidebar}>
+        <Button className="add-new-user me-3" style={{width: '150px'}} color="primary" onClick={toggleSidebar}>
           اضافه کردن کاربر 
+        </Button>
+                {/* Remove All Filters Button */}
+        <Button
+          style={{ width:'150px'}}
+          color='danger'
+          className='me-3'
+          onClick={handleClearFilters}
+        >
+          حذف فیلتر ها
         </Button>
       </div>
     </Col>
@@ -380,7 +383,9 @@ const UsersList = () => {
  
   
   };
-  return (
+
+
+   return (
     <Fragment>
       <Card className='overflow-hidden'>
 
@@ -389,16 +394,24 @@ const UsersList = () => {
             noHeader
             subHeader
             sortServer
-            pagination
             customStyles={customStyles}
             responsive
-            paginationServer
+            pagination
             columns={columns}
             onSort={handleSort}
             sortIcon={<ChevronDown />}
             className='react-dataTable'
-            paginationComponent={CustomPagination}
             data={dataToRender()}
+            noDataComponent={
+              <div>
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            </div>
+          }
             subHeaderComponent={
               <CustomHeader
                 store={store}

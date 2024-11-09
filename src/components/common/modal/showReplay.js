@@ -11,7 +11,6 @@ import moment from 'moment-jalaali';
 import { motion, AnimatePresence } from 'framer-motion'; 
 import DataTable from 'react-data-table-component';
 import noImg from '../../../assets/images/icons/image.jpg'
-import { Tooltip } from 'reactstrap';
 // ** Reactstrap Imports
 import {
   Card,
@@ -40,17 +39,13 @@ import { getReplayComment } from '../../../@core/api/course/commentMng/showRepla
 import { ThreeDots } from 'react-loader-spinner';
 import UpdateComment from './updateComment';
 import { replayComment } from '../../../@core/api/course/commentMng/replyComment';
+import { Tooltip } from '@mui/material';
 
 const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptCommentShowAll , deleteComment}) => {
   const [show, setShow] = useState(false);  
-  const [tooltipOpenX, setTooltipOpenX] = useState(false);
-  const [tooltipOpenCheck, setTooltipOpenCheck] = useState(false);
-  const [tooltipِDelete, setTooltipDelete] = useState(false);
 
   const [addComment, setAddComment] = useState(false)
-  const toggleX = () => setTooltipOpenX(!tooltipOpenX);
-  const toggleCheck = () => setTooltipOpenCheck(!tooltipOpenCheck);
-  const toggleDelete = () => setTooltipDelete(!tooltipِDelete);
+
   const { data  , isLoading} = useQuery({
     queryKey:['getReplay'],
     queryFn:() => getReplayComment(commentId , courseId),
@@ -131,21 +126,18 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
       cell: row => (
         <div style={{ display: 'flex', gap: '20px' }}>
         <div>
-          <X id="TooltipX" className='cursor-pointer'  onClick={() => handleDelete(row)} size={24} onMouseEnter={toggleX} onMouseLeave={toggleX} />
-          <Tooltip isOpen={tooltipOpenX} target="TooltipX" toggle={toggleX}>
-            رد کامنت
+        <Tooltip title='رد کامنت' placement='top-end' >
+            <X id="TooltipX" className='cursor-pointer'  onClick={() => handleDelete(row)} size={24}  />
           </Tooltip>
         </div>
         <div>
-          <Check  className='cursor-pointer' onClick={() => handleAccept(row)} id="TooltipCheck" size={24} onMouseEnter={toggleCheck} onMouseLeave={toggleCheck} />
-          <Tooltip isOpen={tooltipOpenCheck} target="TooltipCheck" toggle={toggleCheck}>
-            تایید کامنت
+          <Tooltip title='تایید کامنت' placement='top-end' >
+          <Check  className='cursor-pointer' onClick={() => handleAccept(row)} id="TooltipCheck" size={24}  />
           </Tooltip>
         </div>
         <div>
-          <Delete  className='cursor-pointer' onClick={() => handleDeleteFull(row)} id="TooltipRemove" size={24} onMouseEnter={toggleDelete} onMouseLeave={toggleDelete} />
-          <Tooltip isOpen={tooltipِDelete} target="TooltipRemove" toggle={toggleDelete}>
-            حذف کامنت
+          <Tooltip title='حذف کامنت' placement='top-end'>
+            <Delete  className='cursor-pointer' onClick={() => handleDeleteFull(row)} id="TooltipRemove" size={24}  />
           </Tooltip>
         </div>
       </div>
@@ -184,7 +176,9 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
       }}
       
     >
+      <Tooltip title='نمایش ریپلای' placement='top-end' >
       <Eye size={'14px'} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
+      </Tooltip>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

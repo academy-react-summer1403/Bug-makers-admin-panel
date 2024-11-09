@@ -79,25 +79,21 @@ const CourseReserve = () => {
   const columns = [
     {
       name: 'نام رزرو کننده',
-      width: '400px',
       selector: row => row.studentName,
       sortable: true,
     },
     {
       name: 'نام دوره',
-      width: '400px',
       selector: row => row.courseName,
       sortable: true,
     },
     {
       name: 'تاریخ رزرو',
-      width: '150px',
       selector: row => useDay(row.reserverDate),
       sortable: true,
     },
     {
       name: 'وضعیت رزرو',
-      width: '150px',
       selector: row => row.accept,
       sortable: true,
       cell: row =>{ 

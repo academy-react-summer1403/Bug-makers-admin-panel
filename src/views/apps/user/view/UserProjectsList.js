@@ -52,24 +52,6 @@ const UserProjectsList = () => {
 
   const columns = [
     {
-      sortable: true,
-      minWidth: '20px',
-      name: 'نام کاربر',
-      selector: row => row.courseTitle, // Assuming 'courseTitle' is the correct field for name
-      cell: row => {
-        return (
-          <div className='d-flex justify-content-left align-items-center'>
-            <div className='avatar-wrapper'>
-              <User className='me-1'  imgWidth='32' />
-            </div>
-            <div className='d-flex flex-column'>
-              <span className='text-truncate fw-bolder'>{row.userFullName}</span>
-            </div>
-          </div>
-        )
-      }
-    },
-    {
       name: 'نام دوره',
       selector: row => row.courseTitle 
     },

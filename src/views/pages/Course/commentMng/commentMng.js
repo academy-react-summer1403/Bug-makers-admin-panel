@@ -18,6 +18,7 @@ import { Edit, Menu, MessageCircle, Minus } from 'react-feather';
 import ShowReplay from '../../../../components/common/modal/showReplay';
 import { acceptComment, deleteCommentApi, deleteCommentApiFull, updatingComment } from '../../../../@core/api/course/commentMng/acceptComment';
 import UpdateComment from '../../../../components/common/modal/updateComment';
+import { Tooltip } from '@mui/material';
 const CommentMngForCourseAdmin = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
   const [teacherId, setTeacherId] = useState(null);
@@ -122,19 +123,75 @@ const CommentMngForCourseAdmin = () => {
     {
       name: 'نام کاربر',
       selector: row => row.userFullName,
+      cell: row => (
+        <Tooltip title={row.userFullName} placement="top-end">
+        <span
+          style={{
+            maxWidth: '150px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {row.userFullName}
+        </span>
+        </Tooltip>
+      ),
     },
     {
       name: 'عنوان دوره',
       selector: row => row.courseTitle,
+      cell: row => (
+        <Tooltip title={row.courseTitle} placement="top-end">
+        <span
+          style={{
+            maxWidth: '150px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {row.courseTitle}
+        </span>
+        </Tooltip>
+      ),
     },
     {
       name: 'عنوان کامنت',
       selector: row => row.commentTitle,
+      cell: row => (
+        <Tooltip title={row.commentTitle} placement="top-end">
+        <span
+          style={{
+            maxWidth: '150px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {row.commentTitle}
+        </span>
+        </Tooltip>
+      ),
     },
     {
       name: 'توضیحات کامنت',
       width:'150px',
       selector: row => row.describe,
+      cell: row => (
+        <Tooltip title={row.describe} placement="top-end">
+        <span
+          style={{
+            maxWidth: '150px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {row.describe}
+        </span>
+        </Tooltip>
+      ),
     },
     {
       name: 'وضعیت',
@@ -153,7 +210,9 @@ const CommentMngForCourseAdmin = () => {
           {row.replyCount ? (
           <ShowReplay deleteCommentApiFull={deleteCommentFull} acceptCommentShowAll={acceptCommentShowAll} deleteComment={deleteComment} commentId={row.commentId}  courseId={row.courseId} />
           ) : (
+            <Tooltip title='ریپلای وجود ندارد' placement='top-end' >
             <Minus size='14px' />
+            </Tooltip>
           )}
           <Dropdown>
         <Dropdown.Toggle 

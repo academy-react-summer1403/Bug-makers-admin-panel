@@ -35,6 +35,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateGroupWithId } from '../../../@core/api/groupPage/updateGroup';
 import { updatingComment } from '../../../@core/api/course/commentMng/acceptComment';
 import { replayComment } from '../../../@core/api/course/commentMng/replyComment';
+import { Tooltip } from '@mui/material';
 
 const UpdateComment = ({ CommentId , CourseId , Describe , Title , icon , Api , KeyMutate , topic}) => {
   // ** Validation Schema
@@ -83,9 +84,11 @@ const UpdateComment = ({ CommentId , CourseId , Describe , Title , icon , Api , 
         alignItems: 'center'
       }}
     >
+      <Tooltip title='ویرایش کامنت' placement='top-end'>
       <div onClick={() => setShow(true)}>
         {icon} 
       </div>
+      </Tooltip>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
