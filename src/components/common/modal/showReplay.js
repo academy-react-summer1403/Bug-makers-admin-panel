@@ -126,17 +126,17 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
       cell: row => (
         <div style={{ display: 'flex', gap: '20px' }}>
         <div>
-        <Tooltip title='رد کامنت' placement='top-end' >
+        <Tooltip title='رد کامنت' placement='top' >
             <X id="TooltipX" className='cursor-pointer'  onClick={() => handleDelete(row)} size={24}  />
           </Tooltip>
         </div>
         <div>
-          <Tooltip title='تایید کامنت' placement='top-end' >
+          <Tooltip title='تایید کامنت' placement='top' >
           <Check  className='cursor-pointer' onClick={() => handleAccept(row)} id="TooltipCheck" size={24}  />
           </Tooltip>
         </div>
         <div>
-          <Tooltip title='حذف کامنت' placement='top-end'>
+          <Tooltip title='حذف کامنت' placement='top'>
             <Delete  className='cursor-pointer' onClick={() => handleDeleteFull(row)} id="TooltipRemove" size={24}  />
           </Tooltip>
         </div>
@@ -176,7 +176,7 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
       }}
       
     >
-      <Tooltip title='نمایش ریپلای' placement='top-end' >
+      <Tooltip title='نمایش ریپلای' placement='top' >
       <Eye size={'14px'} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
       </Tooltip>
       <Modal

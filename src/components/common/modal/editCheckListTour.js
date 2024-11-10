@@ -51,7 +51,7 @@ const EditTourCheckList = ({ row, title }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'start', gap: '6px', alignItems: 'center' }}>
-      <Button onClick={() => setShow(true)} color="primary">{title}</Button>
+      <Button style={{padding:'5px' , fontSize:'12px'}} onClick={() => setShow(true)} color="primary">{title}</Button>
       <Modal isOpen={show} toggle={() => setShow(!show)} className="modal-dialog-centered modal-lg" backdrop="static" keyboard={false}>
         <ModalHeader toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">

@@ -11,7 +11,6 @@ import moment from 'moment-jalaali';
 import { motion, AnimatePresence } from 'framer-motion'; 
 import DataTable from 'react-data-table-component';
 import noImg from '../../../assets/images/icons/image.jpg'
-import { Tooltip } from 'reactstrap';
 // ** Reactstrap Imports
 import {
   Card,
@@ -46,6 +45,7 @@ import { deleteTourGroupStu, getTourGroupStu } from '../../../@core/api/Tourname
 import EditTourGroupStu from './EditTourGroupStu';
 import { UpdateTourGroupMentor, deleteTourGroupMentor, getTourGroupMentor } from '../../../@core/api/Tournament/group/groupMentor';
 import { FaChalkboardTeacher } from "react-icons/fa";
+import { Tooltip } from '@mui/material';
 
 const ShowTourGroupMentor = ({group , isLoading , TourId}) => {
   const [show, setShow] = useState(false);  
@@ -138,7 +138,9 @@ const ShowTourGroupMentor = ({group , isLoading , TourId}) => {
       }}
       
     >
-      <FaChalkboardTeacher color='blue' title='منتور' size={'14px'} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
+      <Tooltip title='نمایش منتور ها' placement='top' >
+        <User color='blue'  size={'14px'} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
+      </Tooltip>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

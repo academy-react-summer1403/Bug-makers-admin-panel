@@ -1,5 +1,5 @@
 // ** Reactstrap Imports
-import { Card, CardHeader, Progress } from 'reactstrap'
+import { Badge, Card, CardHeader, Progress } from 'reactstrap'
 
 // ** Third Party Components
 import { ChevronDown, User } from 'react-feather'
@@ -74,7 +74,6 @@ const UserProjectsList = () => {
       )}
     }
   ]
-  if(comment.totalCount > 0) {
   return (
     <Card>
       <CardHeader tag='h4'>کامنت‌های کاربر  </CardHeader>
@@ -85,11 +84,12 @@ const UserProjectsList = () => {
           columns={columns}
           data={commentState} 
           className='react-dataTable'
+          noDataComponent={<Badge >این کاربر کامنتی نگذاشته</Badge>}
           sortIcon={<ChevronDown size={10} />}
         />
       </div>
     </Card>
-  )}
+  )
 }
 
 export default UserProjectsList

@@ -57,7 +57,7 @@ const loginMutation = useMutation({
     if(data.success	== false){
       console.log('error login');
     }else{
-      navigate('/')
+      window.location.href ='/'
     }
     
   },
@@ -74,7 +74,7 @@ const onSubmit = (e) => {
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
 
   return (
-    <div className="auth-wrapper auth-cover">
+    <div dir="ltr" className="auth-wrapper auth-cover">
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28">

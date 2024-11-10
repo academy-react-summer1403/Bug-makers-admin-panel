@@ -84,7 +84,7 @@ const UpdateComment = ({ CommentId , CourseId , Describe , Title , icon , Api , 
         alignItems: 'center'
       }}
     >
-      <Tooltip title='ویرایش کامنت' placement='top-end'>
+      <Tooltip title='ویرایش کامنت' placement='top'>
       <div onClick={() => setShow(true)}>
         {icon} 
       </div>

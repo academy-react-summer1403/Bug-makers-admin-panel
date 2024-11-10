@@ -19,6 +19,7 @@ import ShowReplay from '../../../../components/common/modal/showReplay';
 import { acceptComment, deleteCommentApi, deleteCommentApiFull, updatingComment } from '../../../../@core/api/course/commentMng/acceptComment';
 import UpdateComment from '../../../../components/common/modal/updateComment';
 import { Tooltip } from '@mui/material';
+import { getCommentCourseTeacher } from '../../../../@core/api/course/commentMng/commentMngTeacher';
 const CommentMngForCourseAdmin = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
   const [teacherId, setTeacherId] = useState(null);
@@ -30,11 +31,21 @@ const CommentMngForCourseAdmin = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [acceptSelect, setAcceptSelect] = useState()
 
+  const items = useSelector((state) => state.role.rolePage);
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ['getCommentCourseAdmin', queryValue, teacherId, categoryQuery,user , acceptSelect, currentPage],
-    queryFn: () => getCommentCourseAdmin(queryValue, teacherId, categoryQuery, currentPage, itemsPerPage, '', user, acceptSelect),
+    queryKey: ['getCommentCourseAdmin', queryValue, teacherId, categoryQuery, user, acceptSelect, currentPage],
+    queryFn: () => {
+      if (items?.roles?.some(role => role.roleName === "Administrator")) {
+        return getCommentCourseAdmin(queryValue, teacherId, categoryQuery, currentPage, itemsPerPage, '', user, acceptSelect);
+      } else if (items?.roles?.some(role => role.roleName === "Teacher")) {
+        return getCommentCourseTeacher(queryValue, teacherId, categoryQuery, currentPage, itemsPerPage, '', user, acceptSelect);
+      }
+      return Promise.reject('User role is neither Administrator nor Teacher');
+    },
     keepPreviousData: true,
   });
+  
 
   const [fieldData, setFieldData] = useState([])
   useEffect(() => {
@@ -210,10 +221,11 @@ const CommentMngForCourseAdmin = () => {
           {row.replyCount ? (
           <ShowReplay deleteCommentApiFull={deleteCommentFull} acceptCommentShowAll={acceptCommentShowAll} deleteComment={deleteComment} commentId={row.commentId}  courseId={row.courseId} />
           ) : (
-            <Tooltip title='ریپلای وجود ندارد' placement='top-end' >
+            <Tooltip title='ریپلای وجود ندارد' placement='top' >
             <Minus size='14px' />
             </Tooltip>
           )}
+          <Tooltip title='منو عملیات ' placement='top'>
           <Dropdown>
         <Dropdown.Toggle 
           variant="transparent" 
@@ -229,6 +241,7 @@ const CommentMngForCourseAdmin = () => {
           <Dropdown.Item onClick={() => handleDeleteFull(row)}>حذف کامنت</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
+      </Tooltip>
       <UpdateComment 
          CommentId={row.commentId}  
          CourseId={row.courseId} 

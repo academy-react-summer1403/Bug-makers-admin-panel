@@ -3,7 +3,7 @@ import { Fragment, useState, useEffect } from 'react'
 
 // ** Invoice List Sidebar
 import Sidebar from './Sidebar'
-
+import { DebounceInput } from 'react-debounce-input';
 // ** Table Columns
 import { columns } from './columns'
 
@@ -165,19 +165,33 @@ const CustomHeader = ({
       xl="6"
       className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
     >
-      <div className="d-flex align-items-center ">
-        <label style={{marginRight : '20px' }} htmlFor="search-invoice">
-          Search:
-        </label>
-        <Input
-          id="search-invoice"
-          className="ms-2 "
-          style={{width: '200px' , marginLeft : '20px'}}
-          type="text"
-          value={searchTerm}
-          onChange={(e) => handleFilter(e.target.value)}
-        />
-      </div>
+<div className="d-flex gap-1 align-items-center   rounded shadow-sm" style={{ margin:'0 10px' }}>
+  <label
+    style={{
+    }}
+    htmlFor="search-invoice"
+  >
+    جستجو:
+  </label>
+  <DebounceInput
+    debounceTimeout={700}
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    placeholder="نام کاربر ..."
+    style={{
+      padding: '8px 12px',
+      fontSize: '14px',
+      border: '1px solid #ced4da',
+      borderRadius: '4px',
+      outline: 'none',
+      width: '250px',
+      transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+    }}
+    onFocus={(e) => e.target.style.boxShadow = '0 0 5px rgba(0, 123, 255, 0.5)'}
+    onBlur={(e) => e.target.style.boxShadow = 'none'}
+  />
+</div>
+
 
       <div className="d-flex align-items-center justify-content-center table-header-actions">
         <UncontrolledDropdown className="me-1">

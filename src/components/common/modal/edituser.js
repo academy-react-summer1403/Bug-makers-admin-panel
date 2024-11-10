@@ -31,6 +31,7 @@ import { Archive, Edit, Linkedin } from 'react-feather';
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
+import { Tooltip } from '@mui/material';
 
 const EditUserExample = ({ onClick , size}) => {
   const user = useSelector(state => state.user.selectUser);
@@ -140,7 +141,9 @@ const EditUserExample = ({ onClick , size}) => {
       }}
       onClick={onClick}
     >
-      <Edit size={size} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={() => setShow(true)} />
+      <Tooltip title='ویرایش کاربر' placement='top'>
+        <Edit size={size} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={() => setShow(true)} />
+      </Tooltip>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

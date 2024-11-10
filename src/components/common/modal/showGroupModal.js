@@ -11,7 +11,6 @@ import moment from 'moment-jalaali';
 import { motion, AnimatePresence } from 'framer-motion'; 
 import DataTable from 'react-data-table-component';
 import noImg from '../../../assets/images/icons/image.jpg'
-import { Tooltip } from 'reactstrap';
 // ** Reactstrap Imports
 import {
   Card,
@@ -46,16 +45,10 @@ import ShowStuTourGroup from './showStuTourGroup';
 import EditTourGroupStu from './EditTourGroupStu';
 import ShowTourGroupMentor from './showTourGroupMentor';
 import ShowCheckListAvg from './checkListAvg';
+import { Tooltip } from '@mui/material';
 const ShowGroupModal = ({group , isLoading , TourId}) => {
   const [show, setShow] = useState(false);  
-  const [tooltipOpenX, setTooltipOpenX] = useState(false);
-  const [tooltipOpenCheck, setTooltipOpenCheck] = useState(false);
-  const [tooltipِDelete, setTooltipDelete] = useState(false);
 
-  const [addComment, setAddComment] = useState(false)
-  const toggleX = () => setTooltipOpenX(!tooltipOpenX);
-  const toggleCheck = () => setTooltipOpenCheck(!tooltipOpenCheck);
-  const toggleDelete = () => setTooltipDelete(!tooltipِDelete);
 
 
   const queryClient = useQueryClient()
@@ -92,30 +85,56 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
 
     {
       name: 'نام گروه',
-      width:'100px',
+      width:'150px',
       selector: row => row.groupName,
+      cell : row => (
+        <Tooltip title={row.groupName} placement='top'>
+        <span
+        style={{
+          width:'100px',
+          overflow:'hidden',
+          textOverflow:'ellipsis',
+          whiteSpace:'nowrap'
+        }}
+        >{row.groupName}</span>
+        </Tooltip>
+      )
     },
     {
       name: ' توضیحات گروه',
       selector: row => row.describe,
+      width:'200px',
+      cell : row => (
+        <Tooltip title={row.describe} placement='top'>
+        <span
+        style={{
+          width:'100px',
+          overflow:'hidden',
+          textOverflow:'ellipsis',
+          whiteSpace:'nowrap'
+        }}
+        >{row.describe}</span>
+        </Tooltip>
+      )
     },
     {
       name: 'نام تورنومنت',
+      width:'150px',
       selector: row => row.tournamentName,
     },
     {
       name: 'تعداد  دانش آموز',
-      width:'100px',
+      width:'150px',
       selector: row => row.studentCount,
     },
     {
       name: 'تعداد منتور',
-      width:'100px',
+      width:'150px',
       selector: row => row.mentorCount,
     },
     {
       name: 'تاریخ انتشار گروه',
-      width:'100px',
+      width:'150px',
       selector: row => useDate(row.inserDate),
     },
     {

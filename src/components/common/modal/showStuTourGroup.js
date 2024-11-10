@@ -11,7 +11,6 @@ import moment from 'moment-jalaali';
 import { motion, AnimatePresence } from 'framer-motion'; 
 import DataTable from 'react-data-table-component';
 import noImg from '../../../assets/images/icons/image.jpg'
-import { Tooltip } from 'reactstrap';
 // ** Reactstrap Imports
 import {
   Card,
@@ -45,6 +44,7 @@ import EditTourGroup from './updateTourGroup';
 import { UpdateTourGroupStu, deleteTourGroupStu, getTourGroupStu } from '../../../@core/api/Tournament/group/getGroupStu';
 import EditTourGroupStu from './EditTourGroupStu';
 import ShowCheckListAvg from './checkListAvg';
+import { Tooltip } from '@mui/material';
 const ShowStuTourGroup = ({group , isLoading , TourId}) => {
   const [show, setShow] = useState(false);  
   const [tooltipOpenX, setTooltipOpenX] = useState(false);
@@ -138,7 +138,10 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
       }}
       
     >
-      <User size={'14px'}  className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
+
+      <Tooltip title='نمایش دانشجو ها' placement='top'>
+        <User size={'14px'}  className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
+      </Tooltip>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

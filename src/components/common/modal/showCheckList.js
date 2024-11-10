@@ -92,7 +92,7 @@ const ShowCheckList = ({group , isLoading , TourId}) => {
   const columns = [
 
     {
-      name: 'آیدی چک لیست',
+      width:'50px',
       selector: row => row.checkListId,
     },
     {
@@ -105,6 +105,7 @@ const ShowCheckList = ({group , isLoading , TourId}) => {
     },
     {
       name: 'تاریخ انتشار چک لیست',
+      width:'150px',
       selector: row => useDate(row.checkListInsertDate),
     },
     {
@@ -112,8 +113,8 @@ const ShowCheckList = ({group , isLoading , TourId}) => {
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
             <Button color='danger' style={{padding:'5px' , fontSize:'12px'}}  onClick={() => handleDelete(row)} >حذف گروه</Button>
-            <EditTourCheckList color='info' TourId={TourId} row={row}  title={'ویرایش چک لیست'} />.
-            <EditTourCheckList color='success' TourId={TourId}  title={'ساخت چک لیست'} />.
+            <EditTourCheckList color='info' TourId={TourId} row={row}  title={'ویرایش چک لیست'} />
+            <EditTourCheckList color='success' TourId={TourId}  title={'ساخت چک لیست'} />
         </div>
       )
     },

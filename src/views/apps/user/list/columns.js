@@ -11,6 +11,7 @@ import { FaUserShield } from "react-icons/fa";
 import { PiStudent } from "react-icons/pi";
 import { GiTeacher } from "react-icons/gi";
 import { GrUserAdmin } from "react-icons/gr";
+import { Tooltip } from '@mui/material';
 
 // Custom Menu component
 const CustomMenu = ({ user, onEdit, onDelete, rowId }) => {
@@ -19,15 +20,19 @@ const CustomMenu = ({ user, onEdit, onDelete, rowId }) => {
   return (
     <div style={{display : 'flex' , flexFlow : 'row nowrap' , justifyContent : 'center' , alignItems : 'center' , gap: '10px'}}>
 
+          <Tooltip title='جزییات کاربر' placement='top'>
           <Link to={`/apps/user/view/${rowId}`} >
             <FileText size={14}  />
           </Link>
+          </Tooltip>
           <div  onClick={onEdit}>
             <EditUserExample size={'14px'} user={user} /> 
           </div>
-          <div onClick={onDelete}>
+          <Tooltip title='حذف کاربر' placement='top'>
+          <div className='cursor-pointer' onClick={onDelete}>
             <Trash2 size={14}/>
           </div>
+          </Tooltip>
     </div>
   );
 };
