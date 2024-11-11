@@ -141,6 +141,12 @@ export const userData = (items) => {
       navLink: "/SocialGroup/list",
     },
     {
+      id: "Schedual",
+      title: "بازه زمانی",
+      icon: <BookOpen size={20} />,
+      navLink: "/Schedual",
+    },
+    {
       id: "Tournament",
       title: "تورنومنت",
       icon: <BookOpen size={20} />,

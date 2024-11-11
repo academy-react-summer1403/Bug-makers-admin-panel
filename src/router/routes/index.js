@@ -58,6 +58,7 @@ const SocialGroup = lazy(() => import('../../views/pages/socailGroup/socialGroup
 const Tournament = lazy(() => import('../../views/pages/tournoment/tournoment'))
 const MainCheckList = lazy(() => import('../../views/pages/tournoment/mainCheckList'))
 const Refere = lazy(() => import('../../views/pages/tournoment/Refre'))
+const Schedual = lazy(() => import('../../views/pages/schedual/schedual.js'))
 // ** Merge Routes
 const token = localStorage.getItem('token');
 
@@ -249,6 +250,10 @@ const Routes = [
   {
     element: token ? <Refere /> : <Navigate to={'/login'} />,
     path: '/Tournament/Refere',
+  },
+  {
+    element: token ? <Schedual /> : <Navigate to={'/login'} />,
+    path: '/Schedual',
   },
 ];
 
