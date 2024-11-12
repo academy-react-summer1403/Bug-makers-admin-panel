@@ -50,8 +50,8 @@ const AccountDetails = ({ stepper }) => {
     mutationKey:['sendImage'],
     mutationFn: (formData) => uploadImage(formData),
     onSuccess: (data) => {
-      const urlMatch = data.match(/href="([^"]+)"/);
-      const imageUrl = urlMatch ? urlMatch[1] : null;
+      const urlMatch = data.link;
+      const imageUrl = urlMatch;
       if (imageUrl) {
         dispatch(setCreate({ imageUrl }));
       }
