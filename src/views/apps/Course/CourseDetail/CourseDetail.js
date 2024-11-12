@@ -19,12 +19,16 @@ import { deleteCourseReserve, getCourseReserveById } from '../../../../@core/api
 import moment from 'moment-jalaali';
 import Swal from 'sweetalert2';
 import { ThreeDots } from 'react-loader-spinner';
+import CoursePayment from './coursePayment';
+import CreateSchedual from '../../../../components/common/modal/createSchedual';
+import { getSchedualId } from '../../../../@core/api/Schedual/schedual';
 
 const CourseDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isExpend, setIsExpend] = useState(false);
+    const [schedualId, setSchedualId] = useState('')
 
   const useDay = (date) => {
     if(!date) return 'تاریخ  وجود ندارد';
@@ -41,6 +45,7 @@ const CourseDetail = () => {
         },
     });
 
+
     const teacherId = productDetail?.teacherId;
     const { data: groupData } = useQuery({
         queryKey: ['getGroup', teacherId, id],
@@ -53,6 +58,12 @@ const CourseDetail = () => {
         queryFn: () => getCourseReserveById(id) , 
         enabled: !!id,
     });
+    const {data : getSchdualDataid} = useQuery({
+        queryKey:['SchedualId' , schedualId],
+        queryFn: () => getSchedualId(schedualId),
+        enabled : !!schedualId
+      })
+
 
     
         //   delete reserve 
@@ -192,6 +203,74 @@ const CourseDetail = () => {
 
         },
     ]
+    const columnsSchedual = [
+        {
+          name: 'آیدی گروه ',
+          selector: row => row.courseGroupId,
+          sortable: true,
+        },
+        {
+          name: 'ساعت شروع ',
+          selector: row => row.startTime,
+          sortable: true,
+        },
+        {
+          name: 'ساعت پایان',
+          selector: row => row.endTime,
+          sortable: true,
+        },
+        {
+          name: 'تعداد در هفته ',
+          selector: row => row.weekNumber,
+          sortable: true,
+        },
+        {
+          name: 'روز دوره',
+          selector: row => useDay(row.startDate),
+          sortable: true,
+        },
+        {
+          name: 'حالت دوره',
+          selector: row => row.forming,
+          sortable: true,
+          cell : row => (
+            <Active
+            isActive={row.forming}
+            id={row.id}
+            styled={{ minWidth: '50px', cursor: 'pointer', padding: '5px' }}
+            api="/Schedual/SchedualFroming"
+            method="put"
+            text2='تشکیل شده'
+            text='تشکیل نشده'
+          />  
+        )
+        },    
+        {
+          name: 'حضور غیاب دانشجو',
+          selector: row => row.lockToRaise,
+          sortable: true,
+          cell : row => (
+            <Active
+            isActive={row.lockToRaise}
+            id={row.id}
+            styled={{ minWidth: '50px', cursor: 'pointer', padding: '5px' }}
+            api="/Schedual/LockToRiase"
+            method="put"
+            text2='نمیتوانند شرکت کنند'
+            text='میتوانند شرکت کنند'
+          />
+          )
+        },    
+        {
+          name: 'عملیات',
+          cell: row => (
+            <div onClick={() => setSchedualId(row.id)} className='d-flex justify-content-center align-items-center gap-1'>
+                <CreateSchedual schedual={getSchdualDataid} />
+            </div>
+          )
+        }
+      ];
+
     
 
     return (
@@ -253,6 +332,21 @@ const CourseDetail = () => {
                     />
                 </div>
             </Card>
+            <Card style={{width:'100%'}}>
+                <CardHeader tag='h4'>بازه های زمانی این دوره</CardHeader>
+                <div className='react-dataTable user-view-account-projects'>
+                    <DataTable
+                        noHeader
+                        responsive
+                        pagination
+                        columns={columnsSchedual}
+                        data={productDetail?.courseSchedules || []} 
+                        className='react-dataTable'
+                        sortIcon={<ChevronDown size={10} />}
+                    />
+                </div>
+            </Card>
+            <CoursePayment id={productDetail.courseId} />
         </div>
     );
 };

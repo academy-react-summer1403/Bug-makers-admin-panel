@@ -1,6 +1,6 @@
 import axiosInstance from "../../interceptor/interceptor";
 
-export const addActive = async ({ id, active, method, api , keyword }) => {
+export const addActive = async ({ id, active, method, api , keyword , payment}) => {
     let data;
 
     if (method === 'put') {
@@ -12,9 +12,16 @@ export const addActive = async ({ id, active, method, api , keyword }) => {
         } else {
             data = { active, id }; 
         }
+        
+         if(payment){
+            const formData = new FormData();
+            formData.append('PaymentId' , payment)
+            data = formData;
+        }
     } else if (method === 'delete') {
         data = { data: { active, id } };
     }
+
 
     const response = await axiosInstance[method](api, data);
     return response.data;

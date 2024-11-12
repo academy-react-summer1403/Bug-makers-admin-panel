@@ -65,6 +65,7 @@ const CreateSchedual = ({schedual}) => {
           setTeacherId(courseDetail?.teacherId)
         }
       }, [courseDetail])
+      
     const {data : group} = useQuery({
     queryKey:['getGroup', schedual ? courseDetail?.teacherId : teacherId ,  getCourseWithGroup ? getCourseWithGroup?.courseGroupDto?.courseId : selectedId],
     queryFn: () => getGroup(schedual ? courseDetail?.teacherId : teacherId ,  getCourseWithGroup ? getCourseWithGroup?.courseGroupDto?.courseId : selectedId),

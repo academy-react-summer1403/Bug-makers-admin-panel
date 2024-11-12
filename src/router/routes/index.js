@@ -59,6 +59,7 @@ const Tournament = lazy(() => import('../../views/pages/tournoment/tournoment'))
 const MainCheckList = lazy(() => import('../../views/pages/tournoment/mainCheckList'))
 const Refere = lazy(() => import('../../views/pages/tournoment/Refre'))
 const Schedual = lazy(() => import('../../views/pages/schedual/schedual.js'))
+const CoursePaymentPage = lazy(() => import('../../views/pages/CoursePayment/CoursePayment.js'))
 // ** Merge Routes
 const token = localStorage.getItem('token');
 
@@ -254,6 +255,10 @@ const Routes = [
   {
     element: token ? <Schedual /> : <Navigate to={'/login'} />,
     path: '/Schedual',
+  },
+  {
+    element: token ? <CoursePaymentPage /> : <Navigate to={'/login'} />,
+    path: '/CoursePaymentPage',
   },
 ];
 

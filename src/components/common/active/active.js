@@ -6,12 +6,13 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss'; 
+import { Tooltip } from '@mui/material';
 
-const Active = ({ isActive, id, styled, api, method, text, text2 , keyword}) => {
+const Active = ({ isActive, id, styled, api, method, text, text2 , keyword , payment}) => {
     const [isActived, setIsActived] = useState(isActive);
     
     const mutation = useMutation({
-        mutationFn: ({ id, active }) => addActive({ id, active, method, api , keyword}), 
+        mutationFn: ({ id, active }) => addActive({ id, active, method, api , keyword , payment}), 
         onSuccess: () => {
             setIsActived(prev => !prev); 
         },
@@ -50,6 +51,7 @@ const Active = ({ isActive, id, styled, api, method, text, text2 , keyword}) => 
 
     return (
         <>
+        <Tooltip placement='top' title='برای تغییر وضعیت کلیک کنید'>
             <Badge 
                 className={isActived ? 'bg-success' : 'bg-danger'} 
                 style={styled} 
@@ -57,6 +59,7 @@ const Active = ({ isActive, id, styled, api, method, text, text2 , keyword}) => 
             >
                 {isActived ? text2 : text}
             </Badge>
+        </Tooltip>
         </>
     );
 };

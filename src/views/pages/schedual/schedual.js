@@ -136,7 +136,6 @@ const Schedual = () => {
       selector: row => row.forming,
       sortable: true,
       cell : row => (
-        // <Badge color={row.forming ? 'success' : 'danger'} >{row.forming ? 'تشکیل شده' : 'تشکیل نشده'}</Badge>
         <Active
         isActive={row.forming}
         id={row.id}
@@ -189,12 +188,14 @@ const Schedual = () => {
         <Input 
             type='date'
             name='startTime'
+            style={{width:'40%'}}
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
         />
         <Input 
             type='date'
             name='endTime'
+            style={{width:'40%'}}
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
         />
