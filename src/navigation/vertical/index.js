@@ -63,12 +63,6 @@ export const userData = (items) => {
           icon: <BookOpen size={20} />,
           navLink: "/apps/Course/CommentMng",
         }] : []),
-        ...(isTeacher ? [{
-          id: "commentMngTeacher",
-          title: "مدیریت کامنت (معلم)",
-          icon: <BookOpen size={20} />,
-          navLink: "/apps/commentForTeacher",
-        }] : []),
         
         {
           id: "commentMng",
@@ -107,6 +101,12 @@ export const userData = (items) => {
           title: "مدیریت دسته بندی",
           icon: <BookOpen size={20} />,
           navLink: "/apps/CategoryNews",
+        },
+        {
+          id: "commentbLOG",
+          title: "مدیریت  کامنت",
+          icon: <BookOpen size={20} />,
+          navLink: "/apps/CommentMngForBlog",
         }
       ]
     },

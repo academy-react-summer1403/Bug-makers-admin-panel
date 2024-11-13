@@ -46,7 +46,7 @@ const Groups = lazy(() => import('../../views/pages/groupPage/groupPage'))
 const CatNews = lazy(() => import('../../views/pages/catNews/catNews')) 
 const CourseReserve = lazy(() => import('../../views/pages/Course/CourseReserve/CourseReserve')) 
 const CommentMngForCourseAdmin = lazy(() => import('../../views/pages/Course/commentMng/commentMng')) 
-const CommentMngForCourseTeacher = lazy(() => import('../../views/pages/Course/commentMng/commentMngTeacher')) 
+const CommentMngForBlog = lazy(() => import('../../views/pages/Course/commentMng/commentMngTeacher.js')) 
 const CommentMngForCourse = lazy(() => import('../../views/pages/Course/commentMng/AllCommentMng')) 
 const MyCourse = lazy(() => import('../../views/pages/Course/MyCourse/MyCourse'))
 const Ecommerce = lazy(() => import('../../views/pages/dashboard/ecommerce'))
@@ -165,8 +165,8 @@ const Routes = [
     path: '/apps/MyCourse',
   },
   {
-    element: token ? <CommentMngForCourseTeacher /> : <Navigate to={'/login'} />,
-    path: '/apps/commentForTeacher',
+    element: token ? <CommentMngForBlog /> : <Navigate to={'/login'} />,
+    path: '/apps/CommentMngForBlog',
   },
   {
     element: token ? <CommentMngForCourse /> : <Navigate to={'/login'} />,

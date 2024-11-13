@@ -19,7 +19,10 @@ import ShowReplay from '../../../../components/common/modal/showReplay';
 import { acceptComment, deleteCommentApi, deleteCommentApiFull, updatingComment } from '../../../../@core/api/course/commentMng/acceptComment';
 import UpdateComment from '../../../../components/common/modal/updateComment';
 import { getCommentCourseTeacher } from '../../../../@core/api/course/commentMng/commentMngTeacher';
-const CommentMngForCourseTeacher = () => {
+import { getCommentBlogMap, getCommentListBlog } from '../../../../@core/api/blog/getCommentPage';
+
+
+const CommentMngForBlog = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
   const [teacherId, setTeacherId] = useState(null);
   const [queryValue, setQueryValue] = useState('');
@@ -30,18 +33,55 @@ const CommentMngForCourseTeacher = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [acceptSelect, setAcceptSelect] = useState()
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['getCommentCourseAdmin', queryValue, teacherId, categoryQuery,user , acceptSelect, currentPage],
-    queryFn: () => getCommentCourseTeacher(queryValue, teacherId, categoryQuery, currentPage, itemsPerPage, '', user, acceptSelect),
-    keepPreviousData: true,
+  // page map 
+  const [courseIdList, setCourseIdList] = useState([]);
+  const [coursePayments, setCoursePayments] = useState([]);
+
+  const useDay = (date) => {
+    if (!date) return 'تاریخ وجود ندارد';
+    return moment(date).format('jYYYY/jMM/jDD');
+  };
+
+
+  //   get course 
+  const { data: news, isLoading, isError } = useQuery({
+    queryKey: ['getnews'],
+    queryFn: getCommentBlogMap,
   });
 
-  const [fieldData, setFieldData] = useState([])
+//   map list courseId 
   useEffect(() => {
-    if(data){
-    setFieldData(data.comments.filter(el => el.userFullName.toLowerCase().includes(queryValueStatic.toLowerCase())))
+    if (news?.news) {
+      const cId = news.news.map((item) => item.id);
+      setCourseIdList(cId);
     }
-  }, [data , queryValueStatic])
+  }, [news]);
+
+//   get payment 
+  useEffect(() => {
+    if (courseIdList.length === 0) return;
+
+    const fetchPayments = async () => {
+      try {
+        const payments = await Promise.all(
+          courseIdList.map((course) => getCommentListBlog(course))
+        );
+        setCoursePayments(payments.flat()); 
+      } catch (error) {
+        console.error('خطا در دریافت پرداخت‌ها:', error);
+      }
+    };
+
+    fetchPayments();
+  }, [courseIdList]); 
+
+  // const { data, isLoading, error } = useQuery({
+  //   queryKey: ['getCommentCourseAdmin', queryValue, teacherId, categoryQuery,user , acceptSelect, currentPage],
+  //   queryFn: () => getCommentCourseTeacher(queryValue, teacherId, categoryQuery, currentPage, itemsPerPage, '', user, acceptSelect),
+  //   keepPreviousData: true,
+  // });
+
+
   const handleSearch = (e) => setQueryValue(e.target.value);
   const handleSearchStatic = (e) => setQueryValueStatic(e.target.value);
   const handlePriceFilter = (min, max) => {
@@ -118,18 +158,19 @@ const CommentMngForCourseTeacher = () => {
   const handleDeleteFull = (row) => {
     deleteCommentFull.mutate({ commentId:row.commentId})
   }
+
   const columns = [
     {
       name: 'نام کاربر',
-      selector: row => row.userFullName,
-    },
-    {
-      name: 'عنوان دوره',
-      selector: row => row.courseTitle,
+      selector: row => row.autor,
     },
     {
       name: 'عنوان کامنت',
-      selector: row => row.commentTitle,
+      selector: row => row.title,
+    },
+    {
+      name: 'تاریخ انتشار',
+      selector: row => useDay(row.inserDate),
     },
     {
       name: 'توضیحات کامنت',
@@ -151,7 +192,7 @@ const CommentMngForCourseTeacher = () => {
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
           {row.replyCount ? (
-          <ShowReplay deleteCommentApiFull={deleteCommentFull} acceptCommentShowAll={acceptCommentShowAll} deleteComment={deleteComment} commentId={row.commentId}  courseId={row.courseId} />
+          <ShowReplay deleteCommentApiFull={deleteCommentFull} acceptCommentShowAll={acceptCommentShowAll} deleteComment={deleteComment} commentId={row.id}  courseId={row.newsId} />
           ) : (
             <Minus size='14px' />
           )}
@@ -251,7 +292,6 @@ const CommentMngForCourseTeacher = () => {
           <ThreeDots color="#007bff" height={80} width={80} />
         </div>
       )}
-      {error && <p>خطایی رخ داده است...</p>}
 
       <AnimatePresence>
         {viewMode === 'table' ? (
@@ -263,7 +303,7 @@ const CommentMngForCourseTeacher = () => {
           >
             <DataTable
               columns={columns}
-              data={fieldData}
+              data={coursePayments || []}
               pagination
               paginationPerPage={itemsPerPage}
               paginationRowsPerPageOptions={[8, 15, 30]}
@@ -285,4 +325,4 @@ const CommentMngForCourseTeacher = () => {
   );
 };
 
-export default CommentMngForCourseTeacher;
+export default CommentMngForBlog;
