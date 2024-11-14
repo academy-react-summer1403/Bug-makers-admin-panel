@@ -28,32 +28,41 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => {
     if (response.data.success) {
-      Swal.fire({
-        title: response.data.message,
-        icon: "success",
-        timer: 3000,
-        timerProgressBar: true,
-        showCloseButton: false,
-        showConfirmButton: false,
-        customClass: {
-          timerProgressBar: 'bg-success',
-        }
-      });
-    }
+      const myPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (Math.random() < 0.5) {
+            resolve('foo')
+          } else {
+            reject('fox')
+          }
+        }, 1000)
+      })
+      toast.promise(
+        myPromise,
+         {
+           loading: 'در حال پردازش',
+           success: <b>عملیات با موفقیت انجام شد</b>,
+           error: <b>خطا</b>,
+         }
+       );    }
     if (response.data.status === 200) {
-      const Message = response.data.message || "خطا: ورودی نامعتبر.";
-      Swal.fire({
-        title: 'تایید',
-        text: Message,
-        icon: 'success',
-        timer: 3000,
-        timerProgressBar: true,
-        showCloseButton: false,
-        showConfirmButton: false,
-        customClass: {
-          timerProgressBar: 'bg-success',
-        }
-      });
+      const myPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (Math.random() < 0.5) {
+            resolve('foo')
+          } else {
+            reject('fox')
+          }
+        }, 1000)
+      })
+      toast.promise(
+        myPromise,
+         {
+           loading: 'در حال پردازش',
+           success: <b>عملیات با موفقیت انجام شد</b>,
+           error: <b>خطا</b>,
+         }
+       ); 
     }
     return response;
   },

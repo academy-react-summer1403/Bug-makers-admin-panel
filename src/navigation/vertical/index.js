@@ -175,9 +175,28 @@ export const userData = (items) => {
             title: "داور ها",
             icon: <BookOpen size={20} />,
             navLink: "/Tournament/Refere", 
-        }
+        },
       ]
-    }
+    },
+    {
+      id: "Podcast",
+       title: "پادکست",
+       icon: <BookOpen size={20} />,
+       children:[
+        {
+          id: "PodcastList",
+          title: "لیست پادکست",
+          icon: <BookOpen size={20} />,
+          navLink: "/Podcast", 
+        },
+        {
+          id: "PodcastComment",
+          title: "کامنت  پادکست",
+          icon: <BookOpen size={20} />,
+          navLink: "/Podcast/CommentMngPodcast", 
+        }
+       ]
+   }
   ];
   
   return data;
