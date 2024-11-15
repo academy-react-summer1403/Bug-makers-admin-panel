@@ -52,10 +52,10 @@ const {data : teacher} = useQuery({
       else if(role === 'Employee.Admin'){
         acc.Employee.push(el)
       }
-      else if(role === 'Referee'){
+      else if(role === "Referee"){
         acc.Referee.push(el)
       }
-      else if(role === 'Support'){
+      else if(role === "Support"){
         acc.Support.push(el)
       }
     }
