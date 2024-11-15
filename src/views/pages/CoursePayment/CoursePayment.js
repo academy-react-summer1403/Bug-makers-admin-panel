@@ -17,7 +17,7 @@ const CoursePaymentPage = () => {
   const [courseIdList, setCourseIdList] = useState([]);
   const [coursePayments, setCoursePayments] = useState([]);
   const queryClient = useQueryClient();
-
+console.log(coursePayments);
   const useDay = (date) => {
     if (!date) return 'تاریخ وجود ندارد';
     return moment(date).format('jYYYY/jMM/jDD');

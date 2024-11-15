@@ -16,21 +16,66 @@ import {
 } from 'reactstrap'
 
 // ** Icons Imports
-import operaIcons from '@src/assets/images/icons/opera.png'
-import safariIcon from '@src/assets/images/icons/apple-safari.png'
-import IEIcon from '@src/assets/images/icons/internet-explorer.png'
-import chromeIcon from '@src/assets/images/icons/google-chrome.png'
-import firefoxIcon from '@src/assets/images/icons/mozila-firefox.png'
+import supportIcon from '@src/assets/images/iconDash/support.png'
+import admin from '@src/assets/images/iconDash/referee.png'
+import refereeIcon from '@src/assets/images/iconDash/admin.png'
+import EmployeeIcon from '@src/assets/images/iconDash/Employee.png'
+import teacherIcon from '@src/assets/images/iconDash/teacher.png'
+import { useQuery } from '@tanstack/react-query'
+import { getUser } from '../../../../@core/api/user/getUserById'
+import { getTeacherList } from '../../../../@core/api/course/TeacherList'
 
 const CardBrowserState = ({ colors, trackBgColor }) => {
+
+  const date =  new Date().toLocaleString('fa-IR')
+
+
+const {data : user} = useQuery({
+  queryKey:['getUser'],
+  queryFn:getUser
+})
+
+const {data : teacher} = useQuery({
+  queryKey:['getTeacher'],
+  queryFn:getTeacherList
+})
+
+  const groupedUser = user?.listUser?.reduce((acc , el) => {
+    if(el.userRoles){
+      const role = el.userRoles.trim();
+      if(role === 'Administrator'){
+        acc.Admin.push(el)
+      }
+      else if(role === 'Teacher'){
+        acc.Teacher.push(el)
+      }
+      else if(role === 'Employee.Admin'){
+        acc.Employee.push(el)
+      }
+      else if(role === 'Referee'){
+        acc.Referee.push(el)
+      }
+      else if(role === 'Support'){
+        acc.Support.push(el)
+      }
+    }
+    return acc
+  } , {Admin : [] , Teacher : [] , Employee : []  , Referee : [] , Support : []})
+  const AdminCount = groupedUser?.Admin.length / user?.totalCount * 100
+  const TeacherCount = teacher?.length / user?.totalCount * 100
+  const EmployeeCount = groupedUser?.Employee.length / user?.totalCount * 100
+  const RefereeCount = groupedUser?.Referee.length / user?.totalCount * 100
+  const SupportCount = groupedUser?.Support.length / user?.totalCount * 100
+
+  console.log(TeacherCount);
   const statesArr = [
     {
-      avatar: chromeIcon,
-      title: 'Google Chrome',
-      value: '54.4%',
+      avatar: admin,
+      title: 'ادمین' + '--' + groupedUser?.Admin.length + ' ' + 'کاربر',
+      value: AdminCount.toFixed(2) + ' ' + 'درصد',
       chart: {
         type: 'radialBar',
-        series: [54.4],
+        series: [AdminCount],
         height: 30,
         width: 30,
         options: {
@@ -70,12 +115,12 @@ const CardBrowserState = ({ colors, trackBgColor }) => {
       }
     },
     {
-      avatar: firefoxIcon,
-      title: 'Mozila Firefox',
-      value: '6.1%',
+      avatar: teacherIcon,
+      title: 'مدرس' + '--' + teacher?.length + ' ' + 'کاربر',
+      value:  TeacherCount.toFixed(2) + ' ' + 'درصد',
       chart: {
         type: 'radialBar',
-        series: [6.1],
+        series: [TeacherCount],
         height: 30,
         width: 30,
         options: {
@@ -115,12 +160,12 @@ const CardBrowserState = ({ colors, trackBgColor }) => {
       }
     },
     {
-      avatar: safariIcon,
-      title: 'Apple Safari',
-      value: '14.6%',
+      avatar: EmployeeIcon,
+      title: 'کارمند ادمین' + '--' + groupedUser?.Employee.length + ' ' + 'کاربر',
+      value: EmployeeCount.toFixed(2) + ' ' + 'درصد',
       chart: {
         type: 'radialBar',
-        series: [14.6],
+        series: [EmployeeCount],
         height: 30,
         width: 30,
         options: {
@@ -160,12 +205,12 @@ const CardBrowserState = ({ colors, trackBgColor }) => {
       }
     },
     {
-      avatar: IEIcon,
-      title: 'Internet Explorer',
-      value: '4.2%',
+      avatar: refereeIcon,
+      title: 'داور' + '--' + groupedUser?.Referee.length + ' ' + 'کاربر',
+      value: RefereeCount.toFixed(2) + ' ' + 'درصد',
       chart: {
         type: 'radialBar',
-        series: [4.2],
+        series: [RefereeCount],
         height: 30,
         width: 30,
         options: {
@@ -205,12 +250,12 @@ const CardBrowserState = ({ colors, trackBgColor }) => {
       }
     },
     {
-      avatar: operaIcons,
-      title: 'Opera Mini',
-      value: '8.4%',
+      avatar: supportIcon,
+      title: 'پشتیبان' + '--' + groupedUser?.Support.length + ' ' + 'کاربر',
+      value: SupportCount.toFixed(2) + ' ' + 'درصد',
       chart: {
         type: 'radialBar',
-        series: [8.4],
+        series: [SupportCount],
         height: 30,
         width: 30,
         options: {
@@ -274,23 +319,14 @@ const CardBrowserState = ({ colors, trackBgColor }) => {
     })
   }
 
+
   return (
     <Card className='card-browser-states'>
       <CardHeader>
         <div>
-          <CardTitle tag='h4'>Browser States</CardTitle>
-          <CardText className='font-small-2'>Counter August 2020</CardText>
+          <CardTitle tag='h4'>کاربران سایت</CardTitle>
+          <CardText className='font-small-2'>{user?.totalCount + ' ' + 'کاربر تا به ' + ' ' + date } </CardText>
         </div>
-        <UncontrolledDropdown className='chart-dropdown'>
-          <DropdownToggle color='' className='bg-transparent btn-sm border-0 p-50'>
-            <MoreVertical size={18} className='cursor-pointer' />
-          </DropdownToggle>
-          <DropdownMenu end>
-            <DropdownItem className='w-100'>Last 28 Days</DropdownItem>
-            <DropdownItem className='w-100'>Last Month</DropdownItem>
-            <DropdownItem className='w-100'>Last Year</DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
       </CardHeader>
       <CardBody>{renderStates()}</CardBody>
     </Card>

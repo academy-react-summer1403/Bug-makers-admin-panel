@@ -40,7 +40,7 @@ const UserDropdown = () => {
   })
 
   useEffect(() => {
-    dispatch(setUserIdSlice(data?.userImage[0].userProfileId))
+    dispatch(setUserIdSlice(data?.userImage[0]?.userProfileId))
   }, [data])
   const userId = useSelector((state) => state.userId.userId)
 

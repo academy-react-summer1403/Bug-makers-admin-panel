@@ -7,9 +7,11 @@ export const getUserById = async (userId) => {
 
 
   export const getUser = async (searchQueryUser) => {
-    let url =  `/User/UserMannage?PageNumber=1&RowsOfPage=5000&Query=${searchQueryUser}`
+    let url =  `/User/UserMannage?PageNumber=1&RowsOfPage=5000`
 
-
+    if(searchQueryUser){
+      url += `&Query=${searchQueryUser}`;
+    }
 
   const response = await axiosInstance.get(url);
   return response.data; 

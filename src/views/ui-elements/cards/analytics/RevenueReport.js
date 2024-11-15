@@ -1,164 +1,261 @@
-// ** React Imports
 import { useEffect, useState } from 'react'
-
-// ** Third Party Components
 import axios from 'axios'
-import Chart from 'react-apexcharts'
-
-// ** Reactstrap Imports
 import {
   Row,
   Col,
   Card,
   Button,
   CardTitle,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledButtonDropdown
+  TabContent,
+  TabPane,
+  Nav,
+  NavItem,
+  NavLink,
+  Badge
 } from 'reactstrap'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import moment from 'moment'  // برای کار با تاریخ
+import { getCourseListWithPagination } from '../../../../@core/api/course/getCourseListWithPagination'
+import 'react-circular-progressbar/dist/styles.css';
+
+// ** Recharts Imports
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts'
+import { getPayPage } from '../../../../@core/api/coursePay/getPayPage'
+import { getCoursePayment } from '../../../../@core/api/coursePay/getCoursePay'
+import GoalOverview from './GoalOverview'
+import { CircularProgressbar } from 'react-circular-progressbar'
 
 const RevenueReport = props => {
   // ** State
   const [data, setData] = useState(null)
+  const [tapSelect, setTapSelect] = useState(false)
+  const { data: status } = useQuery({
+    queryKey: ['getStatus'],
+    queryFn: getCourseListWithPagination
+  })
+  console.log(tapSelect);
+  const [courseIdList, setCourseIdList] = useState([]);
+  const [coursePayments, setCoursePayments] = useState([]);
 
+  const [activeTab, setActiveTab] = useState('1') // Default to "1" (Status Tab)
+
+  // ** استفاده از moment برای فرمت تاریخ شمسی
+  const useDay = (date) => {
+    if (!date) return 'تاریخ وجود ندارد';
+    return moment(date).format('jYYYY/jMM/jDD');
+  };
+
+  // دریافت داده‌های دوره‌ها
+  const { data: courses, isLoading: courseLoading, isError: courseError } = useQuery({
+    queryKey: ['getCourses'],
+    queryFn: getPayPage,
+  });
+
+  // ** استخراج courseId‌ها
+  useEffect(() => {
+    if (courses?.courseFilterDtos) {
+      const cId = courses.courseFilterDtos.map((item) => item.courseId);
+      setCourseIdList(cId);
+    }
+  }, [courses]);
+
+  // دریافت پرداخت‌ها بر اساس courseId
+  useEffect(() => {
+    if (courseIdList.length === 0) return;
+
+    const fetchPayments = async () => {
+      try {
+        const payments = await Promise.all(
+          courseIdList.map((course) => getCoursePayment(course))
+        );
+        setCoursePayments(payments.flat());
+      } catch (error) {
+        console.error('خطا در دریافت پرداخت‌ها:', error);
+      }
+    };
+
+    fetchPayments();
+  }, [courseIdList]);
+
+  console.log(coursePayments);
+  // ** فیلتر کردن پرداخت‌ها بر اساس تاریخ و ماه
+  const countPaymentsByMonth = () => {
+    let countData = [];
+
+    // Iterate through all months (Jan to Dec)
+    for (let month = 0; month < 12; month++) {
+      const monthData = {
+        month: new Date(2024, month).toLocaleString('fa-IR', { month: 'long' }),
+        payments: 0  
+      };
+
+      // فیلتر کردن پرداخت‌ها بر اساس ماه
+      coursePayments.forEach((payment) => {
+        const paymentDate = new Date(payment.peymentDate);
+        const paymentMonth = paymentDate.getMonth();
+
+        // بررسی تطابق ماه
+        if (paymentMonth === month) {
+          monthData.payments++;
+        }
+      });
+
+      countData.push(monthData);
+    }
+    return countData;
+  };
+
+  const paymentData = countPaymentsByMonth();
+
+  // ** فیلتر کردن داده‌های وضعیت دوره‌ها
+  const countByMonthAndStatus = () => {
+    let countData = [];
+
+    for (let month = 0; month < 12; month++) {
+      const monthData = {
+        month: new Date(2024, month).toLocaleString('fa-IR', { month: 'long' }),
+        start: 0,  
+        expired: 0,
+        ongoing: 0  
+      };
+
+      status?.courseDtos?.forEach((el) => {
+        const lastUpdate = new Date(el.lastUpdate);
+        const lastUpdateMonth = lastUpdate.getMonth();
+
+        if (lastUpdateMonth === month) {
+          if (el.statusName === 'شروع ثبت نام') {
+            monthData.start++;
+          } else if (el.statusName === 'منقضی شده') {
+            monthData.expired++;
+          } else if (el.statusName === 'درحال برگزاری') {
+            monthData.ongoing++;
+          }
+        }
+      });
+
+      countData.push(monthData);
+    }
+    return countData;
+  };
+
+  const revenueData = countByMonthAndStatus();  
+
+  // Budget data for Line Chart
+  const filterd1 = status?.courseDtos?.filter((el) => el.statusName === 'شروع ثبت نام') 
+  const perecent1 = filterd1?.length / status?.totalCount * 100
+
+  const filterd2 = status?.courseDtos?.filter((el) => el.statusName === 'منقضی شده')
+  const perecent2 = filterd2?.length / status?.totalCount * 100
+
+  const filterd3 = status?.courseDtos?.filter((el) => el.statusName === 'درحال برگزاری')
+  const perecent3 = filterd3?.length / status?.totalCount * 100
+
+  // payment 
+
+  // Effect to fetch data
   useEffect(() => {
     axios.get('/card/card-analytics/revenue-report').then(res => setData(res.data))
     return () => setData(null)
   }, [])
 
-  const revenueOptions = {
-      chart: {
-        stacked: true,
-        type: 'bar',
-        toolbar: { show: false }
-      },
-      grid: {
-        padding: {
-          top: -20,
-          bottom: -10
-        },
-        yaxis: {
-          lines: { show: false }
-        }
-      },
-      xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-        labels: {
-          style: {
-            colors: '#b9b9c3',
-            fontSize: '0.86rem'
-          }
-        },
-        axisTicks: {
-          show: false
-        },
-        axisBorder: {
-          show: false
-        }
-      },
-      legend: {
-        show: false
-      },
-      dataLabels: {
-        enabled: false
-      },
-      colors: [props.primary, props.warning],
-      plotOptions: {
-        bar: {
-          columnWidth: '17%',
-          borderRadius: [4],
-          borderRadiusWhenStacked: 'all',
-          borderRadiusApplication: 'start'
-        },
-        distributed: true
-      },
-      yaxis: {
-        labels: {
-          style: {
-            colors: '#b9b9c3',
-            fontSize: '0.86rem'
-          }
-        }
-      }
-    },
-    revenueSeries = [
-      {
-        name: 'Earning',
-        data: [95, 177, 284, 256, 105, 63, 168, 218, 72]
-      },
-      {
-        name: 'Expense',
-        data: [-145, -80, -60, -180, -100, -60, -85, -75, -100]
-      }
-    ]
-
-  const budgetSeries = [
-      {
-        data: [61, 48, 69, 52, 60, 40, 79, 60, 59, 43, 62]
-      },
-      {
-        data: [20, 10, 30, 15, 23, 0, 25, 15, 20, 5, 27]
-      }
-    ],
-    budgetOptions = {
-      chart: {
-        toolbar: { show: false },
-        zoom: { enabled: false },
-        type: 'line',
-        sparkline: { enabled: true }
-      },
-      stroke: {
-        curve: 'smooth',
-        dashArray: [0, 5],
-        width: [2]
-      },
-      colors: [props.primary, '#dcdae3'],
-      tooltip: {
-        enabled: false
-      }
-    }
+  const toggleTab = (tab) => {
+    if (activeTab !== tab) setActiveTab(tab)
+    if(activeTab == 2) setTapSelect(false)
+    if(activeTab == 1) setTapSelect(true)
+  }
 
   return data !== null ? (
     <Card className='card-revenue-budget'>
       <Row className='mx-0'>
         <Col className='revenue-report-wrapper' md='8' xs='12'>
           <div className='d-sm-flex justify-content-between align-items-center mb-3'>
-            <CardTitle className='mb-50 mb-sm-0'>Revenue Report</CardTitle>
-            <div className='d-flex align-items-center'>
-              <div className='d-flex align-items-center me-2'>
-                <span className='bullet bullet-primary me-50 cursor-pointer'></span>
-                <span>Earning</span>
-              </div>
-              <div className='d-flex align-items-center'>
-                <span className='bullet bullet-warning me-50 cursor-pointer'></span>
-                <span>Expense</span>
-              </div>
-            </div>
+            <CardTitle className='mb-50 mb-sm-0'>گزارش</CardTitle>
           </div>
-          <Chart id='revenue-report-chart' type='bar' height='230' options={revenueOptions} series={revenueSeries} />
+
+          {/* Tabs */}
+          <Nav tabs>
+            <NavItem>
+              <NavLink
+                className={activeTab === '1' ? 'active' : ''}
+                onClick={() => toggleTab('1')}
+              >
+                وضعیت دوره
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={activeTab === '2' ? 'active' : ''}
+                onClick={() => toggleTab('2')}
+              >
+                پرداختی
+              </NavLink>
+            </NavItem>
+          </Nav>
+
+          <TabContent activeTab={activeTab}>
+            {/* Tab 1: وضعیت دوره */}
+            <TabPane   tabId="1">
+              <ResponsiveContainer width="100%" height={230}>
+                <BarChart data={revenueData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" stroke="#b9b9c3" />
+                  <YAxis stroke="#b9b9c3" />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="start" fill={props.primary} name="شروع ثبت نام" />
+                  <Bar dataKey="expired" fill={props.warning} name="منقضی شده" />
+                  <Bar dataKey="ongoing" fill="#00d1b2" name="در حال برگزاری" />
+                </BarChart>
+              </ResponsiveContainer>
+            </TabPane>
+
+            {/* Tab 2: پرداختی */}
+            <TabPane onClick={() => setTapSelect(true)} tabId="2">
+              <ResponsiveContainer width="100%" height={230}>
+                <BarChart data={paymentData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" stroke="#b9b9c3" />
+                  <YAxis stroke="#b9b9c3" />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="payments" fill={props.primary} name="پرداخت‌ها" />
+                </BarChart>
+              </ResponsiveContainer>
+            </TabPane>
+          </TabContent>
         </Col>
-        <Col className='budget-wrapper' md='4' xs='12'>
-          <UncontrolledButtonDropdown>
-            <DropdownToggle className='budget-dropdown' outline color='primary' size='sm' caret>
-              2020
-            </DropdownToggle>
-            <DropdownMenu>
-              {/* {data.years.map(item => (
-                <DropdownItem className='w-100' key={item}>
-                  {item}
-                </DropdownItem>
-              ))} */}
-            </DropdownMenu>
-          </UncontrolledButtonDropdown>
-          <h2 className='mb-25'>${data.price}</h2>
-          <div className='d-flex justify-content-center'>
-            <span className='fw-bolder me-25'>Budget:</span>
-            <span>{data.budget}</span>
-          </div>
-          <Chart id='budget-chart' type='line' height='80' options={budgetOptions} series={budgetSeries} />
-          <Button color='primary'>Increase Budget</Button>
+        {tapSelect == true ? (
+          <Col className='d-flex justify-content-center align-items-center ' >
+          <div className='d-flex justify-content-center align-items-center gap-1' style={{flexFlow: 'row wrap'}}>
+          <div className='d-flex justify-content-center align-items-center' style={{width:'100px' }} >
+        <CircularProgressbar   value='81%' text='81.2%' />
+        </div>
+        </div>
         </Col>
+        ) : (
+          <Col className='d-flex justify-content-center align-items-center ' >
+          <div className='d-flex justify-content-center align-items-center gap-1' style={{flexFlow: 'row wrap'}}>
+          <div className='d-flex justify-content-center align-items-center' style={{width:'100px', flexFlow: 'column wrap' }} >
+        <CircularProgressbar   value={perecent1} text={perecent1.toFixed(2) + '%'}  />
+        <span>شروع ثبت نام</span>
+        </div>
+
+          <div className='d-flex justify-content-center align-items-center' style={{width:'100px' , flexFlow: 'column wrap' }} >
+        <CircularProgressbar  value={perecent2} text={perecent2.toFixed(2) + '%'} />
+        <span>منقضی شده</span>
+
+        </div>
+
+          <div className='d-flex justify-content-center align-items-center' style={{width:'100px' , flexFlow: 'column wrap'}} >
+        <CircularProgressbar  value={perecent3} text={perecent3.toFixed(2) + '%'} />
+        <span>در حال برگذاری</span>
+
+        </div>
+        </div>
+        </Col>
+
+        )} 
       </Row>
     </Card>
   ) : null

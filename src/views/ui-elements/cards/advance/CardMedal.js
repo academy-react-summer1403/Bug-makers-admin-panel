@@ -1,6 +1,6 @@
 // ** Reactstrap Imports
-import { Card, CardBody, CardText, Button } from 'reactstrap'
-
+import { Card, CardBody, CardText, Button, Col } from 'reactstrap'
+import avatar from '../../../../assets/images/avatars/1-small.png'
 // ** Images
 import medal from '@src/assets/images/illustration/badge.svg'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,6 +18,7 @@ const CardMedal = () => {
     enabled: !!userId
   })
 
+  console.log(data);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setRolePage(data))
@@ -26,9 +27,12 @@ const CardMedal = () => {
     <Card className='card-congratulations-medal'>
       <CardBody>
         <h5>خوش آمدید 🎉 {data?.fName}</h5>
-        <CardText className='font-small-3'>You have won gold medal</CardText>
+        <CardText className='font-small-3'></CardText>
 
         <img className='congratulation-medal' src={medal} alt='Medal Pic' />
+        <Col >
+          <img src={data?.currentPictureAddress} onError={(e) => {e.target.src = avatar}} ></img>
+        </Col>
       </CardBody>
     </Card>
   )
