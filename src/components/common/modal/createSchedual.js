@@ -123,8 +123,9 @@ const SingleMutation = useMutation({
     <div>
       <Button
         onClick={() => setShow(true)}
-        className='btn-cart me-0 me-sm-1 mb-1 mb-sm-0'
+        size='sm'
         color='info'
+        className=' cursor-pointer'  style={{marginTop: '2px', padding:'5px 5px', fontSize:'10px'}}
       >
         بازه زمانی
       </Button>
@@ -238,7 +239,7 @@ const SingleMutation = useMutation({
                         value={groupIdSchedual}
                         onChange={(e) => setGroupIdSchedual(e.target.value)}
                       >
-                        <option >{group ? null : 'این دوره گروهی ندارد'}</option>
+                        {/* <option >{group ? null : 'این دوره گروهی ندارد'}</option> */}
                         {group?.map((item) => (
                             <option key={item.groupId} value={item.groupId} >{item.groupName}</option>
                         ))}

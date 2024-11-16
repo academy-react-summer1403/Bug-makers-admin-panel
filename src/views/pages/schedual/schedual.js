@@ -29,6 +29,8 @@ import CreateCategoryBlog from '../../../components/common/modal/createCategoryB
 import CreateSchedual from '../../../components/common/modal/createSchedual';
 import { getAdminSchedual, getSchedualId } from '../../../@core/api/Schedual/schedual';
 import { Badge, Input } from 'reactstrap';
+import ShowSession from '../../../components/common/modal/showSession';
+import { getSession } from '../../../@core/api/session/getSession';
 
 const Schedual = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -41,9 +43,7 @@ const Schedual = () => {
     const [startTime, setStartTime] = useState('1900/01/10')
     const [endTime, setEndTime] = useState('3000/01/10')
     const [schedualId, setSchedualId] = useState('')
-
-    console.log(endTime);
-    console.log(startTime);
+    const [sessionId, setSessionId] = useState([])
   const dispatch = useDispatch();
   const blogListItem = useSelector((state) => state.blog.blogList);
   moment.loadPersian();
@@ -54,8 +54,8 @@ const Schedual = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['getSchdual', startTime, endTime],
     queryFn: () => getAdminSchedual(startTime, endTime),
-    enabled : !!endTime
-    // keepPreviousData: true,
+    enabled : !!endTime,
+    keepPreviousData: true,
   });
 
 //   useEffect(() => {
@@ -166,9 +166,14 @@ const Schedual = () => {
     {
       name: 'عملیات',
       cell: row => (
+        <div  className='d-flex justify-content-center align-items-center gap-1'>
         <div onClick={() => setSchedualId(row.id)} className='d-flex justify-content-center align-items-center gap-1'>
             <CreateSchedual schedual={getSchdualDataid} />
         </div>
+        <div  onClick={() => setSessionId(row.id)}>
+            <ShowSession isLoading={sessionIsLoading} sessionId={getSessionData} />
+            </div>
+            </div>
       )
     }
   ];
@@ -177,6 +182,11 @@ const Schedual = () => {
     queryKey:['SchedualId' , schedualId],
     queryFn: () => getSchedualId(schedualId),
     enabled : !!schedualId
+  })
+  const {data : getSessionData , isLoading: sessionIsLoading} = useQuery({
+    queryKey:['getSessionList' , sessionId],
+    queryFn: () => getSession(sessionId),
+    enabled : !!sessionId
   })
   const {data : course } = useQuery({
     queryKey:['getCourses'],

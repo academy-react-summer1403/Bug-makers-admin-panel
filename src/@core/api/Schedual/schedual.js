@@ -18,7 +18,7 @@ const response = await axiosInstance.post(`/Schedual/AddSchedualSingle?currentCu
 };
 export const getAdminSchedual = async (startTime , endTime) => {
 
-const response = await axiosInstance.get(`Schedual/GetAdminScheduals?startDate=${startTime}&endDate=${endTime}`);
+const response = await axiosInstance.get(`/Schedual/GetAdminScheduals?startDate=${startTime}&endDate=${endTime}`);
     return response.data;
 };
 export const getSchedualId = async (schedualId) => {
