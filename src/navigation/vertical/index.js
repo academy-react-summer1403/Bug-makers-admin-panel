@@ -208,6 +208,12 @@ export const userData = (items) => {
           navLink: "/Podcast/CommentMngPodcast", 
         }
        ]
+   },
+    {
+      id: "support",
+       title: "پشتیبانی",
+       icon: <BookOpen size={20} />,
+       navLink: '/SupportChat'
    }
   ];
   

@@ -1,6 +1,6 @@
 import axiosInstance from "../../interceptor/interceptor";
 
-export const addActive = async ({ id, active, method, api , keyword , payment}) => {
+export const addActive = async ({ id, active, method, api , keyword , payment ,HelpId}) => {
     let data;
 
     if (method === 'put') {
@@ -20,6 +20,8 @@ export const addActive = async ({ id, active, method, api , keyword , payment}) 
         }
     } else if (method === 'delete') {
         data = { data: { active, id } };
+    } else if (method === 'post') {
+        data = {HelpId :HelpId ,AdminId:id};
     }
 
 

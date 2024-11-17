@@ -8,11 +8,11 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss'; 
 import { Tooltip } from '@mui/material';
 
-const Active = ({ isActive, id, styled, api, method, text, text2 , keyword , payment}) => {
+const Active = ({ isActive, id, styled, api, method, text, text2 , keyword , payment , HelpId}) => {
     const [isActived, setIsActived] = useState(isActive);
     
     const mutation = useMutation({
-        mutationFn: ({ id, active }) => addActive({ id, active, method, api , keyword , payment}), 
+        mutationFn: ({ id, active }) => addActive({ id, active, method, api , keyword , payment , HelpId}), 
         onSuccess: () => {
             setIsActived(prev => !prev); 
         },
