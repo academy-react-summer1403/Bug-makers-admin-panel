@@ -62,6 +62,8 @@ const Schedual = lazy(() => import('../../views/pages/schedual/schedual.js'))
 const CoursePaymentPage = lazy(() => import('../../views/pages/CoursePayment/CoursePayment.js'))
 const Podcast = lazy(() => import('../../views/pages/pocast/index.js'))
 const CommentMngPodcast = lazy(() => import('../../views/pages/pocast/commentMngPodcast.js'))
+const Term = lazy(() => import('../../views/pages/Term/Term.js'))
+const Tech = lazy(() => import('../../views/pages/technology/tech.js'))
 // ** Merge Routes
 const token = localStorage.getItem('token');
 
@@ -201,6 +203,14 @@ const Routes = [
   {
     element: token ? <CommentMngForCourseAdmin /> : <Navigate to={'/login'} />,
     path: '/apps/Course/CommentMng',
+  },
+  {
+    element: token ? <Term /> : <Navigate to={'/login'} />,
+    path: '/apps/Course/Term',
+  },
+  {
+    element: token ? <Tech /> : <Navigate to={'/login'} />,
+    path: '/apps/Course/Tech',
   },
   {
     element: token ? <Groups /> : <Navigate to={'/login'} />,

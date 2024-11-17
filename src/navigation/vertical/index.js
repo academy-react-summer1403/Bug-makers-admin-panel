@@ -76,6 +76,18 @@ export const userData = (items) => {
           icon: <User size={20} />,
           navLink: "/CoursePaymentPage",
         },
+        {
+          id: "Term",
+          title: "ترم ها",
+          icon: <User size={20} />,
+          navLink: "/apps/Course/Term",
+        },
+        {
+          id: "Tech",
+          title: "مدیریت دسته بندی",
+          icon: <User size={20} />,
+          navLink: "/apps/Course/Tech",
+        },
       ]
     },
     {
