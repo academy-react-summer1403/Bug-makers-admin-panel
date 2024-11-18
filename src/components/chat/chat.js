@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MessageBox, Button, Input } from 'react-chat-elements';
 import { Menu, Send } from 'react-feather';
 import 'react-chat-elements/dist/main.css';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAllChat, getChatById } from '../../@core/api/chat/getAllChat';
 import { Dropdown, DropdownButton, DropdownItem } from 'react-bootstrap';
 import { Badge } from 'reactstrap';
@@ -13,16 +13,32 @@ import Active from '../common/active/active';
 import { useSelector } from 'react-redux';
 import { Tooltip } from '@mui/material';
 import { getProfileInfo } from '../../@core/api/getProfile/getProfile';
+import logo from '../../assets/images/logo/bahr.png'
+import avatar1 from '../../assets/images/avatars/1-small.png'
+import avatar2 from '../../assets/images/avatars/2.png'
+import avatar3 from '../../assets/images/avatars/3.png'
 import support from '../../assets/images/iconDash/support.png'
+import audioSound from '../../assets/sound/sendMessage.mp3'
+import { createChat } from '../../@core/api/chat/createChat';
+import toast from 'react-hot-toast';
 const SupportChat = () => {
   const [messages, setMessages] = useState({}); 
   const [inputMessage, setInputMessage] = useState('');
   const [selectedUser, setSelectedUser] = useState("673a3479c6d919eac0cdd963"); 
   const [userList, setUserList] = useState([]);
   const [combinedData, setCombinedData] = useState([]); 
-
+  const [chatId, setChatId] = useState([])
   const UserId = useSelector((state) => state.userId.userId)
+  const [userStateId, setUserStateId] = useState()
+  const [imageUser, setImageUser] = useState([])
 
+console.log(userStateId);
+
+  const roleAccess = useSelector((state) => state.role.rolePage)
+  const isAdmin = roleAccess?.roles?.some(role => role.roleName === "Administrator");
+
+  const queryClinet = useQueryClient()
+  const scrollRef = useRef()
   const { data: user } = useQuery({
     queryKey: ['getAllUser'],
     queryFn: getAllChat
@@ -35,6 +51,7 @@ const SupportChat = () => {
     queryKey:['getProfileInfo'],
     queryFn: getProfileInfo,
   })
+  console.log(data);
 
 
   const { data: userById } = useQuery({
@@ -43,6 +60,13 @@ const SupportChat = () => {
     enabled: !!selectedUser
   });
 
+  const [searchQuery, setSearchQuery] = useState(''); // اضافه کردن متغیر state برای جستجو
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  
+  // در useEffect برای فیلتر کردن کاربران بر اساس جستجو
   useEffect(() => {
     if (user?.data && userAll?.listUser) {
       const combinedData = user?.data?.map((userItem) => {
@@ -52,39 +76,64 @@ const SupportChat = () => {
         
         if (matchingUser) {
           return {
-            ...matchingUser, 
+            ...matchingUser,
             ...userItem,
           };
         }
-
-        return null; 
+  
+        return null;
       }).filter((item) => item !== null);
-
-      setCombinedData(combinedData); 
-      setUserList(combinedData); 
+  
+      // فیلتر کردن براساس عبارت جستجو
+      const filteredUsers = combinedData.filter((user) => 
+        user.fname.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        user.lname.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+  
+      setCombinedData(filteredUsers); 
+      setUserList(filteredUsers); 
     }
-  }, [user, userAll]);
+  }, [user, userAll, searchQuery]);
 
+  console.log(userById?.data?.dataText);
+  const filterImage = userById?.data?.dataText.filter((el) => el.SenderId === UserId)
+  console.log(filterImage);
   useEffect(() => {
     if (userById?.data?.dataText) {
-      const formattedMessages = userById.data.dataText.map((message) => ({
-        position: message.SenderId === selectedUser ? 'right' : 'left',
-        type: 'text',
-        text: message.text,
-        avatar: `https://randomuser.me/api/portraits/men/${message.SenderId}.jpg`,
-      }));
-      
+      const formattedMessages = userById.data.dataText.map((message) => {
+        const isSender = message.SenderId === UserId; // بررسی اینکه آیا این پیام متعلق به شماست یا نه
+        const avatar = isSender
+          ? data?.currentPictureAddress // اگر پیام شماست، تصویر پروفایل شما
+          : imageUser; // اگر پیام طرف مقابل است، تصویر پروفایل طرف مقابل
+  
+        return {
+          position: isSender ? 'right' : 'left', // موقعیت پیام بر اساس فرستنده
+          type: 'text',
+          text: message.text,
+          avatar: avatar, // قرار دادن تصویر پروفایل درست
+          time: new Date(message.time).toLocaleTimeString(), // زمان پیام
+        };
+      });
+  
       setMessages((prevMessages) => ({
         ...prevMessages,
         [selectedUser]: formattedMessages,
       }));
     }
-  }, [userById, selectedUser]);
+  }, [userById, selectedUser, data]); // توجه داشته باشید که `data` هم باید به عنوان dependency در نظر گرفته شود
+  
 
+  const SendMessage = useMutation({
+    mutationKey:['sendMessage'],
+    mutationFn:(chatMessage) => createChat(chatMessage),
+    onSuccess: () => {
+      queryClinet.invalidateQueries('getUserById')
+    }
+  })
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
       const newMessage = {
-        position: 'left', 
+        position: 'right', 
         type: 'text',
         text: inputMessage,
         avatar: data ? data.currentPictureAddress : support, 
@@ -100,11 +149,32 @@ const SupportChat = () => {
       });
 
       setInputMessage(''); 
+      const audio = new Audio(audioSound);
+      audio.play();
+      window.scrollTo({bottom: 0 , behavior:'smooth'})
+
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: scrollRef.current.scrollHeight, // به پایین ترین بخش اسکرول می‌رود
+          behavior: 'smooth', // انیمیشن روان
+        });
+      }
+      
+      const messageData = {
+        ReciveId: userStateId,  // دریافت‌کننده پیام
+        yourId: UserId,  // فرستنده پیام
+        text: inputMessage,  // متن پیام
+        GroupId: selectedUser,  // اگر نیاز دارید می‌توانید این را پر کنید
+      };
+      SendMessage.mutate(messageData)
     }
   };
 
   const handleUserSelect = (userId) => {
-    setSelectedUser(userId);
+    setSelectedUser(userId.id);
+    setUserStateId(userId.Peaple1)
+    setChatId(userId)
+    setImageUser(userId.pictureAddress)
   };
 
   const handleUserFilter = (filterType) => {
@@ -117,14 +187,42 @@ const SupportChat = () => {
     }
 
     setUserList(filteredUsers); 
+
   };
 
+  // تابع برای تبدیل داده‌ها به فرمت CSV
+const convertToCSV = (data) => {
+  const header = Object.keys(data[0]).join(","); // گرفتن کلیدهای هر کاربر به عنوان هدر
+  const rows = data.map(row => Object.values(row).join(",")); // تبدیل هر رکورد به یک ردیف CSV
+  return [header, ...rows].join("\n"); // ترکیب هدر و رکوردها
+};
+
+// تابع برای اکسپورت لیست کاربران به فایل CSV
+const handleExportUsers = () => {
+  const usersData = userList
+
+  const csvContent = convertToCSV(usersData); // تبدیل داده‌ها به CSV
+
+  // ایجاد یک Blob برای فایل CSV و دانلود آن
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob); // ایجاد URL برای Blob
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "users_list.csv"; // نام فایل
+  a.click(); // دانلود فایل
+  URL.revokeObjectURL(url); // پاک کردن URL
+};
+
+
+  const waitinigCount = user?.data?.filter((el) => el.Peaple2 == null)
   return (
-    <div style={styles.container}>
+    <div dir='ltr' style={styles.container}>
       {/* لیست کاربران */}
       <div style={styles.usersList}>
-        <div className='d-flex position-relative justify-content-center align-items-center ' style={{gap:'110px'}}>
-          <Dropdown>
+        <div className='d-flex p-1 position-relative justify-content-center align-items-center ' style={{flexFlow:'row wrap' , height:'120px' }}>
+          <Dropdown
+          style={{position:'absolute' , left:'0' , top:'5px'}}
+          >
             <DropdownButton
               title={<Menu />}
               variant="transparent"
@@ -144,73 +242,127 @@ const SupportChat = () => {
               <Dropdown.Item  onClick={() => handleUserFilter('confirmed')}>
                 <span>تاییده شده</span>
               </Dropdown.Item>
+              {isAdmin ? (
+              <Dropdown.Item onClick={handleExportUsers}>
+                <span>اکسپورت لیست کاربران</span>
+              </Dropdown.Item>
+              ) : null}
+
             </DropdownButton>
           </Dropdown>
 
-          <h3>کاربران</h3>
+          <h3 className='mb-5' >کاربران</h3>
+          <img style={{top:'19px', width:'25px' , height:'30px' , position:'absolute' , right:'5px'}} src={logo} />
+          <div className='d-flex p-1 position-absolute  justify-content-center align-items-center ' style={{flexFlow:'row nowrap' }}>
+                <img style={{width:'20px', height:'20px'}} className='rounded-circle' src={avatar1} />
+                <img style={{width:'20px', height:'20px'}} className='rounded-circle' src={avatar2} />
+                <img style={{width:'20px', height:'20px'}} className='rounded-circle'  src={avatar3} />
+                <span>{waitinigCount?.length} کاربر در حال</span>
+              </div>
+
+          <input 
+            className="mt-1" 
+            type="search" 
+            placeholder="...نام کاربر" 
+            value={searchQuery} 
+            onChange={handleSearchChange}  // هر بار که کاربر چیزی وارد کند
+            style={{
+              backgroundColor: '#EAEAEC',
+              borderRadius: '10px',
+              outline:'none',
+              border:'none',
+              width:'90%',
+              padding:'5px',
+              position:'absolute',
+              bottom:0,
+              textAlign:'center',
+              textIndent:'20px'
+            }} 
+          />
         </div>
         {userList?.map((user) => (
           <div
             key={user.id}
-            onClick={() => handleUserSelect(user.id)}
+            onClick={() => handleUserSelect(user)}
             style={selectedUser === user.id ? styles.selectedUser : styles.userItem}
           >
-            <div className='d-flex justify-content-center align-items-center gap-1' style={styles.userInfo}>
+            <div  className='d-flex position-relative w-100 justify-content-start align-items-start ' style={styles.userInfo}>
+            <div className='d-flex w-100 justify-content-start position-relative align-items-center gap-1'>
               <img 
                 src={user.pictureAddress} 
                 onError={(e) => {e.target.src = avatarUser}}
                 style={{
-                    borderRadius: '50%',   // این خاصیت تصویر را دایره‌ای می‌کند
-                    width: '40px',         // اندازه تصویر (می‌توانید این مقدار را کم یا زیاد کنید)
-                    height: '40px',        // اندازه تصویر (می‌توانید این مقدار را کم یا زیاد کنید)
-                    objectFit: 'cover',    // این خاصیت به تصویر کمک می‌کند که کاملاً در داخل دایره جا شود
+                    borderRadius: '50%',   
+                    width: '40px',         
+                    height: '40px',
+                    objectFit: 'cover',
                 }} 
               />
               <Tooltip title={user.fname ? user.fname + ' ' + user.lname  : 'نام وجود ندارد'}  placement='top'>
                 <span style={{width:'150px' , overflow:'hidden', textOverflow:'ellipsis' , whiteSpace:'nowrap'}}>{user.fname ? user.fname + ' ' + user.lname  : 'نام وجود ندارد'}</span>
               </Tooltip>
+              <Badge color='info' className='position-absolute' style={{right:'5px'}} > 1</Badge>
+              </div>
                 <Active 
                     isActive={user.Peaple2} 
                     HelpId={user.id}
                     id={UserId} 
                     api="https://tahacode.ir/help/AcceptHelpForAdmin" 
                     method="post"
-                    styled={{ minWidth: '50px' , cursor: 'pointer', padding: '10px', marginRight: '10px' }} 
+                    styled={{ minWidth: '50px' , cursor: 'pointer', padding: '5px', margin: '5px 0 0 55px' }} 
                     text2={user.Peaple2 !== null ? 'تایید شده' :  'در حال آپلود'}
                     text={user.Peaple2  == null ? 'در انتظار' :  'در حال آپلود'}
                 />
-              <p>کلیک کنید تا جزییات را ببینید</p>
-            </div>
+          <hr className="position-absolute" style={{ bottom: '-25px', left: 0, right: 0 }} />            </div>
           </div>
         ))}
       </div>
 
       <div style={styles.chatArea}>
-      <div style={styles.chatWindow}>
-      <div style={styles.chatWindow}>
+  {/* هدر نمایش اطلاعات کاربر */}
+  <div style={styles.header}>
+    {userById && userById.data ? (
+      <div style={styles.headerContent}>
+        <img 
+          src={chatId?.pictureAddress || avatarUser} 
+          alt="User Avatar" 
+          style={styles.avatar}
+        />
+        <div style={styles.userInfo}>
+          <h5>{chatId?.fname} {chatId?.lname}</h5>
+        </div>
+      </div>
+    ) : (
+      <p>اطلاعات کاربر در حال بارگذاری است...</p>
+    )}
+  </div>
+
+  {/* پنجره چت */}
+  <div ref={scrollRef} style={styles.chatWindow}>
   {userById ? (
     selectedUser && messages[selectedUser] && messages[selectedUser].length > 0 ? (
       messages[selectedUser].map((message, index) => (
-        <div key={index} style={message.position === 'right' ? styles.rightMessage : styles.leftMessage}>
+        <div dir='rtl' key={index} style={message.position === 'right' ? styles.rightMessage : styles.leftMessage}>
           <MessageBox
             position={message.position}
             type={message.type}
             text={message.text}
             avatar={message.avatar}
+            date={message.time}
           />
+          <div style={styles.messageTime}>{message.time}</div> {/* نمایش زمان */}
         </div>
       ))
     ) : (
-      <div style={styles.loading}>پیامی وجود ندارد...</div> 
+      <div style={styles.loading}>پیامی وجود ندارد...</div>
     )
   ) : (
-    <ThreeDots /> 
+    <ThreeDots />
   )}
 </div>
 
 </div>
 
-      </div>
 
       <div style={styles.inputContainer}>
         <Input
@@ -223,7 +375,7 @@ const SupportChat = () => {
         <Button
           onClick={handleSendMessage}
           text={<Send />}
-          className="btn btn-primary h-100 position-absolute end-0 ml-1"
+          className="btn btn-primary mr-5 rounded-circle "
         />
       </div>
     </div>
@@ -234,7 +386,7 @@ const styles = {
   container: {
     display: 'flex',
     position: 'relative',
-    width: '80%',
+    width: '90%',
     height: '80vh',
     margin: ' auto',
     backgroundColor: '#f5f5f5',
@@ -242,11 +394,12 @@ const styles = {
     boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
   },
   usersList: {
-    width: '25%',
-    backgroundColor: '#fff',
+    width: '35%',
+    backgroundColor: '#FBFBFD',
     borderRight: '1px solid #ccc',
     padding: '10px',
     height: '100%',
+    borderRadius: '10px',
     overflowY: 'scroll',
   },
   userItem: {
@@ -269,6 +422,7 @@ const styles = {
   userInfo: {
     marginLeft: '10px',
     flexFlow: 'row wrap',
+    height: 'fit-content',
   },
   avatar: {
     width: '40px',
@@ -277,16 +431,29 @@ const styles = {
   },
   chatArea: {
     width: '75%',
+    marginBottom:'50px',
     padding: '20px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '10px 0',
+    borderBottom: '1px solid #ddd',
+    marginBottom: '10px',
+  },
+  headerContent: {
+    display: 'flex',
+    alignItems: 'center',
   },
   chatWindow: {
     flex: 1,
     maxHeight: 'calc(100vh - 160px)', // فضای قابل نمایش پیام‌ها
     overflowY: 'scroll',
     marginBottom: '10px',
+    margin:'10px'
   },
   rightMessage: {
     display: 'flex',
@@ -303,20 +470,22 @@ const styles = {
   },
   inputContainer: {
     position: 'absolute',
-    left: '0',
+    right: '0',
     bottom: '0',
-    width: '75%',
+    width: '68.1%',
     display: 'flex',
     alignItems: 'center',
-    padding: '10px 20px',
+    padding: '10px 50px',
     backgroundColor: '#fff',
     boxShadow: '0 -4px 10px rgba(0, 0, 0, 0.1)',
     zIndex: 2,
   },
   input: {
     width: '80%',
+    position:'absolute',
+    right:'0',
     padding: '10px',
-    marginRight: '10px',
+    marginLeft: '10px',
     borderRadius: '30px',
     border: '1px solid #ccc',
     fontSize: '14px',
