@@ -75,12 +75,8 @@ const Routes = [
     element: token ? <Navigate replace to={DefaultRoute} /> : <Navigate to={'/login'} />,
   },
   {
-    path: "/dashBoard/ecommerce",
-    element: token ? <Ecommerce /> : <Navigate to={'/login'} />,
-  },
-  {
     path: "/home",
-    element: token ? <Home /> : <Navigate to={'/login'} />,
+    element: token ? <Ecommerce /> : <Navigate to={'/login'} />,
   },
   {
     path: "/sample",
