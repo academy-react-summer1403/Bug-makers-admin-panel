@@ -17,10 +17,12 @@ import logo from '../../assets/images/logo/bahr.png'
 import avatar1 from '../../assets/images/avatars/1-small.png'
 import avatar2 from '../../assets/images/avatars/2.png'
 import avatar3 from '../../assets/images/avatars/3.png'
+import noImg from '../../assets/images/avatars/3.png'
 import support from '../../assets/images/iconDash/support.png'
 import audioSound from '../../assets/sound/sendMessage.mp3'
 import { createChat } from '../../@core/api/chat/createChat';
 import toast from 'react-hot-toast';
+import { setNormalizing } from 'slate';
 const SupportChat = () => {
   const [messages, setMessages] = useState({}); 
   const [inputMessage, setInputMessage] = useState('');
@@ -60,13 +62,12 @@ console.log(userStateId);
     enabled: !!selectedUser
   });
 
-  const [searchQuery, setSearchQuery] = useState(''); // اضافه کردن متغیر state برای جستجو
+  const [searchQuery, setSearchQuery] = useState(''); 
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
   
-  // در useEffect برای فیلتر کردن کاربران بر اساس جستجو
   useEffect(() => {
     if (user?.data && userAll?.listUser) {
       const combinedData = user?.data?.map((userItem) => {
@@ -84,7 +85,6 @@ console.log(userStateId);
         return null;
       }).filter((item) => item !== null);
   
-      // فیلتر کردن براساس عبارت جستجو
       const filteredUsers = combinedData.filter((user) => 
         user.fname.toLowerCase().includes(searchQuery.toLowerCase()) || 
         user.lname.toLowerCase().includes(searchQuery.toLowerCase())
@@ -101,17 +101,17 @@ console.log(userStateId);
   useEffect(() => {
     if (userById?.data?.dataText) {
       const formattedMessages = userById.data.dataText.map((message) => {
-        const isSender = message.SenderId === UserId; // بررسی اینکه آیا این پیام متعلق به شماست یا نه
+        const isSender = message.SenderId === UserId; 
         const avatar = isSender
-          ? data?.currentPictureAddress // اگر پیام شماست، تصویر پروفایل شما
-          : imageUser; // اگر پیام طرف مقابل است، تصویر پروفایل طرف مقابل
+          ? data?.currentPictureAddress 
+          : imageUser; 
   
         return {
-          position: isSender ? 'right' : 'left', // موقعیت پیام بر اساس فرستنده
+          position: isSender ? 'right' : 'left', 
           type: 'text',
           text: message.text,
-          avatar: avatar, // قرار دادن تصویر پروفایل درست
-          time: new Date(message.time).toLocaleTimeString(), // زمان پیام
+          avatar: avatar, 
+          time: new Date(message.time).toLocaleTimeString(), 
         };
       });
   
@@ -120,7 +120,7 @@ console.log(userStateId);
         [selectedUser]: formattedMessages,
       }));
     }
-  }, [userById, selectedUser, data]); // توجه داشته باشید که `data` هم باید به عنوان dependency در نظر گرفته شود
+  }, [userById, selectedUser, data]); 
   
 
   const SendMessage = useMutation({
@@ -155,16 +155,16 @@ console.log(userStateId);
 
       if (scrollRef.current) {
         scrollRef.current.scrollTo({
-          top: scrollRef.current.scrollHeight, // به پایین ترین بخش اسکرول می‌رود
-          behavior: 'smooth', // انیمیشن روان
+          top: scrollRef.current.scrollHeight, 
+          behavior: 'smooth', 
         });
       }
       
       const messageData = {
-        ReciveId: userStateId,  // دریافت‌کننده پیام
-        yourId: UserId,  // فرستنده پیام
-        text: inputMessage,  // متن پیام
-        GroupId: selectedUser,  // اگر نیاز دارید می‌توانید این را پر کنید
+        ReciveId: userStateId,  
+        yourId: UserId,  
+        text: inputMessage,  
+        GroupId: selectedUser,  
       };
       SendMessage.mutate(messageData)
     }
@@ -190,27 +190,24 @@ console.log(userStateId);
 
   };
 
-  // تابع برای تبدیل داده‌ها به فرمت CSV
 const convertToCSV = (data) => {
-  const header = Object.keys(data[0]).join(","); // گرفتن کلیدهای هر کاربر به عنوان هدر
-  const rows = data.map(row => Object.values(row).join(",")); // تبدیل هر رکورد به یک ردیف CSV
-  return [header, ...rows].join("\n"); // ترکیب هدر و رکوردها
+  const header = Object.keys(data[0]).join(","); 
+  const rows = data.map(row => Object.values(row).join(",")); 
+  return [header, ...rows].join("\n"); 
 };
 
-// تابع برای اکسپورت لیست کاربران به فایل CSV
 const handleExportUsers = () => {
   const usersData = userList
 
-  const csvContent = convertToCSV(usersData); // تبدیل داده‌ها به CSV
+  const csvContent = convertToCSV(usersData); 
 
-  // ایجاد یک Blob برای فایل CSV و دانلود آن
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob); // ایجاد URL برای Blob
+  const url = URL.createObjectURL(blob); 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "users_list.csv"; // نام فایل
-  a.click(); // دانلود فایل
-  URL.revokeObjectURL(url); // پاک کردن URL
+  a.download = "users_list.csv"; 
+  a.click(); 
+  URL.revokeObjectURL(url); 
 };
 
 
@@ -254,9 +251,9 @@ const handleExportUsers = () => {
           <h3 className='mb-5' >کاربران</h3>
           <img style={{top:'19px', width:'25px' , height:'30px' , position:'absolute' , right:'5px'}} src={logo} />
           <div className='d-flex p-1 position-absolute  justify-content-center align-items-center ' style={{flexFlow:'row nowrap' }}>
-                <img style={{width:'20px', height:'20px'}} className='rounded-circle' src={avatar1} />
-                <img style={{width:'20px', height:'20px'}} className='rounded-circle' src={avatar2} />
-                <img style={{width:'20px', height:'20px'}} className='rounded-circle'  src={avatar3} />
+                <img style={{width:'20px', height:'20px'}} className='rounded-circle' onError={(e) => {e.target.src = noImg}} src={avatar1} />
+                <img style={{width:'20px', height:'20px'}} className='rounded-circle' onError={(e) => {e.target.src = noImg}} src={avatar2} />
+                <img style={{width:'20px', height:'20px'}} className='rounded-circle' onError={(e) => {e.target.src = noImg}}  src={avatar3} />
                 <span>{waitinigCount?.length} کاربر در حال</span>
               </div>
 
@@ -265,7 +262,7 @@ const handleExportUsers = () => {
             type="search" 
             placeholder="...نام کاربر" 
             value={searchQuery} 
-            onChange={handleSearchChange}  // هر بار که کاربر چیزی وارد کند
+            onChange={handleSearchChange}  
             style={{
               backgroundColor: '#EAEAEC',
               borderRadius: '10px',
@@ -289,8 +286,8 @@ const handleExportUsers = () => {
             <div  className='d-flex position-relative w-100 justify-content-start align-items-start ' style={styles.userInfo}>
             <div className='d-flex w-100 justify-content-start position-relative align-items-center gap-1'>
               <img 
-                src={user.pictureAddress} 
-                onError={(e) => {e.target.src = avatarUser}}
+                onError={(e) => {e.target.src = noImg}}
+                src={user.pictureAddress ? user.pictureAddress : noImg} 
                 style={{
                     borderRadius: '50%',   
                     width: '40px',         
@@ -319,13 +316,13 @@ const handleExportUsers = () => {
       </div>
 
       <div style={styles.chatArea}>
-  {/* هدر نمایش اطلاعات کاربر */}
   <div style={styles.header}>
     {userById && userById.data ? (
       <div style={styles.headerContent}>
         <img 
           src={chatId?.pictureAddress || avatarUser} 
           alt="User Avatar" 
+          onError={(e) => {e.target.src = noImg}}
           style={styles.avatar}
         />
         <div style={styles.userInfo}>
@@ -349,8 +346,9 @@ const handleExportUsers = () => {
             text={message.text}
             avatar={message.avatar}
             date={message.time}
+            onError={(e) => {e.target.src = noImg}}
           />
-          <div style={styles.messageTime}>{message.time}</div> {/* نمایش زمان */}
+          <div style={styles.messageTime}>{message.time}</div> 
         </div>
       ))
     ) : (
@@ -450,7 +448,7 @@ const styles = {
   },
   chatWindow: {
     flex: 1,
-    maxHeight: 'calc(100vh - 160px)', // فضای قابل نمایش پیام‌ها
+    maxHeight: 'calc(100vh - 160px)', 
     overflowY: 'scroll',
     marginBottom: '10px',
     margin:'10px'
