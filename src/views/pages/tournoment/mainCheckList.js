@@ -9,6 +9,7 @@ import { Dropdown, FormSelect } from 'react-bootstrap';
 import EditTour from '../../../components/common/modal/editTour';
 import EditCheckList from '../../../components/common/modal/editCheckList';
 import { Menu, Plus } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const MainCheckList = () => {
   const itemsPerPage = 8;
@@ -95,6 +96,20 @@ const MainCheckList = () => {
             columns={columns}
             data={filteredData} 
             pagination
+            noDataComponent={
+              <div >
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+          </div> 
+            }
             paginationPerPage={itemsPerPage}
             paginationRowsPerPageOptions={[8, 15, 30]}
             responsive

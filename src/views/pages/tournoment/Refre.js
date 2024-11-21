@@ -10,6 +10,7 @@ import EditTour from '../../../components/common/modal/editTour';
 import EditCheckList from '../../../components/common/modal/editCheckList';
 import EditRefere from '../../../components/common/modal/editRefere';
 import { Menu, Plus } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const Refere = () => {
   const itemsPerPage = 8;
@@ -96,6 +97,20 @@ const Refere = () => {
             paginationPerPage={itemsPerPage}
             paginationRowsPerPageOptions={[8, 15, 30]}
             responsive
+            noDataComponent={
+              <div >
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+          </div> 
+            }
             highlightOnHover
           />
         </motion.div>

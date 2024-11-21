@@ -19,6 +19,7 @@ import { getBlogListWithPagination } from '../../../@core/api/blog/getCourseList
 import { setBlogList } from '../../../redux/blogSlice';
 import { Dropdown, FormSelect } from 'react-bootstrap';
 import { Menu } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const BlogPage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -155,9 +156,18 @@ const BlogPage = () => {
       </div>
 
       {isLoading && (
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <ThreeDots color="#007bff" height={80} width={80} />
-        </div>
+          <div >
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          </div> 
       )}
       {error && <p>خطایی رخ داده است...</p>}
 

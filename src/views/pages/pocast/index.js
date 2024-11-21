@@ -230,6 +230,10 @@ const Podcast = () => {
               <Skeleton animation="wave"  height={50} width={1300} />
               <Skeleton animation="wave"  height={50} width={1300} />
               <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
               </div>
             }
             />
@@ -241,33 +245,7 @@ const Podcast = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
           >
-            {/* <div className='d-flex flex-wrap justify-content-center gap-4 mt-3'>
-              {blogListItem.news.map((course) => (
-                  <motion.div
-                    key={course.courseId}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <CourseListItems
-                      id={course.id}
-                      title={course.title}
-                      img={course.currentImageAddressTumb}
-                      technologyList={course.technologyList}
-                      description={course.miniDescribe}
-                      teacherName={course.addUserFullName}
-                      likeCount={course.likeCount}
-                      commandCount={course.commandCount}
-                      courseRate={course.courseRate}
-                      statusName={course.statusName}
-                      price={course.cost}
-                      currentRegistrants={course.currentRegistrants}
-                      date={moment(course.lastUpdate).format('jYYYY/jMM/jDD')}
-                    />
-                  </motion.div>
-                ))}
-            </div> */}
+
           </motion.div>
         )}
       </AnimatePresence>

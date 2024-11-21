@@ -418,12 +418,16 @@ const UsersList = () => {
             data={dataToRender()}
             noDataComponent={
               <div>
-            <Skeleton animation="wave"  height={50} width={1300} />
-            <Skeleton animation="wave"  height={50} width={1300} />
-            <Skeleton animation="wave"  height={50} width={1300} />
-            <Skeleton animation="wave"  height={50} width={1300} />
-            <Skeleton animation="wave"  height={50} width={1300} />
-            <Skeleton animation="wave"  height={50} width={1300} />
+                  <Skeleton animation="wave"  height={50} width={1300} />
+                  <Skeleton animation="wave"  height={50} width={1300} />
+                  <Skeleton animation="wave"  height={50} width={1300} />
+                  <Skeleton animation="wave"  height={50} width={1300} />
+                  <Skeleton animation="wave"  height={50} width={1300} />
+                  <Skeleton animation="wave"  height={50} width={1300} />
+                  <Skeleton animation="wave"  height={50} width={1300} />
+                  <Skeleton animation="wave"  height={50} width={1300} />
+                  <Skeleton animation="wave"  height={50} width={1300} />
+                  <Skeleton animation="wave"  height={50} width={1300} />
             </div>
           }
             subHeaderComponent={

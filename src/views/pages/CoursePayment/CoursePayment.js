@@ -12,6 +12,7 @@ import { getCourseListWithPagination } from '../../../@core/api/course/getCourse
 import { getPayPage } from '../../../@core/api/coursePay/getPayPage';
 import { getCoursePayment } from '../../../@core/api/coursePay/getCoursePay';
 import { ThreeDots } from 'react-loader-spinner';
+import { Skeleton } from '@mui/material';
 
 const CoursePaymentPage = () => {
   const [courseIdList, setCourseIdList] = useState([]);
@@ -151,7 +152,18 @@ console.log(coursePayments);
           pagination
           data={coursePayments || []} 
           className="react-dataTable"
-          noDataComponent={<ThreeDots />}
+          noDataComponent={       <div >
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+        </div> }
           sortIcon={<ChevronDown size={10} />}
         />
       </div>

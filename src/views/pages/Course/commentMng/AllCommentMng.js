@@ -22,6 +22,7 @@ import { getCommentCourseTeacher } from '../../../../@core/api/course/commentMng
 import { getCommentCoursePage } from '../../../../@core/api/course/commentMng/commentMngAll';
 import {getUserById} from '../../../../@core/api/user/getUserById'
 import {setRolePage} from '../../../../redux/rolePage'
+import { Skeleton } from '@mui/material';
 
 const CommentMngForCoursePage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -261,8 +262,15 @@ const CommentMngForCoursePage = () => {
       </div>
 
       {isLoading && (
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <ThreeDots color="#007bff" height={80} width={80} />
+        <div >
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
         </div>
       )}
       {error && <p>خطایی رخ داده است...</p>}

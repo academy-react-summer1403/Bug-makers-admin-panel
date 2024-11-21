@@ -11,6 +11,7 @@ import EditTermCloseTime from '../../../components/common/modal/editTermCloseTim
 import { getTech } from '../../../@core/api/course/Tech/getTech';
 import EditCourseTech from '../../../components/common/modal/EditCourseTech';
 import { Menu, Plus } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const Tech = () => {
   const itemsPerPage = 8;
@@ -94,9 +95,18 @@ const Tech = () => {
 
       </div>
         {dataLoading ? (
-            <div className='d-flex justify-content-center align-item-center' >
-            <ThreeDots  />
-            </div>
+          <div >
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          </div> 
         ) : (
       <AnimatePresence>
         <motion.div

@@ -12,6 +12,7 @@ import { getAssCourse } from '../../../@core/api/assWork/getAssCourse';
 import EditAssCourse from '../../../components/common/modal/editAssCourse';
 import { Dropdown } from 'react-bootstrap';
 import { Menu, Plus } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const AssCourse = () => {
   const itemsPerPage = 8;
@@ -98,6 +99,20 @@ const AssCourse = () => {
             columns={columns}
             data={filteredData} 
             pagination
+            noDataComponent={
+              <div >
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+          </div> 
+            }
             paginationPerPage={itemsPerPage}
             paginationRowsPerPageOptions={[8, 15, 30]}
             responsive

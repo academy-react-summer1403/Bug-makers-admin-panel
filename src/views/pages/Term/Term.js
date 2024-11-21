@@ -23,7 +23,7 @@ import { ThreeDots } from 'react-loader-spinner';
 import EdEditTerm from '../../../components/common/modal/editTerm';
 import EditTermCloseTime from '../../../components/common/modal/editTermCloseTime';
 import { Calendar, Menu, Plus } from 'react-feather';
-import { Tooltip } from '@mui/material';
+import { Skeleton, Tooltip } from '@mui/material';
 
 const Term = () => {
   const itemsPerPage = 8;
@@ -139,9 +139,18 @@ const Term = () => {
 
       </div>
         {dataLoading ? (
-            <div className='d-flex justify-content-center align-item-center' >
-            <ThreeDots  />
-            </div>
+            <div >
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            </div> 
         ) : (
       <AnimatePresence>
         <motion.div

@@ -20,7 +20,7 @@ import { acceptComment, deleteCommentApi, deleteCommentApiFull, updatingComment 
 import UpdateComment from '../../../../components/common/modal/updateComment';
 import { getCommentCourseTeacher } from '../../../../@core/api/course/commentMng/commentMngTeacher';
 import { getCommentBlogMap, getCommentListBlog } from '../../../../@core/api/blog/getCommentPage';
-import { Tooltip } from '@mui/material';
+import { Skeleton, Tooltip } from '@mui/material';
 
 
 const CommentMngForBlog = () => {
@@ -301,9 +301,16 @@ const CommentMngForBlog = () => {
       </div>
 
       {isLoading && (
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <ThreeDots color="#007bff" height={80} width={80} />
-        </div>
+        <div >
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+    </div>
       )}
 
       <AnimatePresence>

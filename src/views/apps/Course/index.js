@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 import { Menu } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const CoursePage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -159,8 +160,17 @@ const CoursePage = () => {
       </div>
 
       {isLoading && (
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <ThreeDots color="#007bff" height={80} width={80} />
+        <div >
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
         </div>
       )}
       {error && <p>خطایی رخ داده است...</p>}

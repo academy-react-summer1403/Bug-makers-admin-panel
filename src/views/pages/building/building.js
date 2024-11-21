@@ -9,6 +9,7 @@ import Active from '../../../components/common/active/active';
 import moment from 'moment-jalaali';
 import { Dropdown } from 'react-bootstrap';
 import { Menu, Plus } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const Bullding = () => {
   const itemsPerPage = 8;
@@ -121,6 +122,20 @@ const Bullding = () => {
             columns={columns}
             data={filteredData} 
             pagination
+            noDataComponent={
+              <div >
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+          </div> 
+            }
             paginationPerPage={itemsPerPage}
             paginationRowsPerPageOptions={[8, 15, 30]}
             responsive

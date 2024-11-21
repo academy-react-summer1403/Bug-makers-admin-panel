@@ -22,6 +22,7 @@ import { ThreeDots } from 'react-loader-spinner';
 import CoursePayment from './coursePayment';
 import CreateSchedual from '../../../../components/common/modal/createSchedual';
 import { getSchedualId } from '../../../../@core/api/Schedual/schedual';
+import { Avatar, Box, Grid, Typography, Skeleton } from "@mui/material";
 
 const CourseDetail = () => {
     const { id } = useParams();
@@ -98,10 +99,47 @@ const CourseDetail = () => {
     }, [productDetail]);
 
     if (isLoading) {
-        return(
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <ThreeDots color="#007bff" height={80} width={80} />
-        </div>  )  }
+        return (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: 2,
+                padding: 2,
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+              }}
+            >
+              <Box sx={{ marginRight: 2 }}>
+                {loading ? (
+                  <Skeleton variant="rectangular" width={350} height={350} />
+                ) : (
+                  <Avatar
+                    src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
+                    sx={{ width: 300, height: 300 }}
+                  />
+                )}
+              </Box>
+        
+              <Box sx={{ flexGrow: 1 ,marginRight: '50px' }}>
+                <Grid container spacing={2} direction="column">
+                  {[...Array(8)].map((_, index) => (
+                    <Grid item key={index}>
+                      {loading ? (
+                        <Skeleton width="80%">
+                          <Typography>.</Typography>
+                        </Skeleton>
+                      ) : (
+                        <Typography variant="body1">متن شماره {index + 1}</Typography>
+                      )}
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            </Box>
+          );
+         }
 
     if (isError) {
         return <div>خطا در بارگذاری داده‌ها</div>;

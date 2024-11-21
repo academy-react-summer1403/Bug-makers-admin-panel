@@ -14,6 +14,7 @@ import { getAssWork } from '../../../@core/api/assWork/assWorkPage/getAssWork';
 import EditAssWork from '../../../components/common/modal/editAssWork';
 import { Dropdown } from 'react-bootstrap';
 import { Menu, Plus } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const AssWork = () => {
   const itemsPerPage = 8;
@@ -107,6 +108,20 @@ const AssWork = () => {
             columns={columns}
             data={filteredData} 
             pagination
+            noDataComponent={
+              <div >
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+          </div> 
+            }
             paginationPerPage={itemsPerPage}
             paginationRowsPerPageOptions={[8, 15, 30]}
             responsive

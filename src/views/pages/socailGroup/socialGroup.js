@@ -16,6 +16,7 @@ import { getSocialGroup } from '../../../@core/api/socialGroup/socialGroup';
 import EditSocialGroup from '../../../components/common/modal/editSocialGroup';
 import { Dropdown } from 'react-bootstrap';
 import { Menu, Plus } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const SocialGroup = () => {
   const itemsPerPage = 8;
@@ -100,6 +101,20 @@ const SocialGroup = () => {
             paginationRowsPerPageOptions={[8, 15, 30]}
             responsive
             highlightOnHover
+            noDataComponent={
+              <div >
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+          </div> 
+            }
           />
         </motion.div>
       </AnimatePresence>

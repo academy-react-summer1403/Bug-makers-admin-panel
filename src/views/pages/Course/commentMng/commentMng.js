@@ -18,7 +18,7 @@ import { Edit, Menu, MessageCircle, Minus } from 'react-feather';
 import ShowReplay from '../../../../components/common/modal/showReplay';
 import { acceptComment, deleteCommentApi, deleteCommentApiFull, updatingComment } from '../../../../@core/api/course/commentMng/acceptComment';
 import UpdateComment from '../../../../components/common/modal/updateComment';
-import { Tooltip } from '@mui/material';
+import { Skeleton, Tooltip } from '@mui/material';
 import { getCommentCourseTeacher } from '../../../../@core/api/course/commentMng/commentMngTeacher';
 const CommentMngForCourseAdmin = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -320,9 +320,16 @@ const CommentMngForCourseAdmin = () => {
       </div>
 
       {isLoading && (
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <ThreeDots color="#007bff" height={80} width={80} />
-        </div>
+        <div >
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+       </div>
       )}
       {error && <p>خطایی رخ داده است...</p>}
 

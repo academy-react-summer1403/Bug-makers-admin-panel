@@ -10,6 +10,7 @@ import { getDep } from '../../../@core/api/Department/getDep';
 import EditDep from '../../../components/common/modal/editDep';
 import { Dropdown } from 'react-bootstrap';
 import { Menu, Plus } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const Department = () => {
   const itemsPerPage = 8;
@@ -98,6 +99,20 @@ const Department = () => {
             columns={columns}
             data={filteredData} 
             pagination
+            noDataComponent={
+              <div >
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+          </div> 
+            }
             paginationPerPage={itemsPerPage}
             paginationRowsPerPageOptions={[8, 15, 30]}
             responsive

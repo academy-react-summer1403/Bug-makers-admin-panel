@@ -21,6 +21,7 @@ import BlogDetailPage from '../../../pages/blogDetail';
 import EditCommentForm from '../../../../components/common/modal/editComment';
 import { getComments } from '../../../../redux/comments';
 import { ThreeDots } from 'react-loader-spinner';
+import { Avatar, Box, Grid, Typography, Skeleton } from "@mui/material";
 
 const BlogDetail = () => {
     const { id } = useParams();
@@ -52,7 +53,6 @@ const BlogDetail = () => {
         },
     });
 
-    console.log(Replaycomment);
 
     useEffect(() => {
         if (productDetail) {
@@ -61,12 +61,49 @@ const BlogDetail = () => {
     }, [productDetail ]);
 
     const blog = useSelector((state) => state.blogDetail.blogList)
-console.log(blog);
-if (isLoading) {
-    return(
-    <div className="d-flex justify-content-center align-items-center mt-4">
-      <ThreeDots color="#007bff" height={80} width={80} />
-    </div>  )  }
+
+    if (isLoading) {
+    return (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: 2,
+            padding: 2,
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+          }}
+        >
+          <Box sx={{ marginRight: 2 }}>
+            {loading ? (
+              <Skeleton variant="rectangular" width={350} height={350} />
+            ) : (
+              <Avatar
+                src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
+                sx={{ width: 300, height: 300 }}
+              />
+            )}
+          </Box>
+    
+          <Box sx={{ flexGrow: 1 ,marginRight: '50px' }}>
+            <Grid container spacing={2} direction="column">
+              {[...Array(8)].map((_, index) => (
+                <Grid item key={index}>
+                  {loading ? (
+                    <Skeleton width="80%">
+                      <Typography>.</Typography>
+                    </Skeleton>
+                  ) : (
+                    <Typography variant="body1">متن شماره {index + 1}</Typography>
+                  )}
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </Box>
+      );
+     }
 
     if (isError) {
         return <div>خطا در بارگذاری داده‌ها</div>;
@@ -121,31 +158,7 @@ if (isLoading) {
             )}
           }
 
-        // {
-        //     name: 'شناسه گروه',
-        //     selector : row => row.groupId
-        // },
-        // {
-        //     name: 'مدرس دوره',
-        //    selector : row => row.teacherName,
-        //    cell : row =>(
-        //         <Link onClick={handleNavigate}>{row.teacherName}</Link>
-        //    )
-        // },
-        // {
-        //     name: 'ویرایش',
-        //    cell : row =>(
-        //         <DeleteGroup
-        //             isActive={row.isDelete}
-        //             Id={row.groupId}
-        //             api="/CourseGroup" 
-        //             method="delete"
-        //             styled={{ minWidth: '50px' , cursor: 'pointer', padding: '10px' }} 
-        //             text='حذف '
-        //             text2='حذف شده'
-        //       />
-        //    )
-        // },
+
     ];
     
 

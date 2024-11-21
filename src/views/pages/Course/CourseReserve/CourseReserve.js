@@ -11,6 +11,7 @@ import { Badge, Button } from 'reactstrap';
 import Swal from 'sweetalert2';
 import UpdateCourseReserve from '../../../../components/common/modal/updateCourseReserve';
 import { Dropdown } from 'react-bootstrap';
+import { Skeleton } from '@mui/material';
 
 const CourseReserve = () => {
     const [queryValue, setQueryValue] = useState('');
@@ -164,8 +165,15 @@ const CourseReserve = () => {
       </div>
 
       {isLoading && (
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <ThreeDots color="#007bff" height={80} width={80} />
+        <div >
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
         </div>
       )}
       {error && <p>خطایی رخ داده است...</p>}

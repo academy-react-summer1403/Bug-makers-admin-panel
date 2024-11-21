@@ -19,6 +19,7 @@ import { useSelect } from '@nextui-org/react';
 import { getTourCheckList } from '../../../@core/api/Tournament/TourCheckList/getCheckList';
 import ShowCheckList from '../../../components/common/modal/showCheckList';
 import { Menu, Plus } from 'react-feather';
+import { Skeleton } from '@mui/material';
 
 const Tournament = () => {
   const itemsPerPage = 8;
@@ -172,6 +173,20 @@ const Tournament = () => {
             paginationPerPage={itemsPerPage}
             paginationRowsPerPageOptions={[8, 15, 30]}
             responsive
+            noDataComponent={
+              <div >
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+          </div> 
+            }
             highlightOnHover
           />
         </motion.div>
