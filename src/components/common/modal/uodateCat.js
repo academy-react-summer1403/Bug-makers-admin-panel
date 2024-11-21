@@ -8,7 +8,7 @@ import { addCategoryBlog, getCategoryListBlog, updateCategoryBlog } from '../../
 import { getCategoryId } from '../../../@core/api/blog/Category'; 
 
 
-const UpdateCat = ({selectData}) => {
+const UpdateCat = ({selectData , title}) => {
   const [show, setShow] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
 
@@ -71,9 +71,10 @@ console.log(getCategoryIdData);
       <Button
         onClick={handleModal}
         className='btn-cart me-0 me-sm-1 mb-1 mb-sm-0'
-        color='info'
+        color='transparent'
+        style={{border:'none'}}
       >
-        دسته بندی
+         {title}
       </Button>
 
       <Modal

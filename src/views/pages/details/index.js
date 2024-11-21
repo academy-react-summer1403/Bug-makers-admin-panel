@@ -98,7 +98,7 @@ const Product = props => {
     <Row className='my-2'>
       <Col className='d-flex align-items-center justify-content-center mb-2 mb-md-0' md='5' xs='12'>
         <div className='d-flex align-items-center justify-content-center'>
-          <img className='img-fluid product-img' src={Image ? Image : image}  />
+          <img className='img-fluid product-img' onError={(e) => {e.target.src = image}} src={Image ? Image : image}  />
         </div>
       </Col>
       <Col md='7' xs='12'>
@@ -177,7 +177,7 @@ const Product = props => {
         {preview ? (
         <div className='d-flex flex-column flex-sm-row pt-1' >
           <AddCategory uuid={id} />
-          <AddGroupCourse  id={params} teacherId={params2}/>
+          <AddGroupCourse color='info' title='ساخت گروه' id={params} teacherId={params2}/>
 
           <Active 
             isActive={false}

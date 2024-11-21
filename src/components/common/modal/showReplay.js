@@ -177,7 +177,7 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
       
     >
       <Tooltip title='نمایش ریپلای' placement='top' >
-      <Eye size={'14px'} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} />
+      <span size={'14px'} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} >نمایش ریپلای</span>
       </Tooltip>
       <Modal
         isOpen={show}

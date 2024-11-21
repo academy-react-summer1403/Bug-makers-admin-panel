@@ -68,9 +68,8 @@ const UpdateCommentPodcast = ({selectData}) => {
     <div>
       <Button
         onClick={handleModal}
-        className='btn-cart '
-        style={{padding:'5px'}}
-        color='info'
+        color='transparent'
+        style={{border:'none'}}
       >
          ویرایش پادکست
       </Button>

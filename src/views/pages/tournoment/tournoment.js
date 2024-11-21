@@ -7,7 +7,7 @@ import EditBullding from '../../../components/common/modal/editBullding';
 import Active from '../../../components/common/active/active';
 import moment from 'moment-jalaali';
 import { getTournoment } from '../../../@core/api/Tournament/getTouronment';
-import { FormSelect } from 'react-bootstrap';
+import { Dropdown, FormSelect } from 'react-bootstrap';
 import EditTour from '../../../components/common/modal/editTour';
 import ShowReplay from '../../../components/common/modal/showReplay';
 import ShowGroupModal from '../../../components/common/modal/showGroupModal';
@@ -18,6 +18,7 @@ import { setTourGroup } from '../../../redux/TourGroup';
 import { useSelect } from '@nextui-org/react';
 import { getTourCheckList } from '../../../@core/api/Tournament/TourCheckList/getCheckList';
 import ShowCheckList from '../../../components/common/modal/showCheckList';
+import { Menu, Plus } from 'react-feather';
 
 const Tournament = () => {
   const itemsPerPage = 8;
@@ -104,17 +105,33 @@ const Tournament = () => {
     {
       name: 'عملیات',
       cell: (row) => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-        <div  className="d-flex justify-content-center align-items-center gap-1">
-          <EditTour title={'ویرایش'} row={row} />
+        <div className="d-flex justify-content-center align-items-center gap-1">
+          <Dropdown>
+            <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-basic">
+              <Menu />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item href="#/edit-tour">
+                <div className="d-flex justify-content-center align-items-center gap-1">
+                  <EditTour title={'ویرایش'} row={row} />
+                </div>
+              </Dropdown.Item>
+
+              <Dropdown.Item href="#/show-group-modal">
+                <div onClick={() => setTourId(row.id)} className="d-flex justify-content-center align-items-center gap-1">
+                  <ShowGroupModal isLoading={isLoading} TourId={TourId} group={TourGroup} />
+                </div>
+              </Dropdown.Item>
+
+              <Dropdown.Item href="#/show-checklist">
+                <div onClick={() => setTourId(row.id)} className="d-flex justify-content-center align-items-center gap-1">
+                  <ShowCheckList isLoading={loading} TourId={TourId} group={CheckList} />
+                </div>
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
-        <div onClick={() => setTourId(row.id)} className="d-flex justify-content-center align-items-center gap-1">
-          <ShowGroupModal isLoading={isLoading} TourId={TourId} group={TourGroup} />
-          </div>
-        <div onClick={() => setTourId(row.id)} className="d-flex justify-content-center align-items-center gap-1">
-          <ShowCheckList isLoading={loading} TourId={TourId} group={CheckList} />
-          </div>
-          </div>
       ),
     },
   ];
@@ -122,7 +139,7 @@ const Tournament = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        <EditTour title={'افزودن تورنومنت '} />
+        <EditTour title={<Plus />} />
         <input
           type="search"
           className="form-control"

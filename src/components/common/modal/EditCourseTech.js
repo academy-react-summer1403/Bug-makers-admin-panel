@@ -9,6 +9,7 @@ import Flatpickr from 'react-flatpickr';
 import { FormSelect } from 'react-bootstrap';
 import '@styles/react/libs/flatpickr/flatpickr.scss';
 import { UpdateCourseTech } from '../../../@core/api/course/Tech/updateTechCourse';
+import { Tooltip } from '@mui/material';
 
 const EditCourseTech = ({ row, title , size}) => {
   const [show, setShow] = useState(false);
@@ -52,14 +53,16 @@ const EditCourseTech = ({ row, title , size}) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'start', gap: '6px', alignItems: 'center' }}>
+      <Tooltip title='افزودن دسته بندی' placement='top' >
       <Button
-        style={{whiteSpace:'nowrap'}}
+        style={{whiteSpace:'nowrap' , border:'none'}}
         onClick={() => setShow(true)}
-        color="primary"
+        color="transparent"
         size={size}
       >
         {title}
       </Button>
+      </Tooltip>
       <Modal isOpen={show} toggle={() => setShow(!show)} className="modal-dialog-centered modal-lg" backdrop="static" keyboard={false}>
         <ModalHeader toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">

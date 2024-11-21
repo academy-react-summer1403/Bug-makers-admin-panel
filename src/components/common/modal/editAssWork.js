@@ -9,6 +9,7 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Flatpickr from 'react-flatpickr';
 import { UpdateAssWork } from '../../../@core/api/assWork/assWorkPage/updateAssWork';
 import { getAssCourse } from '../../../@core/api/assWork/getAssCourse';
+import { Tooltip } from '@mui/material';
 
 const EditAssWork = ({ row, title }) => {
   const [show, setShow] = useState(false);
@@ -52,7 +53,11 @@ const EditAssWork = ({ row, title }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'start', gap: '6px', alignItems: 'center' }}>
-      <Button onClick={() => setShow(true)} color="primary">{title}</Button>
+    <Tooltip title='افزودن تسک' placement='top' >
+
+      <Button onClick={() => setShow(true)} color="transparent" style={{border:'none'}}>{title}</Button>
+    </Tooltip>
+
       <Modal isOpen={show} toggle={() => setShow(!show)} className="modal-dialog-centered modal-lg" backdrop="static" keyboard={false}>
         <ModalHeader toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">

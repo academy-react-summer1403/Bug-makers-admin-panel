@@ -1,9 +1,9 @@
-import { Card } from 'react-bootstrap';
+import { Card, Dropdown } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, CardHeader } from 'reactstrap';
 import DataTable from 'react-data-table-component';
-import { ChevronDown } from 'react-feather';
+import { ChevronDown, Menu } from 'react-feather';
 import moment from 'moment-jalaali';
 import Swal from 'sweetalert2';
 import Active from '../../../components/common/active/active';
@@ -123,11 +123,19 @@ console.log(coursePayments);
     {
       name: 'ویرایش',
       cell: (row) => (
-        <div className="d-flex justify-content-center align-items-center gap-1">
-          <Button color="danger" size="sm" onClick={() => handleDelete(row)}>
-            حذف پرداختی
-          </Button>
-        </div>
+        <Dropdown className="no-border">
+        <Dropdown.Toggle  style={{border:'none'}} variant="transparent" id="dropdown-custom-components">
+          <Menu />
+        </Dropdown.Toggle>
+  
+        <Dropdown.Menu className="border-0">
+          <Dropdown.Item as="div" className="d-flex justify-content-center align-items-center gap-1">
+            <Button color="transparent" size="sm" onClick={() => handleDelete(row)}>
+              حذف پرداختی
+            </Button>
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       ),
     },
   ];

@@ -7,7 +7,7 @@ import EditBullding from '../../../components/common/modal/editBullding';
 import Active from '../../../components/common/active/active';
 import moment from 'moment-jalaali';
 import { getTournoment } from '../../../@core/api/Tournament/getTouronment';
-import { FormSelect } from 'react-bootstrap';
+import { Dropdown, FormSelect } from 'react-bootstrap';
 import EditTour from '../../../components/common/modal/editTour';
 import ShowReplay from '../../../components/common/modal/showReplay';
 import ShowGroupModal from '../../../components/common/modal/showGroupModal';
@@ -22,6 +22,8 @@ import { getTerm } from '../../../@core/api/course/Term/getTerm';
 import { ThreeDots } from 'react-loader-spinner';
 import EdEditTerm from '../../../components/common/modal/editTerm';
 import EditTermCloseTime from '../../../components/common/modal/editTermCloseTime';
+import { Calendar, Menu, Plus } from 'react-feather';
+import { Tooltip } from '@mui/material';
 
 const Term = () => {
   const itemsPerPage = 8;
@@ -94,10 +96,21 @@ const Term = () => {
     {
       name: 'عملیات',
       cell: (row) => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-            <EdEditTerm size='sm' row={row} title='ویرایش' />
-            <EditTermCloseTime size='sm' row={row} title='ویرایش زمان' />
-          </div>
+        <Dropdown className="no-border">
+        <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-custom-components">
+          <Menu />
+        </Dropdown.Toggle>
+  
+        <Dropdown.Menu className="border-0">
+          <Dropdown.Item as="div" className="d-flex justify-content-center align-items-center gap-1">
+            <EdEditTerm size="sm" row={row} title="ویرایش" />
+          </Dropdown.Item>
+  
+          <Dropdown.Item as="div" className="d-flex justify-content-center align-items-center gap-1">
+            <EditTermCloseTime size="sm" row={row} title="ویرایش زمان" />
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       ),
     },
   ];
@@ -105,8 +118,8 @@ const Term = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-      <EdEditTerm size='md'  title='افزودن ترم' />
-      <EditTermCloseTime size='md' title='افزودن زمان' />
+      <EdEditTerm size='md'  title={<Plus />} />
+      <EditTermCloseTime size='md' title={<Calendar />} />
         <input
           type="search"
           className="form-control"

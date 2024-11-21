@@ -17,7 +17,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { getBlogListWithPagination } from '../../../@core/api/blog/getCourseListWithPagination';
 import { setBlogList } from '../../../redux/blogSlice';
-import { FormSelect } from 'react-bootstrap';
+import { Dropdown, FormSelect } from 'react-bootstrap';
+import { Menu } from 'react-feather';
 
 const BlogPage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -80,19 +81,33 @@ const BlogPage = () => {
     {
       name: 'عملیات',
       cell: row => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-          <Link to={'/apps/blogDetail/' + row.id}>مشاهده</Link>
-          <Active
-            isActive={row.isActive}
-            keyword={row.keyword}
-            id={row.id}
-            styled={{ minWidth: '50px', cursor: 'pointer', padding: '5px' }}
-            api="News/ActiveDeactiveNews"
-            method="put"
-            text='غیر فعال'
-            text2='فعال'
-          />
-        </div>
+        <div className="d-flex justify-content-center align-items-center gap-1">
+        <Dropdown>
+          <Dropdown.Toggle variant="transparent" style={{border:'none'}} size="sm" id="dropdown-actions">
+            <Menu />
+          </Dropdown.Toggle>
+  
+          <Dropdown.Menu>
+            <Dropdown.Item as={Link} to={`/apps/blogDetail/${row.id}`} >
+              <Link  to={'/apps/blogDetail/' + row.id}  className="me-2" />
+              مشاهده
+            </Dropdown.Item>
+  
+            <Dropdown.Item >
+              <Active
+                isActive={row.isActive}
+                keyword={row.keyword}
+                id={row.id}
+                styled={{ minWidth: '50px', cursor: 'pointer', padding: '5px' }}
+                api="News/ActiveDeactiveNews"
+                method="put"
+                text='غیر فعال'
+                text2='فعال'
+              />
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       )
     }
   ];

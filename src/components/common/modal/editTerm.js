@@ -8,6 +8,7 @@ import { getDep } from '../../../@core/api/Department/getDep';
 import Flatpickr from 'react-flatpickr';
 import { FormSelect } from 'react-bootstrap';
 import '@styles/react/libs/flatpickr/flatpickr.scss';
+import { Tooltip } from '@mui/material';
 
 const EdEditTerm = ({ row, title , size}) => {
   const [show, setShow] = useState(false);
@@ -60,14 +61,16 @@ const EdEditTerm = ({ row, title , size}) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'start', gap: '6px', alignItems: 'center' }}>
+      <Tooltip placement='top' title='افزودن ترم' >
       <Button
-        style={{whiteSpace:'nowrap'}}
         onClick={() => setShow(true)}
-        color="primary"
+        color="transparent"
+        style={{whiteSpace:'nowrap',border:'none'}}
         size={size}
       >
         {title}
       </Button>
+      </Tooltip>
       <Modal isOpen={show} toggle={() => setShow(!show)} className="modal-dialog-centered modal-lg" backdrop="static" keyboard={false}>
         <ModalHeader toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">

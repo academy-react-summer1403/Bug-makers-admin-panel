@@ -10,6 +10,8 @@ import { UpdatePodcastApi } from '../../../@core/api/podcast/updatePodcast';
 import { FormSelect } from 'react-bootstrap';
 import { getUser } from '../../../@core/api/user/getUserById';
 import { uploadImage } from '../../../@core/api/course/uploadImage';
+import { Tooltip } from '@mui/material';
+import { Plus } from 'react-feather';
 
 
 const UpdatePodcast = ({selectData}) => {
@@ -84,13 +86,16 @@ const UpdatePodcast = ({selectData}) => {
   };
   return (
     <div>
+      <Tooltip placement='top' title='افزودن پادکست' >
       <Button
         onClick={handleModal}
-        color='info'
+        color='transparent'
+        style={{border:'none'}}
         size='sm'
       >
-         {selectData ? 'ویرایش' : 'افزودن'}
+         {selectData ? 'ویرایش' : <Plus />}
       </Button>
+      </Tooltip>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

@@ -7,6 +7,8 @@ import { getBuilding } from '../../../@core/api/building/building';
 import EditBullding from '../../../components/common/modal/editBullding';
 import Active from '../../../components/common/active/active';
 import moment from 'moment-jalaali';
+import { Dropdown } from 'react-bootstrap';
+import { Menu, Plus } from 'react-feather';
 
 const Bullding = () => {
   const itemsPerPage = 8;
@@ -65,23 +67,33 @@ const Bullding = () => {
     {
       name: 'عملیات',
       cell: (row) => (
-        <div className="d-flex justify-content-center align-items-center gap-1">
-          <EditBullding title={'ویرایش'} row={row} />
-          <Active
-            isActive={row.active}
-            id={row.id}
-            api="/Building/Active"
-            method="put"
-            styled={{
-              minWidth: '50px',
-              cursor: 'pointer',
-              padding: '10px',
-              marginRight: '10px',
-            }}
-            text={row.active === true ? 'غیر فعال' : 'غیرفعال'}
-            text2={row.active === true ? 'فعال' : 'فعال'}
-          />
-        </div>
+        <Dropdown className="d-flex justify-content-center align-items-center gap-1">
+        <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-custom-components">
+          <Menu />
+        </Dropdown.Toggle>
+  
+        <Dropdown.Menu>
+          <Dropdown.Item as="button">
+            <EditBullding title={'ویرایش'} row={row} />
+          </Dropdown.Item>
+          <Dropdown.Item as="button">
+            <Active
+              isActive={row.active}
+              id={row.id}
+              api="/Building/Active"
+              method="put"
+              styled={{
+                minWidth: '50px',
+                cursor: 'pointer',
+                padding: '10px',
+                marginRight: '10px',
+              }}
+              text={row.active === true ? 'غیر فعال' : 'غیرفعال'}
+              text2={row.active === true ? 'فعال' : 'فعال'}
+            />
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       ),
     },
   ];
@@ -89,7 +101,7 @@ const Bullding = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        <EditBullding title={'ساخت ساختمان'} />
+        <EditBullding title={<Plus />} />
         <input
           type="search"
           className="form-control"

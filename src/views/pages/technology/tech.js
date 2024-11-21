@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { Badge } from 'reactstrap';
 import moment from 'moment-jalaali';
-import { FormSelect } from 'react-bootstrap';
+import { Dropdown, FormSelect } from 'react-bootstrap';
 import { ThreeDots } from 'react-loader-spinner';
 import EdEditTerm from '../../../components/common/modal/editTerm';
 import EditTermCloseTime from '../../../components/common/modal/editTermCloseTime';
 import { getTech } from '../../../@core/api/course/Tech/getTech';
 import EditCourseTech from '../../../components/common/modal/EditCourseTech';
+import { Menu, Plus } from 'react-feather';
 
 const Tech = () => {
   const itemsPerPage = 8;
@@ -62,9 +63,19 @@ const Tech = () => {
     {
       name: 'عملیات',
       cell: (row) => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-            <EditCourseTech size='sm' row={row} title='ویرایش' />
-          </div>
+        <div className="d-flex justify-content-center align-items-center gap-1">
+        <Dropdown>
+          <Dropdown.Toggle style={{whiteSpace:'nowrap' , border:'none'}} variant="transparent" size="sm" id="dropdown-custom-components">
+            <Menu /> 
+.          </Dropdown.Toggle>
+  
+          <Dropdown.Menu>
+            <Dropdown.Item href="#/action-1" >
+              <EditCourseTech size='sm' row={row} title='ویرایش' />
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       ),
     },
   ];
@@ -72,7 +83,7 @@ const Tech = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-      <EditCourseTech size='md'  title='افزودن دسته بندی' />
+      <EditCourseTech size='md'  title={<Plus />} />
         <input
           type="search"
           className="form-control"

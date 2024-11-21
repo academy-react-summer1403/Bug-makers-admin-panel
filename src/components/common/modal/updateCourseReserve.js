@@ -77,8 +77,8 @@ const UpdateCourseReserve = ({selected , studentId}) => {
     <div>
       <Button
         onClick={handleModal}
-        style={{padding:'8px'}}
-        color='success'
+        color='transparent'
+        style={{border:'none'}}
       >
         تایید رزرو
       </Button>

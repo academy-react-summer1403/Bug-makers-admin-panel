@@ -170,7 +170,7 @@ const noDataMessage = "هیچ جلسه‌ای وجود ندارد";
  
       
     >
-      <Button size='sm'  color='warning' className=' cursor-pointer'  style={{marginTop: '2px', padding:'5px 5px', fontSize:'10px'}} onClick={handleClick} >نمایش جلسه</Button>
+      <Button size='sm'  color='transparent' className=' cursor-pointer'  style={{border:'none'}} onClick={handleClick} >نمایش جلسه</Button>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

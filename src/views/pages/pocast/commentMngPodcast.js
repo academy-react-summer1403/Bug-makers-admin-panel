@@ -195,12 +195,23 @@ const CommentMngPodcast = () => {
     {
       name: 'عملیات',
       cell: row => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-          <Button style={{ padding: '5px' }} onClick={() => handleDelete(row)} color='danger'>
-            حذف کامنت
-          </Button>
-          <UpdateCommentPodcast selectData={row} />
-        </div>
+        <div className="d-flex justify-content-center align-items-center gap-1">
+        <Dropdown>
+          <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-comment-options">
+            <Menu />
+          </Dropdown.Toggle>
+  
+          <Dropdown.Menu>
+            <Dropdown.Item  onClick={() => handleDelete(row)}>
+                حذف کامنت
+            </Dropdown.Item>
+  
+            <Dropdown.Item >
+              <UpdateCommentPodcast selectData={row} />
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       ),
     },
   ];

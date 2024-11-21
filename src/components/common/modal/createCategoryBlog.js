@@ -6,6 +6,8 @@ import classnames from 'classnames';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addCategoryBlog, getCategoryListBlog, updateCategoryBlog } from '../../../@core/api/blog/Category';
 import { getCategoryId } from '../../../@core/api/blog/Category'; 
+import { Plus } from 'react-feather';
+import { Tooltip } from '@mui/material';
 const CreateCategoryBlog = () => {
   const [show, setShow] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
@@ -86,13 +88,16 @@ const CreateCategoryBlog = () => {
   }
   return (
     <div>
+      <Tooltip placement='top' title='افزودن دسته بندی' >
       <Button
         onClick={() => setShow(true)}
         className='btn-cart me-0 me-sm-1 mb-1 mb-sm-0'
-        color='info'
+        color='transparent'
+        style={{border:'none'}}
       >
-        دسته بندی
+        <Plus />
       </Button>
+      </Tooltip>
 
       <Modal
         isOpen={show}

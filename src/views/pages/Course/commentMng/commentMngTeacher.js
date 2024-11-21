@@ -20,6 +20,7 @@ import { acceptComment, deleteCommentApi, deleteCommentApiFull, updatingComment 
 import UpdateComment from '../../../../components/common/modal/updateComment';
 import { getCommentCourseTeacher } from '../../../../@core/api/course/commentMng/commentMngTeacher';
 import { getCommentBlogMap, getCommentListBlog } from '../../../../@core/api/blog/getCommentPage';
+import { Tooltip } from '@mui/material';
 
 
 const CommentMngForBlog = () => {
@@ -190,45 +191,57 @@ const CommentMngForBlog = () => {
     {
       name: 'عملیات',
       cell: row => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-          {row.replyCount ? (
-          <ShowReplay deleteCommentApiFull={deleteCommentFull} acceptCommentShowAll={acceptCommentShowAll} deleteComment={deleteComment} commentId={row.id}  courseId={row.newsId} />
-          ) : (
-            <Minus size='14px' />
-          )}
-          <Dropdown>
-        <Dropdown.Toggle 
-          variant="transparent" 
-          id="dropdown-basic" 
-          style={{ padding: '5px', marginRight: '5px', border: 'none', background: 'transparent' }}          
-          >
-          <Menu size={'14px'} />
-        </Dropdown.Toggle>
+<div className='d-flex justify-content-center align-items-center gap-1'>
+  <Tooltip title='منو عملیات ' placement='top'>
+    <Dropdown>
+      <Dropdown.Toggle 
+        variant="transparent" 
+        id="dropdown-basic" 
+        style={{ padding: '5px', marginRight: '5px', border: 'none', background: 'transparent' }}          
+      >
+        <Menu size={'14px'} />
+      </Dropdown.Toggle>
 
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={() => handleAccept(row)}>تایید کامنت</Dropdown.Item>
-          <Dropdown.Item onClick={() => handleDelete(row)}>رد کامنت</Dropdown.Item>
-          <Dropdown.Item onClick={() => handleDeleteFull(row)}>حذف کامنت</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-      <UpdateComment 
-         CommentId={row.commentId}  
-         CourseId={row.courseId} 
-         Title={row.commentTitle} 
-         Describe={row.describe} 
-         topic='بروزرسانی کامنت'
-         Api={updatingComment}
-         KeyMutate={'updateComment'}
-         icon={
-          <Edit 
-            size={'14px'} 
-            className='m-2 cursor-pointer' 
-            style={{ marginTop: '2px' }} 
+      <Dropdown.Menu>
+        {row.replyCount ? (
+          <ShowReplay 
+            deleteCommentApiFull={deleteCommentFull} 
+            acceptCommentShowAll={acceptCommentShowAll} 
+            deleteComment={deleteComment} 
+            commentId={row.commentId}  
+            courseId={row.courseId} 
           />
-        } 
-         />
+        ) : (
+          <Tooltip title='ریپلای وجود ندارد' placement='top'>
+            <span >ریپلای وجود ندارد</span>
+          </Tooltip>
+        )}
+        
+        <Dropdown.Item onClick={() => handleAccept(row)}>تایید کامنت</Dropdown.Item>
+        <Dropdown.Item onClick={() => handleDelete(row)}>رد کامنت</Dropdown.Item>
+        <Dropdown.Item onClick={() => handleDeleteFull(row)}>حذف کامنت</Dropdown.Item>
 
-        </div>
+        <UpdateComment 
+          CommentId={row.commentId}  
+          CourseId={row.courseId} 
+          Title={row.commentTitle} 
+          Describe={row.describe} 
+          topic='بروزرسانی کامنت'
+          Api={updatingComment}
+          KeyMutate={'updateComment'}
+          icon={
+            <Edit 
+              size={'14px'} 
+              className='m-2 cursor-pointer' 
+              style={{ marginTop: '2px' }} 
+            />
+          } 
+        />
+      </Dropdown.Menu>
+    </Dropdown>
+  </Tooltip>
+</div>
+
       )
     }
   ];

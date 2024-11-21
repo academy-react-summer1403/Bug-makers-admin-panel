@@ -12,6 +12,8 @@ import { getAssCourse } from '../../../@core/api/assWork/getAssCourse';
 import EditAssCourse from '../../../components/common/modal/editAssCourse';
 import { getAssWork } from '../../../@core/api/assWork/assWorkPage/getAssWork';
 import EditAssWork from '../../../components/common/modal/editAssWork';
+import { Dropdown } from 'react-bootstrap';
+import { Menu, Plus } from 'react-feather';
 
 const AssWork = () => {
   const itemsPerPage = 8;
@@ -65,9 +67,19 @@ const AssWork = () => {
     {
       name: 'عملیات',
       cell: (row) => (
-        <div className="d-flex justify-content-center align-items-center gap-1">
-          <EditAssWork title={'ویرایش'} row={row} />
-        </div>
+      <div className="d-flex justify-content-center align-items-center gap-1">
+        <Dropdown>
+          <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-basic">
+            <Menu />
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item href="#/action-1">
+              <EditAssWork title={'ویرایش'} row={row} />
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       ),
     },
   ];
@@ -75,7 +87,7 @@ const AssWork = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        <EditAssWork title={'افزودن تسک'} />
+        <EditAssWork title={<Plus />} />
         <input
           type="search"
           className="form-control"

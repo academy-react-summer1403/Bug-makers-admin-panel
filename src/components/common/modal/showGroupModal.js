@@ -168,7 +168,7 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
       }}
       
     >
-      <Button size={'14px'}  color='warning' className=' cursor-pointer'  style={{marginTop: '2px', padding:'5px 5px', fontSize:'10px'}} onClick={handleClick} >نمایش گروه</Button>
+      <Button size={'14px'}  color='transparent' className=' cursor-pointer'  style={{border:'none'}} onClick={handleClick} >نمایش گروه</Button>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

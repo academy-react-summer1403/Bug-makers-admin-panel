@@ -10,6 +10,8 @@ import { getDep } from '../../../@core/api/Department/getDep';
 import EditDep from '../../../components/common/modal/editDep';
 import { getAssCourse } from '../../../@core/api/assWork/getAssCourse';
 import EditAssCourse from '../../../components/common/modal/editAssCourse';
+import { Dropdown } from 'react-bootstrap';
+import { Menu, Plus } from 'react-feather';
 
 const AssCourse = () => {
   const itemsPerPage = 8;
@@ -58,9 +60,17 @@ const AssCourse = () => {
     {
       name: 'عملیات',
       cell: (row) => (
-        <div className="d-flex justify-content-center align-items-center gap-1">
-          <EditAssCourse title={'ویرایش'} row={row} />
-        </div>
+        <Dropdown>
+        <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-basic">
+          <Menu />
+        </Dropdown.Toggle>
+    
+        <Dropdown.Menu>
+          <Dropdown.Item href="#/action-1">
+            <EditAssCourse title={'ویرایش'} row={row} />
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       ),
     },
   ];
@@ -68,7 +78,7 @@ const AssCourse = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        <EditAssCourse title={'افزودن منتور'} />
+        <EditAssCourse title={<Plus />} />
         <input
           type="search"
           className="form-control"

@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 import { getBlogListWithPagination } from '../../../@core/api/blog/getCourseListWithPagination';
 import { setBlogList } from '../../../redux/blogSlice';
 import { getGroupData } from '../../../@core/api/groupPage/groupPage';
-import { Button } from 'react-bootstrap';
+import { Button, Dropdown } from 'react-bootstrap';
 import { deleteGroup } from '../../../@core/api/course/deleteGroup';
 import { deleteGroupPage } from '../../../@core/api/groupPage/deleteGroup';
 import Swal from 'sweetalert2';
@@ -31,6 +31,7 @@ import { getAdminSchedual, getSchedualId } from '../../../@core/api/Schedual/sch
 import { Badge, Input } from 'reactstrap';
 import ShowSession from '../../../components/common/modal/showSession';
 import { getSession } from '../../../@core/api/session/getSession';
+import { Menu, Plus } from 'react-feather';
 
 const Schedual = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -166,14 +167,27 @@ const Schedual = () => {
     {
       name: 'عملیات',
       cell: row => (
-        <div  className='d-flex justify-content-center align-items-center gap-1'>
-        <div onClick={() => setSchedualId(row.id)} className='d-flex justify-content-center align-items-center gap-1'>
-            <CreateSchedual schedual={getSchdualDataid} />
-        </div>
-        <div  onClick={() => setSessionId(row.id)}>
-            <ShowSession isLoading={sessionIsLoading} sessionId={getSessionData} />
-            </div>
-            </div>
+      <div className="d-flex justify-content-center align-items-center gap-1">
+        <Dropdown>
+          <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-basic">
+            <Menu />
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item href="#/create-schedual">
+              <div onClick={() => setSchedualId(row.id)} className="d-flex justify-content-center align-items-center gap-1">
+                <CreateSchedual title='ویرایش بازه زمانی' schedual={getSchdualDataid} />
+              </div>
+            </Dropdown.Item>
+
+            <Dropdown.Item href="#/show-session">
+              <div onClick={() => setSessionId(row.id)}>
+                <ShowSession isLoading={sessionIsLoading} sessionId={getSessionData} />
+              </div>
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       )
     }
   ];
@@ -195,6 +209,7 @@ const Schedual = () => {
   return (
     <div className='container mt-4'>
       <div className='d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3'>
+      <CreateSchedual title={<Plus />} />
         <Input 
             type='date'
             name='startTime'
@@ -209,7 +224,6 @@ const Schedual = () => {
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
         />
-        <CreateSchedual />
 
       </div>
 

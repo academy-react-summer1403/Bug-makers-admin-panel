@@ -10,6 +10,7 @@ import Flatpickr from 'react-flatpickr';
 import { UpdateDep } from '../../../@core/api/Department/updateDep';
 import { getBuilding } from '../../../@core/api/building/building';
 import { UpdateCheckList } from '../../../@core/api/Tournament/checkList/updateCheckList';
+import { Tooltip } from '@mui/material';
 
 const EditCheckList = ({ row, title }) => {
   const [show, setShow] = useState(false);
@@ -48,7 +49,9 @@ const EditCheckList = ({ row, title }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'start', gap: '6px', alignItems: 'center' }}>
-      <Button onClick={() => setShow(true)} color="primary">{title}</Button>
+      <Tooltip placement='top' title='افزودن چک لیست'>
+        <Button onClick={() => setShow(true)} color="transparent" style={{border:'none'}}>{title}</Button>
+      </Tooltip>
       <Modal isOpen={show} toggle={() => setShow(!show)} className="modal-dialog-centered modal-lg" backdrop="static" keyboard={false}>
         <ModalHeader toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">

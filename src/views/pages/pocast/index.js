@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 import { getBlogListWithPagination } from '../../../@core/api/blog/getCourseListWithPagination';
 import { setBlogList } from '../../../redux/blogSlice';
 import { getGroupData } from '../../../@core/api/groupPage/groupPage';
-import { Button } from 'react-bootstrap';
+import { Button, Dropdown } from 'react-bootstrap';
 import { deleteGroup } from '../../../@core/api/course/deleteGroup';
 import { deleteGroupPage } from '../../../@core/api/groupPage/deleteGroup';
 import Swal from 'sweetalert2';
@@ -29,6 +29,7 @@ import { getAllPodcast } from '../../../@core/api/podcast/getAllPodcast';
 import UpdatePodcast from '../../../components/common/modal/updatePodcast';
 import { getLikePodcast } from '../../../@core/api/podcast/commentMng';
 import { deleteLikePod } from '../../../@core/api/podcast/deleteLikePod';
+import { Menu } from 'react-feather';
 
 const Podcast = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -162,10 +163,23 @@ const Podcast = () => {
     {
       name: 'عملیات',
       cell: row => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-            <UpdatePodcast selectData={row} />
-          <Button  size='sm' variant='danger' onClick={() => handleDelete(row)}>حذف لایک</Button>
-        </div>
+        <div className="d-flex justify-content-center align-items-center gap-1">
+        <Dropdown>
+          <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-edit-delete">
+            <Menu />
+          </Dropdown.Toggle>
+  
+          <Dropdown.Menu>
+            <Dropdown.Item >
+              <UpdatePodcast selectData={row} />
+            </Dropdown.Item>
+  
+            <Dropdown.Item  onClick={() => handleDelete(row)}>
+              حذف لایک
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       )
     }
   ];
@@ -177,6 +191,8 @@ const Podcast = () => {
   return (
     <div className='container mt-4'>
       <div className='d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3'>
+      <UpdatePodcast  />
+
         <SearchBox
           width={"100%"}
           lgWidth={"160px"}
@@ -184,24 +200,7 @@ const Podcast = () => {
           value={queryValue}
           onChange={handleSearch}
         />
-        <SelectOpt
-          width={"100%"}
-          lgWidth={"160px"}
-          placeholder='استاد دوره'
-          isTeacherSelect={true}
-          onChange={setTeacherId}
-        />
-        <SelectOpt
-          width={"100%"}
-          lgWidth={"160px"}
-          placeholder='دسته‌بندی'
-          onChange={setCategoryQuery}
-        />
         
-        <button className='btn btn-light' onClick={handleRemoveFilter}>
-          حذف تمامی فیلتر
-        </button>
-        <UpdatePodcast  />
 
       </div>
 

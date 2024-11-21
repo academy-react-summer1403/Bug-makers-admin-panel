@@ -17,14 +17,15 @@ import { Link } from 'react-router-dom';
 import { getBlogListWithPagination } from '../../../@core/api/blog/getCourseListWithPagination';
 import { setBlogList } from '../../../redux/blogSlice';
 import { getGroupData } from '../../../@core/api/groupPage/groupPage';
-import { Button } from 'react-bootstrap';
+import { Button, Dropdown } from 'react-bootstrap';
 import { deleteGroup } from '../../../@core/api/course/deleteGroup';
 import { deleteGroupPage } from '../../../@core/api/groupPage/deleteGroup';
 import Swal from 'sweetalert2';
 import { title } from 'process';
 import EditGroup from '../../../components/common/modal/editGroup';
 import AddGroupCourse from '../../../components/common/modal/AddGroup';
-import { Skeleton } from '@mui/material';
+import { Skeleton, Tooltip } from '@mui/material';
+import { Menu, Plus } from 'react-feather';
 
 const GroupPage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -120,10 +121,29 @@ const GroupPage = () => {
     {
       name: 'عملیات',
       cell: row => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-          <EditGroup  id={row.groupId} CourseId={row.courseId} GroupName={row.groupName} size='14px' GroupCapacity={row.groupCapacity} />
-          <Button size='sm' variant='danger' onClick={() => handleDelete(row)}>حذف گروه</Button>
-        </div>
+        <Dropdown>
+        <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-custom-components">
+          <Menu />
+        </Dropdown.Toggle>
+  
+        <Dropdown.Menu>
+          <Dropdown.Item as="div" className="d-flex align-items-center">
+            <EditGroup
+              id={row.groupId}
+              CourseId={row.courseId}
+              GroupName={row.groupName}
+              size="14px"
+              GroupCapacity={row.groupCapacity}
+            />
+          </Dropdown.Item>
+  
+          <Dropdown.Item as="div" className="d-flex align-items-center">
+            <span size="sm" variant="danger" onClick={() => handleDelete(row)}>
+              حذف گروه
+            </span>
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       )
     }
   ];
@@ -135,6 +155,7 @@ const GroupPage = () => {
   return (
     <div className='container mt-4'>
       <div className='d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3'>
+      <AddGroupCourse title={<Plus />} color='transparent' courses={course?.courseDtos} />
         <SearchBox
           width={"100%"}
           lgWidth={"160px"}
@@ -142,7 +163,6 @@ const GroupPage = () => {
           value={queryValue}
           onChange={handleSearch}
         />
-        <AddGroupCourse courses={course?.courseDtos} />
         <SelectOpt
           width={"100%"}
           lgWidth={"160px"}

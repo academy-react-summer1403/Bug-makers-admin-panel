@@ -4,7 +4,7 @@ import EditUserExample from '../../../../components/common/modal/edituser';
 import AddRole from '../../../../components/common/modal/addRole';
 import { store } from '@store/store';
 import { getUser, deleteUser } from '../store';
-import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical, UserPlus, X } from 'react-feather';
+import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical, UserPlus, X, Menu } from 'react-feather';
 import { Badge, Button } from 'reactstrap';
 import { useState } from 'react';
 import { FaUserShield } from "react-icons/fa";
@@ -12,28 +12,39 @@ import { PiStudent } from "react-icons/pi";
 import { GiTeacher } from "react-icons/gi";
 import { GrUserAdmin } from "react-icons/gr";
 import { Tooltip } from '@mui/material';
+import { Dropdown } from 'react-bootstrap';
 
 // Custom Menu component
 const CustomMenu = ({ user, onEdit, onDelete, rowId }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div style={{display : 'flex' , flexFlow : 'row nowrap' , justifyContent : 'center' , alignItems : 'center' , gap: '10px'}}>
+    <Dropdown>
+      <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-custom-components">
+        <Menu />
+      </Dropdown.Toggle>
 
-          <Tooltip title='جزییات کاربر' placement='top'>
-          <Link to={`/apps/user/view/${rowId}`} >
-            <FileText size={14}  />
-          </Link>
+      <Dropdown.Menu>
+        <Dropdown.Item as="div" className="d-flex align-items-center">
+          <Tooltip title="جزییات کاربر" placement="top">
+            <Link to={`/apps/user/view/${rowId}`} className="d-flex align-items-center">
+              <FileText size={14} />
+              <span className="ms-2">جزییات کاربر</span>
+            </Link>
           </Tooltip>
-          <div  onClick={onEdit}>
-            <EditUserExample size={'14px'} user={user} /> 
-          </div>
-          <Tooltip title='حذف کاربر' placement='top'>
-          <div className='cursor-pointer' onClick={onDelete}>
-            <Trash2 size={14}/>
-          </div>
-          </Tooltip>
-    </div>
+        </Dropdown.Item>
+
+        <Dropdown.Item as="div" className="d-flex align-items-center">
+          <EditUserExample size={14} user={user}  onClick={onEdit} />
+          <span className="ms-2">ویرایش کاربر</span>
+        </Dropdown.Item>
+
+        <Dropdown.Item as="div" className="d-flex align-items-center" onClick={onDelete}>
+          <Trash2 size={14} />
+          <span className="ms-2">حذف کاربر</span>
+        </Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
   );
 };
 const CustomAddRole = ({ user, onEdit } ) => {

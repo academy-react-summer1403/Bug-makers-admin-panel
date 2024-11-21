@@ -11,8 +11,9 @@ import { Button, Modal, ModalBody, ModalHeader, Row, Col, Card, Input, Label } f
 import '@styles/react/libs/react-select/_react-select.scss';
 import { addGroupCourse } from '../../../@core/api/course/addGroupCourse';
 import { FormSelect } from 'react-bootstrap';
+import { Tooltip } from '@mui/material';
 
-const AddGroupCourse = ({ onClick, size , courses , id , teacherId}) => {
+const AddGroupCourse = ({ onClick, color , courses , id , teacherId , title}) => {
   const courseDetail = useSelector(state => state.CourseDetail.CourseList);
   const dispatch = useDispatch();
 
@@ -45,12 +46,14 @@ const AddGroupCourse = ({ onClick, size , courses , id , teacherId}) => {
   const [show, setShow] = useState(false);
 
   return (
+    <Tooltip title='ساخت گروه' placement='top' >
     <Button
       onClick={() => setShow(true)}
       className='btn-cart me-0 me-sm-1 mb-1 mb-sm-0'
-      color='info'
+      color={color}
+      style={{border:'none'}}
     >
-      ساخت گروه
+       {title}
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
@@ -139,6 +142,8 @@ const AddGroupCourse = ({ onClick, size , courses , id , teacherId}) => {
         </ModalBody>
       </Modal>
     </Button>
+    </Tooltip > 
+
   );
 };
 

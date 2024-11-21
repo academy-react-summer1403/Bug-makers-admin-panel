@@ -86,7 +86,7 @@ const EditGroup = ({ size , id , CourseId , GroupCapacity , GroupName}) => {
         alignItems: 'center'
       }}
     >
-      <Edit size={size} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={() => setShow(true)} />
+      <span size={size} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={() => setShow(true)} >ویرایش گروه</span>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

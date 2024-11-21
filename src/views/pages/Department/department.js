@@ -8,6 +8,8 @@ import Active from '../../../components/common/active/active';
 import moment from 'moment-jalaali';
 import { getDep } from '../../../@core/api/Department/getDep';
 import EditDep from '../../../components/common/modal/editDep';
+import { Dropdown } from 'react-bootstrap';
+import { Menu, Plus } from 'react-feather';
 
 const Department = () => {
   const itemsPerPage = 8;
@@ -58,9 +60,17 @@ const Department = () => {
     {
       name: 'عملیات',
       cell: (row) => (
-        <div className="d-flex justify-content-center align-items-center gap-1">
-          <EditDep title={'ویرایش'} row={row} />
-        </div>
+        <Dropdown className="d-flex justify-content-center align-items-center gap-1">
+        <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-custom-components">
+          <Menu />
+        </Dropdown.Toggle>
+  
+        <Dropdown.Menu>
+          <Dropdown.Item as="button">
+            <EditDep title={'ویرایش'} row={row} />
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       ),
     },
   ];
@@ -68,7 +78,7 @@ const Department = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        <EditDep title={'ساخت بخش'} />
+        <EditDep title={<Plus />} />
         <input
           type="search"
           className="form-control"

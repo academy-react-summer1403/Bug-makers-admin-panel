@@ -9,6 +9,7 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Flatpickr from 'react-flatpickr';
 import { FormSelect } from 'react-bootstrap';
 import { UpdateTour } from '../../../@core/api/Tournament/updateTour';
+import { Tooltip } from '@mui/material';
 
 const EditTour = ({ row, title }) => {
   const [show, setShow] = useState(false);
@@ -58,7 +59,9 @@ const EditTour = ({ row, title }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'start', gap: '6px', alignItems: 'center' }}>
-      <Button  style={{marginTop: '2px', padding:'5px 5px', fontSize:'10px'}} onClick={() => setShow(true)} color="primary">{title}</Button>
+      <Tooltip placement='top' title='افزودن تورنومنت'>
+      <Button  style={{border:'none'}} onClick={() => setShow(true)} color="transparent">{title}</Button>
+      </Tooltip>
       <Modal isOpen={show} toggle={() => setShow(!show)} className="modal-dialog-centered modal-lg" backdrop="static" keyboard={false}>
         <ModalHeader toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">

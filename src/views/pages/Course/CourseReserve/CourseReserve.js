@@ -5,11 +5,12 @@ import DataTable from 'react-data-table-component';
 import { ThreeDots } from 'react-loader-spinner';
 import { motion, AnimatePresence } from 'framer-motion'; 
 import moment from 'moment-jalaali';
-import { X } from 'react-feather';
+import { Menu, X } from 'react-feather';
 import { deleteCourseReserve, getCourseReserve } from '../../../../@core/api/course/courseReserve';
 import { Badge, Button } from 'reactstrap';
 import Swal from 'sweetalert2';
 import UpdateCourseReserve from '../../../../components/common/modal/updateCourseReserve';
+import { Dropdown } from 'react-bootstrap';
 
 const CourseReserve = () => {
     const [queryValue, setQueryValue] = useState('');
@@ -104,10 +105,26 @@ const CourseReserve = () => {
     {
       name: 'عملیات',
       cell: row => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-            <UpdateCourseReserve selected={row.courseId} studentId={row.studentId} />
-            <Button color='danger' size='sm' onClick={() => handleDelete(row)} >حذف رزرو</Button>
-        </div>
+        <Dropdown>
+        <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-custom-components">
+          <Menu />
+        </Dropdown.Toggle>
+  
+        <Dropdown.Menu>
+          <Dropdown.Item as="div" className="d-flex align-items-center">
+            <UpdateCourseReserve
+              selected={row.courseId}
+              studentId={row.studentId}
+            />
+          </Dropdown.Item>
+  
+          <Dropdown.Item as="div" className="d-flex align-items-center">
+            <Button size="sm" color="transparent" style={{border:'none'}} onClick={() => handleDelete(row)}>
+              حذف رزرو
+            </Button>
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       )
     }
   ];

@@ -15,6 +15,8 @@ import { ThreeDots } from 'react-loader-spinner';
 import Pagination from '../../../components/common/modal/pagination';
 import { motion, AnimatePresence } from 'framer-motion'; 
 import { Link } from 'react-router-dom';
+import { Dropdown } from 'react-bootstrap';
+import { Menu } from 'react-feather';
 
 const CoursePage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -90,18 +92,31 @@ const CoursePage = () => {
     {
       name: 'عملیات',
       cell: row => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-          <Link to={'/apps/Detail/' + row.courseId}>مشاهده</Link>
-          <Active
-            isActive={row.isActive}
-            id={row.courseId}
-            styled={{ minWidth: '50px', cursor: 'pointer', padding: '5px' }}
-            api="/Course/ActiveAndDeactiveCourse"
-            method="put"
-            text='غیر فعال'
-            text2='فعال'
-          />
-        </div>
+        <Dropdown>
+        <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-custom-components">
+          <Menu />
+        </Dropdown.Toggle>
+  
+        <Dropdown.Menu>
+          <Dropdown.Item as="div" className="d-flex align-items-center">
+            <Link to={`/apps/Detail/${row.courseId}`} className="d-flex align-items-center">
+              <span>مشاهده</span>
+            </Link>
+          </Dropdown.Item>
+  
+          <Dropdown.Item as="div" className="d-flex align-items-center">
+            <Active
+              isActive={row.isActive}
+              id={row.courseId}
+              styled={{ minWidth: '50px', cursor: 'pointer', padding: '5px' }}
+              api="/Course/ActiveAndDeactiveCourse"
+              method="put"
+              text='غیر فعال'
+              text2='فعال'
+            />
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       )
     }
   ];

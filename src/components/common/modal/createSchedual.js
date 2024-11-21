@@ -21,8 +21,8 @@ import persian from "react-date-object/calendars/persian"
 import persian_fa from "react-date-object/locales/persian_fa"
 import { AddSchedualAtomatic, AddSchedualSingle, UpdateSchedual } from '../../../@core/api/Schedual/schedual';
 import { getCourseGroupId } from '../../../@core/api/course/getCourseWithGroupId';
-import { Switch } from '@mui/material';
-const CreateSchedual = ({schedual}) => {
+import { Switch, Tooltip } from '@mui/material';
+const CreateSchedual = ({schedual , title}) => {
 
   const [show, setShow] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
@@ -121,15 +121,16 @@ const SingleMutation = useMutation({
 
   return (
     <div>
+      <Tooltip placement='top' title='افزودن بازه زمانی'>
       <Button
         onClick={() => setShow(true)}
         size='sm'
-        color='info'
-        className=' cursor-pointer'  style={{marginTop: '2px', padding:'5px 5px', fontSize:'10px'}}
+        color='transparent'
+        className=' cursor-pointer'  style={{border:'none'}}
       >
-        بازه زمانی
+         {title}
       </Button>
-
+      </Tooltip>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
