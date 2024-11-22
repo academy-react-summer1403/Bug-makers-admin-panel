@@ -65,6 +65,9 @@ const CommentMngPodcast = lazy(() => import('../../views/pages/pocast/commentMng
 const Term = lazy(() => import('../../views/pages/Term/Term.js'))
 const Tech = lazy(() => import('../../views/pages/technology/tech.js'))
 const SupportChat = lazy(() => import('../../components/chat/chat.js'))
+const NotifType = lazy(() => import('../../views/pages/NotifPage/NotifType.js'))
+const NotifListMessage = lazy(() => import('../../views/pages/NotifPage/NotifListMessage.js'))
+const NotifList = lazy(() => import('../../views/pages/NotifPage/NotifList.js'))
 // ** Merge Routes
 const token = localStorage.getItem('token');
 
@@ -280,6 +283,18 @@ const Routes = [
   {
     element: token ? <SupportChat /> : <Navigate to={'/login'} />,
     path: '/SupportChat',
+  },
+  {
+    element: token ? <NotifType /> : <Navigate to={'/login'} />,
+    path: '/Notif/NotifType',
+  },
+  {
+    element: token ? <NotifListMessage /> : <Navigate to={'/login'} />,
+    path: '/Notif/NotifListMessage',
+  },
+  {
+    element: token ? <NotifList /> : <Navigate to={'/login'} />,
+    path: '/Notif/NotifList',
   },
 ];
 

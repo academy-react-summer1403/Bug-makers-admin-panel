@@ -26,6 +26,7 @@ import EditCourse from '../../../components/common/modal/editCourse';
 import { useSelected } from 'slate-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPreview } from '../../../redux/Preview';
+import AddNotifCourse from '../../../components/common/modal/addNotifCourse';
 
 const Product = props => {
   // ** Props
@@ -177,6 +178,7 @@ const Product = props => {
         {preview ? (
         <div className='d-flex flex-column flex-sm-row pt-1' >
           <AddCategory uuid={id} />
+          <AddNotifCourse uuid={id} teacherId={params2} />
           <AddGroupCourse color='info' title='ساخت گروه' id={params} teacherId={params2}/>
 
           <Active 

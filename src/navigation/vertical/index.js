@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle } from "react-feather";
+import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox } from "react-feather";
 import { useSelector } from 'react-redux';
 
 export const userData = (items) => {
@@ -207,7 +207,33 @@ export const userData = (items) => {
       title: "پشتیبانی",
       icon: <MessageCircle size={20} />,
       navLink: '/SupportChat'
-   }] : [])
+   }] : []),
+   {
+    id: "notif",
+    title: "اعلان",
+    icon: <Bell size={20} />,
+    children: [
+      {
+        id: "NotifType",
+        title: "نوع اعلان",
+        icon: <Tag size={20} />,
+        navLink: "/Notif/NotifType",
+      },
+      {
+        id: "NotifMessageList",
+        title: "لیست پیام اعلان",
+        icon: <Mail size={20} />,
+        navLink: "/Notif/NotifListMessage",
+      },
+      {
+        id: "NotifList",
+        title: "لیست اعلان",
+        icon: <Inbox size={20} />,
+        navLink: "/Notif/NotifList",
+      }
+    ]
+  }
+  
 
   ];
   

@@ -145,12 +145,7 @@ const noDataMessage = "هیچ جلسه‌ای وجود ندارد";
       name: 'عملیات',
       cell: row => (
         <div className='d-flex justify-content-center align-items-center gap-1'>
-            {/* <Button color='danger' style={{padding:'5px' , fontSize:'12px'}}  onClick={() => handleDelete(row)} >حذف گروه</Button>
-            <EditTourGroup color='info' TourId={TourId} row={row} title={'ویرایش'} />
-            <EditTourGroup color='success' TourId={TourId}  title={'ساخت گروه'} />
-            <ShowStuTourGroup TourId={TourId}  group={row.id} />
-            <ShowTourGroupMentor  group={row.id} /> */}
-            <AddSession sessionId={sessionId.id} row={row} title='ویرایش جلسه' />
+            <AddSession sessionId={sessionId?.id} row={row} title='ویرایش جلسه' />
             <ShowHomeWorkSession idSession={row.scheduleSessionId} sessionId={row.scheduleSessionId} /> 
         </div>
       )
