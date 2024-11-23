@@ -45,7 +45,7 @@ import ShowStuTourGroup from './showStuTourGroup';
 import EditTourGroupStu from './EditTourGroupStu';
 import ShowTourGroupMentor from './showTourGroupMentor';
 import ShowCheckListAvg from './checkListAvg';
-import { Tooltip } from '@mui/material';
+import { Skeleton, Tooltip } from '@mui/material';
 import { getSession } from '../../../@core/api/session/getSession';
 import AddSession from './AddSession';
 import ShowHomeWorkSession from './showHomeWorkSession';
@@ -157,7 +157,13 @@ const noDataMessage = "هیچ جلسه‌ای وجود ندارد";
     setShow(true)
     
   }
-
+  const customStyles = {
+    table: {
+      style: {
+        minHeight: '500px',
+      },
+    },
+  };
 
   return (
     
@@ -189,16 +195,18 @@ const noDataMessage = "هیچ جلسه‌ای وجود ندارد";
             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' ,flexFlow:'column wrap '}}
           >
           {isLoading ? (
-                <ThreeDots 
-                  height="80" 
-                  width="80" 
-                  radius="9"
-                  color="blue" 
-                  ariaLabel="three-dots-loading" 
-                  wrapperStyle={{}} 
-                  wrapperClass="" 
-                  visible={true}
-                />
+            <div >
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+          </div>
               ) : (
                 <DataTable
                   columns={columns}
@@ -207,6 +215,7 @@ const noDataMessage = "هیچ جلسه‌ای وجود ندارد";
                   paginationPerPage={itemsPerPage}
                   paginationRowsPerPageOptions={[8, 15, 30]}
                   responsive
+                  customStyles={customStyles}
                   highlightOnHover
                   noDataComponent={<Badge color='warning'>این بازه زمانی هیچ جلسه ای ندارد</Badge>}
                 />

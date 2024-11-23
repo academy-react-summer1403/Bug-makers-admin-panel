@@ -22,7 +22,8 @@ import { getCommentCourseTeacher } from '../../../../@core/api/course/commentMng
 import { getCommentCoursePage } from '../../../../@core/api/course/commentMng/commentMngAll';
 import {getUserById} from '../../../../@core/api/user/getUserById'
 import {setRolePage} from '../../../../redux/rolePage'
-import { Skeleton } from '@mui/material';
+import { Skeleton, Tooltip } from '@mui/material';
+import { replayComment } from '../../../../@core/api/course/commentMng/replyComment';
 
 const CommentMngForCoursePage = () => {
   const [categoryQuery, setCategoryQuery] = useState('');
@@ -164,49 +165,82 @@ const CommentMngForCoursePage = () => {
     {
       name: 'عملیات',
       cell: row => (
-        <div className='d-flex justify-content-center align-items-center gap-1'>
-          {row.replyCount ? (
-          <ShowReplay deleteCommentApiFull={deleteCommentFull} acceptCommentShowAll={acceptCommentShowAll} deleteComment={deleteComment} commentId={row.commentId}  courseId={row.courseId} />
-          ) : (
-            <Minus size='14px' />
-          )}
-          <Dropdown>
-        <Dropdown.Toggle 
-          variant="transparent" 
-          id="dropdown-basic" 
-          style={{ padding: '5px', marginRight: '5px', border: 'none', background: 'transparent' }}          
-          >
-          <Menu size={'14px'} />
-        </Dropdown.Toggle>
+<div className='d-flex justify-content-center align-items-center gap-1'>
+    <Dropdown>
+  <Tooltip title='منو عملیات ' placement='top'>
+      <Dropdown.Toggle 
+        variant="transparent" 
+        id="dropdown-basic" 
+        style={{ padding: '5px', marginRight: '5px', border: 'none', background: 'transparent' }}          
+      >
+        <Menu size={'14px'} />
+      </Dropdown.Toggle>
+  </Tooltip>
 
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={() => handleAccept(row)}>تایید کامنت</Dropdown.Item>
-          <Dropdown.Item onClick={() => handleDelete(row)}>رد کامنت</Dropdown.Item>
-          <Dropdown.Item onClick={() => handleDeleteFull(row)}>حذف کامنت</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-      <UpdateComment 
-         CommentId={row.commentId}  
-         CourseId={row.courseId} 
-         Title={row.commentTitle} 
-         Describe={row.describe} 
-         topic='بروزرسانی کامنت'
-         Api={updatingComment}
-         KeyMutate={'updateComment'}
-         icon={
-          <Edit 
-            size={'14px'} 
-            className='m-2 cursor-pointer' 
-            style={{ marginTop: '2px' }} 
+
+      <Dropdown.Menu>
+        {row.replyCount ? (
+          <ShowReplay 
+            deleteCommentApiFull={deleteCommentFull} 
+            acceptCommentShowAll={acceptCommentShowAll} 
+            deleteComment={deleteComment} 
+            commentId={row.commentId}  
+            courseId={row.courseId} 
           />
-        } 
-         />
+        ) : (
+          <Tooltip title='ریپلای وجود ندارد' placement='top'>
+            <Button color='transparent' >ریپلای ندارد</Button>
+          </Tooltip>
+        )}
+        
+        <Dropdown.Item onClick={() => handleAccept(row)}>تایید کامنت</Dropdown.Item>
+        <Dropdown.Item onClick={() => handleDelete(row)}>رد کامنت</Dropdown.Item>
+        <Dropdown.Item onClick={() => handleDeleteFull(row)}>حذف کامنت</Dropdown.Item>
 
-        </div>
+        <UpdateComment 
+          CommentId={row.commentId}  
+          CourseId={row.courseId} 
+          Title={row.commentTitle} 
+          Describe={row.describe} 
+          topic='ویرایش'
+          color='transparent'
+          Api={updatingComment}
+          KeyMutate={'updateComment'}
+          icon={
+            <Edit 
+              size={'14px'} 
+              className='m-2 cursor-pointer' 
+              style={{ marginTop: '2px' }} 
+            />
+          } 
+        />
+        <UpdateComment 
+            Api={replayComment} 
+            CommentId={row.commentId} 
+            CourseId={row.courseId}
+            topic='پاسخ'  
+            color='transparent'
+            icon={
+              <Button KeyMutate={'replayComment'} color='primary' >پاسخ</Button>
+            }
+          />
+      </Dropdown.Menu>
+    </Dropdown>
+</div>
       )
     }
   ];
 
+  
+  const customStyles = {
+    table: {
+      style: {
+        minHeight: '500px', 
+        height: 'auto', 
+      },
+    },
+    
+  };
 
   const { data : getUser } = useQuery({
     queryKey:['getUserComment'],
@@ -290,6 +324,7 @@ const CommentMngForCoursePage = () => {
               paginationPerPage={itemsPerPage}
               paginationRowsPerPageOptions={[8, 15, 30]}
               responsive
+              customStyles={customStyles}
               highlightOnHover
             />
           </motion.div>

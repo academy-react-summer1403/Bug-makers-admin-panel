@@ -45,7 +45,7 @@ import ShowStuTourGroup from './showStuTourGroup';
 import EditTourGroupStu from './EditTourGroupStu';
 import ShowTourGroupMentor from './showTourGroupMentor';
 import ShowCheckListAvg from './checkListAvg';
-import { Tooltip } from '@mui/material';
+import { Skeleton, Tooltip } from '@mui/material';
 const ShowGroupModal = ({group , isLoading , TourId}) => {
   const [show, setShow] = useState(false);  
 
@@ -156,6 +156,13 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
     
   }
 
+  const customStyles = {
+    table: {
+      style: {
+        minHeight: '500px',
+      },
+    },
+  };
 
   return (
     
@@ -193,16 +200,18 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' ,flexFlow:'column wrap '}}
           >
           {isLoading ? (
-                <ThreeDots 
-                  height="80" 
-                  width="80" 
-                  radius="9"
-                  color="blue" 
-                  ariaLabel="three-dots-loading" 
-                  wrapperStyle={{}} 
-                  wrapperClass="" 
-                  visible={true}
-                />
+            <div >
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+          </div>
               ) : (
                 <DataTable
                   columns={columns}
@@ -211,6 +220,7 @@ const ShowGroupModal = ({group , isLoading , TourId}) => {
                   paginationPerPage={itemsPerPage}
                   paginationRowsPerPageOptions={[8, 15, 30]}
                   responsive
+                  customStyles={customStyles}
                   highlightOnHover
                   noDataComponent={<Badge color='warning'>این تورنومنت هیچ گروهی ندارد</Badge>}
                 />

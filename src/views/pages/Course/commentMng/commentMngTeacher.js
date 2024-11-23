@@ -21,6 +21,7 @@ import UpdateComment from '../../../../components/common/modal/updateComment';
 import { getCommentCourseTeacher } from '../../../../@core/api/course/commentMng/commentMngTeacher';
 import { getCommentBlogMap, getCommentListBlog } from '../../../../@core/api/blog/getCommentPage';
 import { Skeleton, Tooltip } from '@mui/material';
+import { replayComment } from '../../../../@core/api/course/commentMng/replyComment';
 
 
 const CommentMngForBlog = () => {
@@ -213,7 +214,7 @@ const CommentMngForBlog = () => {
           />
         ) : (
           <Tooltip title='ریپلای وجود ندارد' placement='top'>
-            <span >ریپلای وجود ندارد</span>
+            <span >ریپلای ندارد</span>
           </Tooltip>
         )}
         
@@ -226,7 +227,8 @@ const CommentMngForBlog = () => {
           CourseId={row.courseId} 
           Title={row.commentTitle} 
           Describe={row.describe} 
-          topic='بروزرسانی کامنت'
+          topic='ویرایش'
+          color='transparent'
           Api={updatingComment}
           KeyMutate={'updateComment'}
           icon={
@@ -237,6 +239,16 @@ const CommentMngForBlog = () => {
             />
           } 
         />
+          <UpdateComment 
+            Api={replayComment} 
+            CommentId={row.commentId} 
+            CourseId={row.courseId}
+            topic='پاسخ'  
+            color='transparent'
+            icon={
+              <Button KeyMutate={'replayComment'} color='primary' >پاسخ</Button>
+            }
+          />
       </Dropdown.Menu>
     </Dropdown>
   </Tooltip>
@@ -246,6 +258,16 @@ const CommentMngForBlog = () => {
     }
   ];
 
+  
+  const customStyles = {
+    table: {
+      style: {
+        minHeight: '500px', 
+        height: 'auto', 
+      },
+    },
+    
+  };
 
   const { data : getUser } = useQuery({
     queryKey:['getUserComment'],
@@ -310,6 +332,8 @@ const CommentMngForBlog = () => {
           <Skeleton animation="wave"  height={50} width={1300} />
           <Skeleton animation="wave"  height={50} width={1300} />
           <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
+          <Skeleton animation="wave"  height={50} width={1300} />
     </div>
       )}
 
@@ -328,6 +352,7 @@ const CommentMngForBlog = () => {
               paginationPerPage={itemsPerPage}
               paginationRowsPerPageOptions={[8, 15, 30]}
               responsive
+              customStyles={customStyles}
               highlightOnHover
             />
           </motion.div>

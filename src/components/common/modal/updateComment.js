@@ -37,7 +37,7 @@ import { updatingComment } from '../../../@core/api/course/commentMng/acceptComm
 import { replayComment } from '../../../@core/api/course/commentMng/replyComment';
 import { Tooltip } from '@mui/material';
 
-const UpdateComment = ({ CommentId , CourseId , Describe , Title , icon , Api , KeyMutate , topic}) => {
+const UpdateComment = ({ CommentId , CourseId , Describe , Title , color , Api , KeyMutate , topic}) => {
   // ** Validation Schema
   const validationSchema = Yup.object().shape({
 
@@ -85,9 +85,9 @@ const UpdateComment = ({ CommentId , CourseId , Describe , Title , icon , Api , 
       }}
     >
       <Tooltip title='ویرایش کامنت' placement='top'>
-      <div onClick={() => setShow(true)}>
-        {icon} 
-      </div>
+      <Button color={color} style={{border:'none'}} onClick={() => setShow(true)}>
+        {topic}
+      </Button>
       </Tooltip>
       <Modal
         isOpen={show}
@@ -99,7 +99,7 @@ const UpdateComment = ({ CommentId , CourseId , Describe , Title , icon , Api , 
         <ModalHeader className='bg-transparent' toggle={() => setShow(false)}></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
           <div className='text-center mb-2'>
-            <h1 className='mb-1'>بروزرسانی کامنت</h1>
+            <h1 className='mb-1'>{topic} کامنت</h1>
             <p>اطلاعات کامنت</p>
           </div>
           <Formik

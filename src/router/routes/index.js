@@ -68,6 +68,7 @@ const SupportChat = lazy(() => import('../../components/chat/chat.js'))
 const NotifType = lazy(() => import('../../views/pages/NotifPage/NotifType.js'))
 const NotifListMessage = lazy(() => import('../../views/pages/NotifPage/NotifListMessage.js'))
 const NotifList = lazy(() => import('../../views/pages/NotifPage/NotifList.js'))
+const ClassRome = lazy(() => import('../../views/pages/classRome/classRome.js'))
 // ** Merge Routes
 const token = localStorage.getItem('token');
 
@@ -295,6 +296,10 @@ const Routes = [
   {
     element: token ? <NotifList /> : <Navigate to={'/login'} />,
     path: '/Notif/NotifList',
+  },
+  {
+    element: token ? <ClassRome /> : <Navigate to={'/login'} />,
+    path: '/ClassRome',
   },
 ];
 

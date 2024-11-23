@@ -34,9 +34,77 @@ const SocialLinks = ({ stepper }) => {
   const editorRef = useRef(null);
 
   useEffect(() => {
+    // Function to parse HTML content to blocks for Editor.js
+    const parseHTMLToBlocks = (htmlContent) => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlContent, 'text/html');
+      const blocks = [];
+
+      // Find all paragraph tags
+      doc.querySelectorAll('p').forEach(p => {
+        blocks.push({
+          type: 'paragraph',
+          data: {
+            text: p.textContent
+          }
+        });
+      });
+
+      // Find all unordered list (ul) tags
+      doc.querySelectorAll('ul').forEach(ul => {
+        const items = [];
+        ul.querySelectorAll('li').forEach(li => {
+          items.push(li.textContent);
+        });
+        blocks.push({
+          type: 'list',
+          data: {
+            style: 'unordered',
+            items: items
+          }
+        });
+      });
+
+      // Find all header tags (h1, h2, h3, ...)
+      doc.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(header => {
+        blocks.push({
+          type: 'header',
+          data: {
+            level: parseInt(header.nodeName[1]),
+            text: header.textContent
+          }
+        });
+      });
+
+      // Find all blockquote tags
+      doc.querySelectorAll('blockquote').forEach(blockquote => {
+        blocks.push({
+          type: 'quote',
+          data: {
+            text: blockquote.textContent
+          }
+        });
+      });
+
+      // Find all image tags
+      doc.querySelectorAll('img').forEach(img => {
+        blocks.push({
+          type: 'simpleImage',
+          data: {
+            file: {
+              url: img.src
+            },
+            caption: img.alt || ''
+          }
+        });
+      });
+
+      return blocks;
+    };
+
     // Initialize Editor.js
     const editor = new EditorJS({
-      holder: 'editorjs', // This is the id of the div element that will hold the editor
+      holder: 'editorjs',
       tools: {
         header: {
           class: Header,
@@ -50,9 +118,9 @@ const SocialLinks = ({ stepper }) => {
           class: Embed,
           config: {
             services: {
-              youtube: true,   // YouTube embed
-              vimeo: true,     // Vimeo embed
-              instagram: true, // Instagram embed
+              youtube: true,
+              vimeo: true,
+              instagram: true,
             }
           }
         },
@@ -73,6 +141,16 @@ const SocialLinks = ({ stepper }) => {
       },
       onReady: () => {
         console.log('Editor.js is ready to work!');
+        
+        // If there's existing description, parse it into blocks
+        if (course.describe) {
+          const blocks = parseHTMLToBlocks(course.describe);
+          
+          // Insert parsed blocks into the editor
+          blocks.forEach(block => {
+            editor.blocks.insert(block.type, block.data);
+          });
+        }
       },
       onChange: () => {
         console.log('Editor content changed!');
@@ -88,11 +166,11 @@ const SocialLinks = ({ stepper }) => {
         editorInstance.destroy();
       }
     };
-  }, []);
+  }, [course.describe]); // Adding course.describe as a dependency
 
   // Function to convert EditorJS data to HTML
   const convertEditorToHTML = (editorData) => {
-    let htmlContent = '';
+    let htmlContent = course.describe ? course.describe : '';
     editorData.blocks.forEach(block => {
       switch (block.type) {
         case 'header':

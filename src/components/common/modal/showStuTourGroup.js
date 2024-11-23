@@ -44,7 +44,7 @@ import EditTourGroup from './updateTourGroup';
 import { UpdateTourGroupStu, deleteTourGroupStu, getTourGroupStu } from '../../../@core/api/Tournament/group/getGroupStu';
 import EditTourGroupStu from './EditTourGroupStu';
 import ShowCheckListAvg from './checkListAvg';
-import { Tooltip } from '@mui/material';
+import { Skeleton, Tooltip } from '@mui/material';
 const ShowStuTourGroup = ({group , isLoading , TourId}) => {
   const [show, setShow] = useState(false);  
   const [tooltipOpenX, setTooltipOpenX] = useState(false);
@@ -125,6 +125,13 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
     setShow(true)
     
   }
+  const customStyles = {
+    table: {
+      style: {
+        minHeight: '500px',
+      },
+    },
+  };
 
 
   return (
@@ -161,21 +168,24 @@ const ShowStuTourGroup = ({group , isLoading , TourId}) => {
             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' ,flexFlow:'column wrap '}}
           >
           {isLoading ? (
-                <ThreeDots 
-                  height="80" 
-                  width="80" 
-                  radius="9"
-                  color="blue" 
-                  ariaLabel="three-dots-loading" 
-                  wrapperStyle={{}} 
-                  wrapperClass="" 
-                  visible={true}
-                />
+            <div >
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+            <Skeleton animation="wave"  height={50} width={1300} />
+          </div>
               ) : (
                 <DataTable
                   columns={columns}
                   data={data}
                   pagination
+                  customStyles={customStyles}
                   paginationPerPage={itemsPerPage}
                   paginationRowsPerPageOptions={[8, 15, 30]}
                   responsive

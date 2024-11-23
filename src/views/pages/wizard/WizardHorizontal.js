@@ -30,7 +30,7 @@ const WizardHorizontal = () => {
   let step = [
   ];
 
-  if (window.location.pathname === '/apps/Course/AddCourse' || window.location.pathname === '/apps/Course/editCourse') {
+  if (window.location.pathname === '/apps/Course/AddCourse') {
     step = [
       {
         id: 'uploadImage',
@@ -108,6 +108,46 @@ const WizardHorizontal = () => {
         subtitle: 'دوره خود را ببینید',
         content: <Preview stepper={stepper} />
       }
+    ];
+  }
+  else if(window.location.pathname === '/apps/Course/editCourse') {
+    step = [
+      {
+        id: 'uploadImage',
+        title: 'افزودن عکس',
+        subtitle: 'تصویر خود را انتخاب کنید.',
+        content: <AccountDetails stepper={stepper} />
+      },
+      {
+        id: 'courseInfoAll',
+        title: 'مشخصات کلی دوره',
+        subtitle: 'اطلاعات دوره را وارد کنید',
+        content: <PersonalInfo stepper={stepper} />
+      },
+      {
+        id: 'courseInfo',
+        title: 'اطلاعات دوره',
+        subtitle: 'اضافه کردن آدرس',
+        content: <Address stepper={stepper} />
+      },
+      {
+        id: 'Describe',
+        title: 'توضیحات دوره',
+        subtitle: 'متن خود را تایپ کنید',
+        content: <SocialLinks stepper={stepper} />
+      },
+      {
+        id: 'courseInfoDetail',
+        title: 'جزییات دوره',
+        subtitle: 'افزودن جزییات دوره',
+        content: <CourseInfo stepper={stepper} />
+      },
+      {
+        id: 'Preview',
+        title: 'پیش نمایش دوره',
+        subtitle: 'دوره خود را ببینید',
+        content: <Preview stepper={stepper} setCat={setCat} />
+      },
     ];
   }
   

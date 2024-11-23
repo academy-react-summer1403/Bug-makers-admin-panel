@@ -39,7 +39,7 @@ import { getReplayComment } from '../../../@core/api/course/commentMng/showRepla
 import { ThreeDots } from 'react-loader-spinner';
 import UpdateComment from './updateComment';
 import { replayComment } from '../../../@core/api/course/commentMng/replyComment';
-import { Tooltip } from '@mui/material';
+import { Skeleton, Tooltip } from '@mui/material';
 
 const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptCommentShowAll , deleteComment}) => {
   const [show, setShow] = useState(false);  
@@ -150,7 +150,8 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
             Api={replayComment} 
             CommentId={row.id} 
             CourseId={row.courseId}
-            topic='پاسخ به کامنت'  
+            topic='پاسخ'  
+            color='primary'
             icon={
               <Button KeyMutate={'replayComment'} color='primary' >پاسخ</Button>
             }
@@ -164,7 +165,13 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
     
   }
 
-
+  const customStyles = {
+    table: {
+      style: {
+        minHeight: '500px',
+      },
+    },
+  };
   return (
     
     <div
@@ -177,7 +184,7 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
       
     >
       <Tooltip title='نمایش ریپلای' placement='top' >
-      <span size={'14px'} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={handleClick} >نمایش ریپلای</span>
+      <Button color='transparent'   onClick={handleClick} >نمایش ریپلای</Button>
       </Tooltip>
       <Modal
         isOpen={show}
@@ -197,16 +204,18 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' ,flexFlow:'column wrap '}}
           >
           {isLoading ? (
-                <ThreeDots 
-                  height="80" 
-                  width="80" 
-                  radius="9"
-                  color="blue" 
-                  ariaLabel="three-dots-loading" 
-                  wrapperStyle={{}} 
-                  wrapperClass="" 
-                  visible={true}
-                />
+            <div >
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+              <Skeleton animation="wave"  height={50} width={1300} />
+            </div>
               ) : (
                 <DataTable
                   columns={columns}
@@ -215,6 +224,7 @@ const ShowReplay = ({commentId , courseId ,deleteCommentApiFull ,  acceptComment
                   paginationPerPage={itemsPerPage}
                   paginationRowsPerPageOptions={[8, 15, 30]}
                   responsive
+                  customStyles={customStyles}
                   highlightOnHover
                   noDataComponent={<Badge>این کامنت هیچ ریپلای نخورده</Badge>}
                 />

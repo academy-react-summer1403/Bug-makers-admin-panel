@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox } from "react-feather";
+import { GiClassicalKnowledge } from 'react-icons/gi';
 import { useSelector } from 'react-redux';
 
 export const userData = (items) => {
@@ -81,6 +82,12 @@ export const userData = (items) => {
           icon: <BookOpen size={20} />,
           navLink: "/apps/Course/Tech",
         },
+        {
+          id: "ClassRome",
+          title: "کلاس ها",
+          icon: <GiClassicalKnowledge size={20} />,
+          navLink: "/ClassRome",
+        }
       ]
     },
     {
@@ -232,8 +239,8 @@ export const userData = (items) => {
         navLink: "/Notif/NotifList",
       }
     ]
-  }
-  
+  },
+
 
   ];
   
