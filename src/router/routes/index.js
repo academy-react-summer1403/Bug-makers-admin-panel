@@ -69,6 +69,7 @@ const NotifType = lazy(() => import('../../views/pages/NotifPage/NotifType.js'))
 const NotifListMessage = lazy(() => import('../../views/pages/NotifPage/NotifListMessage.js'))
 const NotifList = lazy(() => import('../../views/pages/NotifPage/NotifList.js'))
 const ClassRome = lazy(() => import('../../views/pages/classRome/classRome.js'))
+const Wallet = lazy(() => import('../../views/pages/wallet/wallet.js'))
 // ** Merge Routes
 const token = localStorage.getItem('token');
 
@@ -300,6 +301,10 @@ const Routes = [
   {
     element: token ? <ClassRome /> : <Navigate to={'/login'} />,
     path: '/ClassRome',
+  },
+  {
+    element: token ? <Wallet /> : <Navigate to={'/login'} />,
+    path: '/wallet/AllWallet',
   },
 ];
 

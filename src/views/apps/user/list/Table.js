@@ -391,7 +391,7 @@ const UsersList = () => {
   const customStyles = {
     table: {
       style: {
-        minHeight: '200px',
+        minHeight: '500px',
       },
     },
  

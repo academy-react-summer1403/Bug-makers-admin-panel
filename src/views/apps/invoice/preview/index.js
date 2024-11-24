@@ -42,21 +42,14 @@ const InvoicePreview = () => {
     }
   }, [paymentData])
 
+  console.log(coursePayment);
   return (
     <div className='invoice-preview-wrapper'>
       {coursePayment.length > 0 ? (
         <Row className='invoice-preview'>
-          <Col xl={9} md={8} sm={12}>
-            {/* Assuming PreviewCard can accept coursePayment and handle the display */}
+          <Row xl={9} md={8} sm={12}>
             <PreviewCard data={coursePayment} />
-          </Col>
-          <Col xl={3} md={4} sm={12}>
-            <PreviewActions
-              id={id}
-              setSendSidebarOpen={setSendSidebarOpen}
-              setAddPaymentOpen={setAddPaymentOpen}
-            />
-          </Col>
+          </Row>
         </Row>
       ) : (
         <Alert color='danger'>

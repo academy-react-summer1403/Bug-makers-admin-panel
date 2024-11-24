@@ -90,10 +90,10 @@ export const columns = [
           Send Mail
         </UncontrolledTooltip>
 
-        <Link className='text-body' to={`/apps/invoice/preview/${row.id}`} id={`pw-tooltip-${row.id}`}>
+        <Link className='text-body' to={`/apps/invoice/preview/${row.paymentId}`} id={`pw-tooltip-${row.id}`}>
           <Eye size={17} className='mx-1' />
         </Link>
-        <Link placement='top' to={`/apps/invoice/preview/${row.courseUserId}`}>
+        <Link placement='top' to={`/apps/invoice/preview/${row.paymentId}`}>
           Preview Invoice
         </Link>
 

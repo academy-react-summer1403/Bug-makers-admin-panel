@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox } from "react-feather";
-import { GiClassicalKnowledge } from 'react-icons/gi';
+import { GiClassicalKnowledge, GiWallet } from 'react-icons/gi';
 import { useSelector } from 'react-redux';
 
 export const userData = (items) => {
@@ -238,6 +238,31 @@ export const userData = (items) => {
         icon: <Inbox size={20} />,
         navLink: "/Notif/NotifList",
       }
+    ]
+  },
+   {
+    id: "Wallet",
+    title: "کیف پول",
+    icon: <GiWallet size={20} />,
+    children: [
+      {
+        id: "NotifType",
+        title: "لیست کیف پول",
+        icon: <GiWallet size={20} />,
+        navLink: "/wallet/AllWallet",
+      },
+      // {
+      //   id: "NotifMessageList",
+      //   title: "لیست پیام اعلان",
+      //   icon: <Mail size={20} />,
+      //   navLink: "/Notif/NotifListMessage",
+      // },
+      // {
+      //   id: "NotifList",
+      //   title: "لیست اعلان",
+      //   icon: <Inbox size={20} />,
+      //   navLink: "/Notif/NotifList",
+      // }
     ]
   },
 
