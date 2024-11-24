@@ -21,6 +21,7 @@ import {
   CheckCircle,
   ArrowDownCircle
 } from 'react-feather'
+import { Tooltip } from '@mui/material';
 
 // ** Vars
 const invoiceStatusObj = {
@@ -38,42 +39,19 @@ const useDate = (date) => {
 // ** Table columns
 export const columns = [
   {
-    name: 'نام کاربر',
+    name: 'نام گروه',
     sortable: true,
     sortField: 'id',
     minWidth: '107px',
     selector: row => row.id,
-    cell: row => <Link className='fw-bolder' to={`/apps/invoice/preview/${row.id}`}>{`#${row.groupName}`}</Link>
-  },
-  {
-    name: <TrendingUp size={14} />,
-    minWidth: '102px',
-    sortable: true,
-    sortField: 'invoiceStatus',
-    selector: row => row.invoiceStatus,
-    cell: row => {
-      const color = invoiceStatusObj[row.invoiceStatus] ? invoiceStatusObj[row.invoiceStatus].color : 'primary',
-        Icon = invoiceStatusObj[row.invoiceStatus] ? invoiceStatusObj[row.invoiceStatus].icon : Edit
-      return (
-        <Fragment>
-          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row.id}`} />
-          <UncontrolledTooltip placement='top' target={`av-tooltip-${row.id}`}>
-            <span className='fw-bold'>{row.invoiceStatus}</span>
-            <br />
-            <span className='fw-bold'>Balance:</span> {row.balance}
-            <br />
-            <span className='fw-bold'>Due Date:</span> {row.dueDate}
-          </UncontrolledTooltip>
-        </Fragment>
-      )
-    }
+    cell: row => <Link className='fw-bolder' to={`/apps/invoice/preview/${row.paymentId}`}>{`#${row.groupName}`}</Link>
   },
 
   {
     name: 'مبلغ پرداخت شده',
     minWidth: '150px',
     selector: row => row.paid,
-    cell: row => <span>تومان{row.paid || 0}</span>
+    cell: row => <span>{row.paid || 0}</span>
   },
   {
     minWidth: '200px',
@@ -85,22 +63,13 @@ export const columns = [
     minWidth: '110px',
     cell: row => (
       <div className='column-action d-flex align-items-center'>
-        <Send className='text-body cursor-pointer' size={17} id={`send-tooltip-${row.id}`} />
-        <UncontrolledTooltip placement='top' target={`send-tooltip-${row.id}`}>
-          Send Mail
-        </UncontrolledTooltip>
 
-        <Link className='text-body' to={`/apps/invoice/preview/${row.paymentId}`} id={`pw-tooltip-${row.id}`}>
-          <Eye size={17} className='mx-1' />
-        </Link>
-        <Link placement='top' to={`/apps/invoice/preview/${row.paymentId}`}>
-          Preview Invoice
-        </Link>
 
-        <Download className='text-body cursor-pointer' size={17} id={`download-tooltip-${row.id}`} />
-        <UncontrolledTooltip placement='top' target={`download-tooltip-${row.id}`}>
-          Download Invoice
-        </UncontrolledTooltip>
+        <Tooltip title='نمایش جزییبات' placement='top' >
+          <Link className='text-body' to={`/apps/invoice/preview/${row.paymentId}`} id={`pw-tooltip-${row.id}`}>
+            <Eye size={17} className='mx-1' />
+          </Link>
+        </Tooltip>
       </div>
     )
   }

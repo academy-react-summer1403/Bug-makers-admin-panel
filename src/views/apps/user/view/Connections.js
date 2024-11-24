@@ -18,7 +18,8 @@ import {
   ModalBody,
   CardHeader,
   ModalHeader,
-  FormFeedback
+  FormFeedback,
+  Badge
 } from 'reactstrap'
 
 // ** Custom Components
@@ -89,20 +90,14 @@ const connections = () => {
         pagination
         responsive={true}
         className='react-dataTable'
-        noDataComponent={<div>شما هیج دوره‌ای را ثبت نکردید</div>
-      }
+        noDataComponent={<span>شما هیج دوره‌ای را ثبت نکردید</span>
+      } 
       />
       </div>
     )
-  } else if (user.coursesReseves.length === 0) {
-    return (
-      <div>
-        <h1>شما هیج دوره‌ای  را رزرو نکردید </h1>
-      </div>
-    )
+  }else { return <Row> <span color='warning' style={{textAlign:'center'}}>این کاربر هیچ دوره ای  را نکرده است</span></Row>
   }
 
-  return null; 
 }
 
 export default connections

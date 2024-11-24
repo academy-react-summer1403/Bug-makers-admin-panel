@@ -15,7 +15,7 @@ import { useForm, Controller } from 'react-hook-form'
 import withReactContent from 'sweetalert2-react-content'
 import avatar from '../../../../assets/images/avatars/2.png'
 import womenAvatars from '../../../../assets/images/avatars/1.png'
-
+import {getAllChat} from '../../../../@core/api/chat/getAllChat.js'
 // ** Custom Components
 import Avatar from '@components/avatar'
 
@@ -28,6 +28,7 @@ import { useSelector } from 'react-redux'
 import EditUserExample from '../../../../components/common/modal/edituser';
 import AddRole from '../../../../components/common/modal/addRole';
 import LocationPicker from '../../../../components/common/modal/LocationPicker';
+import { useQuery } from '@tanstack/react-query';
 
 const roleColors = {
   editor: 'light-info',
@@ -77,6 +78,14 @@ const UserInfoCard = ({ selectedUser }) => {
   const [show, setShow] = useState(false)
   const user = useSelector(state => state.user.selectUser); 
 
+  const { data } = useQuery({
+    queryKey: ['getChat'],
+    queryFn: getAllChat,
+  });
+
+  const userId = useSelector((state) => state.userId.userId)
+  // filterede data 
+  const filterData = data?.data.filter((el) => el.Peaple1 == user.id)
 
   // ** Hook
   const {
@@ -240,6 +249,10 @@ const UserInfoCard = ({ selectedUser }) => {
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>شماره تلفن : </span>
                   <span>{user.phoneNumber ? user.phoneNumber : 'این کاربر دارای شماره تلفن نمیباشد'}</span>
+                </li>
+                <li className='mb-75'>
+                  <span className='fw-bolder me-25'>تعداد درخواست چت  : </span>
+                  <span>{filterData?.length} درخواست</span>
                 </li>
               </ul>
             ) : null}

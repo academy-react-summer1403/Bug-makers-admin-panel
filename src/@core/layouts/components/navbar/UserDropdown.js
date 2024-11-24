@@ -44,7 +44,6 @@ const UserDropdown = () => {
   }, [data])
   const userId = useSelector((state) => state.userId.userId)
 
-  console.log(userId);
   const login = useSelector((state) => state.LoginState.Data)
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
