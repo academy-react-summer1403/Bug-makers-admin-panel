@@ -160,8 +160,7 @@ const Autocomplete = (props) => {
     const { filterKey, suggestions, customRender, suggestionLimit } = props;
 
     filteredData = [];
-    const sortSingleData = suggestions
-      .filter((i) => {
+    const sortSingleData = suggestions?.filter((i) => {
         const startCondition = i[filterKey]
             .toLowerCase()
             .startsWith(userInput.toLowerCase()),
@@ -177,8 +176,10 @@ const Autocomplete = (props) => {
         }
       })
       .slice(0, suggestionLimit);
+      if(sortSingleData){
     filteredData.push(...sortSingleData);
-    if (sortSingleData.length) {
+      }
+    if (sortSingleData?.length) {
       return sortSingleData.map((suggestion, index) => {
         const suggestionURL =
           suggestion.link !== undefined && suggestion.link !== null

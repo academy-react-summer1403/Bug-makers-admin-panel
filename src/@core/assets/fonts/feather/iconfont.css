@@ -20,6 +20,9 @@ body {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'sans' !important;
 }
+.containerBookMark{
+  font-family: 'sans' !important;
+}
 .dropdown-user{
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'sans' !important;

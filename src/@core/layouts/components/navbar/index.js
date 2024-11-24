@@ -10,6 +10,7 @@ import { Sun, Moon, Menu } from "react-feather";
 // ** Reactstrap Imports
 import { NavItem, NavLink } from "reactstrap";
 import NavbarBookmarks from "./NavbarBookmarks";
+import BookmarkedItems from "./bookMarkItem";
 
 const ThemeNavbar = (props) => {
   // ** Props
@@ -45,6 +46,11 @@ const ThemeNavbar = (props) => {
         <NavItem className="d-none d-lg-block">
           <NavLink className="nav-link-style">
           <NavbarBookmarks setMenuVisibility={setMenuVisibility} />
+          </NavLink>
+        </NavItem>
+        <NavItem className="d-none d-lg-block">
+          <NavLink className="nav-link-style">
+          <BookmarkedItems  />
           </NavLink>
         </NavItem>
       </div>

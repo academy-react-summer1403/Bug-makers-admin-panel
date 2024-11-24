@@ -1,231 +1,234 @@
-// ** React Imports
-import { Link } from 'react-router-dom'
-import { Fragment, useEffect, useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react';
+import { Star } from 'react-feather';
+import { FaStar } from 'react-icons/fa';
+import { PiStarFill } from 'react-icons/pi';
+import { useNavigate } from 'react-router-dom';
 
-// ** Third Party Components
-import * as Icon from 'react-feather'
-import classnames from 'classnames'
+const DropdownMenu = () => {
+  const [isOpen, setIsOpen] = useState(false);  
+  const [query, setQuery] = useState(""); 
+  const [filteredItems, setFilteredItems] = useState([]); 
+  const navigate = useNavigate()
+  const allItems = [
+    { id: "home", title: "خانه", pageUrl: "/home" },
+    { id: "user", title: "کاربران", pageUrl: "/apps/user/list" },
+    { id: "Course", title: "دوره ها", pageUrl: "/apps/Course" },
+    { id: "CourseList", title: "دوره ها", pageUrl: "/apps/Course" },
+    { id: "addCourse", title: "ساخت دوره جدید", pageUrl: "/apps/Course/AddCourse" },
+    { id: "groups", title: "مدیریت گروه ها", pageUrl: "/apps/groupsManagement" },
+    { id: "courseReserve", title: "مدیریت رزرو ها", pageUrl: "/apps/Course/CourseReserve" },
+    { id: "commentMng", title: "مدیریت کامنت (ادمین)", pageUrl: "/apps/Course/CommentMng" },
+    { id: "commentMng", title: "دوره های من", pageUrl: "/apps/MyCourse" },
+    { id: "CoursePaymentPage", title: "پرداختی ها", pageUrl: "/CoursePaymentPage" },
+    { id: "Term", title: "ترم ها", pageUrl: "/apps/Course/Term" },
+    { id: "Tech", title: "مدیریت دسته بندی", pageUrl: "/apps/Course/Tech" },
+    { id: "ClassRome", title: "کلاس ها", pageUrl: "/ClassRome" },
+    { id: "blog", title: "مقالات", pageUrl: "/apps/blog" },
+    { id: "blogList", title: "مقاله ها", pageUrl: "/apps/blog" },
+    { id: "addBlog", title: "ساخت مقاله جدید", pageUrl: "/apps/blog/AddBlog" },
+    { id: "categories", title: "مدیریت دسته بندی", pageUrl: "/apps/CategoryNews" },
+    { id: "commentbLOG", title: "مدیریت کامنت", pageUrl: "/apps/CommentMngForBlog" },
+    { id: "commentMngPage", title: "مدیریت همه کامنت ها", pageUrl: "/apps/allCommentMng" },
+    { id: "building", title: "ساختمان پژوهشگاه", pageUrl: "/building/list" },
+    { id: "Department", title: "بخش های پژوهشگاه", pageUrl: "/Department/list" },
+    { id: "AssCourse", title: "منتور ها", pageUrl: "/AssCourse/list" },
+    { id: "AssWork", title: "تعیین تسک", pageUrl: "/AssWork/list" },
+    { id: "SocialGroup", title: "گروه اجتماعی دوره", pageUrl: "/SocialGroup/list" },
+    { id: "Schedual", title: "بازه زمانی", pageUrl: "/Schedual" },
+    { id: "Tournament", title: "تورنومنت", pageUrl: "/Tournament" },
+    { id: "tourList", title: "لیست تورنومنت", pageUrl: "/Tournament/list" },
+    { id: "mainCheckList", title: "چک لیست تورنومنت", pageUrl: "/Tournament/MainCheckList" },
+    { id: "Refere", title: "داور ها", pageUrl: "/Tournament/Refere" },
+    { id: "Podcast", title: "پادکست", pageUrl: "/Podcast" },
+    { id: "PodcastList", title: "لیست پادکست", pageUrl: "/Podcast" },
+    { id: "PodcastComment", title: "کامنت پادکست", pageUrl: "/Podcast/CommentMngPodcast" },
+    { id: "support", title: "پشتیبانی", pageUrl: "/SupportChat" },
+    { id: "notif", title: "اعلان", pageUrl: "/Notif" },
+    { id: "NotifType", title: "نوع اعلان", pageUrl: "/Notif/NotifType" },
+    { id: "NotifMessageList", title: "لیست پیام اعلان", pageUrl: "/Notif/NotifListMessage" },
+    { id: "NotifList", title: "لیست اعلان", pageUrl: "/Notif/NotifList" },
+    { id: "Wallet", title: "کیف پول", pageUrl: "/wallet" },
+    { id: "AllWallet", title: "لیست کیف پول", pageUrl: "/wallet/AllWallet" },
+    { id: "Transaction", title: "لیست تراکنش", pageUrl: "/wallet/Transaction" }
+  ];
+  
 
-// ** Custom Component
-import Autocomplete from '@components/autocomplete'
+  const toggleMenu = () => {
+    setIsOpen(prevState => !prevState);
+  };
+  const [hoveredItem, setHoveredItem] = useState(null); 
+  const handleMouseEnter = (id) => {
+    setHoveredItem(id);  
+  };
+  
+  const handleMouseLeave = () => {
+    setHoveredItem(null);  
+  };
+  
+  const handleSearchChange = (e) => {
+    setQuery(e.target.value);
+  };
 
-// ** Reactstrap Imports
-import {
-  NavItem,
-  NavLink,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledTooltip,
-  UncontrolledDropdown
-} from 'reactstrap'
+  const filterItems = (searchQuery) => {
+    return allItems.filter(item => item.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  };
 
-// ** Store & Actions
-import { useDispatch, useSelector } from 'react-redux'
-import { getBookmarks, updateBookmarked, handleSearchQuery } from '../../../../redux/navbar'
+  const getBookmarkedItems = () => {
+    const bookmarked = JSON.parse(localStorage.getItem('bookmarkedItems')) || [];
+    return bookmarked;
+  };
 
-const NavbarBookmarks = props => {
-  // ** Props
-  const { setMenuVisibility } = props
+  const toggleBookmark = (item) => {
+    const bookmarkedItems = getBookmarkedItems();
+    const isBookmarked = bookmarkedItems.find(b => b.id === item.id);
 
-  // ** State
-  const [value, setValue] = useState('')
-  const [openSearch, setOpenSearch] = useState(false)
+    if (isBookmarked) {
+      const updatedBookmarks = bookmarkedItems.filter(b => b.id !== item.id);
+      localStorage.setItem('bookmarkedItems', JSON.stringify(updatedBookmarks));
+    } else {
+      bookmarkedItems.push(item);
+      localStorage.setItem('bookmarkedItems', JSON.stringify(bookmarkedItems));
+    }
+  };
 
-  // ** Store Vars
-  const dispatch = useDispatch()
-  const store = useSelector(state => state.navbar)
-
-  // ** ComponentDidMount
   useEffect(() => {
-    dispatch(getBookmarks())
-  }, [])
+    const filtered = filterItems(query);
+    setFilteredItems(filtered);
+  }, [query]);
 
-  // ** Loops through Bookmarks Array to return Bookmarks
-  const renderBookmarks = () => {
-    if (store.bookmarks?.length) {
-      return store.bookmarks
-        .map(item => {
-          const IconTag = Icon[item.icon]
-          return (
-            <NavItem key={item.target} className='d-none d-lg-block'>
-              <NavLink tag={Link} to={item.link} id={item.target}>
-                <IconTag className='ficon' />
-                <UncontrolledTooltip target={item.target}>{item.title}</UncontrolledTooltip>
-              </NavLink>
-            </NavItem>
-          )
-        })
-        .slice(0, 10)
-    } else {
-      return null
-    }
-  }
+  const dropdownRef = useRef()
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);  
+      }
+    };
 
-  // ** If user has more than 10 bookmarks then add the extra Bookmarks to a dropdown
-  const renderExtraBookmarksDropdown = () => {
-    if (store.bookmarks?.length && store.bookmarks?.length >= 11) {
-      return (
-        <NavItem className='d-none d-lg-block'>
-          <NavLink tag='span'>
-            <UncontrolledDropdown>
-              <DropdownToggle tag='span'>
-                <Icon.ChevronDown className='ficon' />
-              </DropdownToggle>
-              <DropdownMenu end>
-                {store.bookmarks
-                  .map(item => {
-                    const IconTag = Icon[item.icon]
-                    return (
-                      <DropdownItem tag={Link} to={item.link} key={item.id}>
-                        <IconTag className='me-50' size={14} />
-                        <span className='align-middle'>{item.title}</span>
-                      </DropdownItem>
-                    )
-                  })
-                  .slice(10)}
-              </DropdownMenu>
-            </UncontrolledDropdown>
-          </NavLink>
-        </NavItem>
-      )
-    } else {
-      return null
-    }
-  }
+    window.addEventListener('mousedown', handleClickOutside);
 
-  // ** Removes query in store
-  const handleClearQueryInStore = () => dispatch(handleSearchQuery(''))
-
-  // ** Loops through Bookmarks Array to return Bookmarks
-  const onKeyDown = e => {
-    if (e.keyCode === 27 || e.keyCode === 13) {
-      setTimeout(() => {
-        setOpenSearch(false)
-        handleClearQueryInStore()
-      }, 1)
-    }
-  }
-
-  // ** Function to toggle Bookmarks
-  const handleBookmarkUpdate = id => dispatch(updateBookmarked(id))
-
-  // ** Function to handle Bookmarks visibility
-  const handleBookmarkVisibility = () => {
-    setOpenSearch(!openSearch)
-    setValue('')
-    handleClearQueryInStore()
-  }
-
-  // ** Function to handle Input change
-  const handleInputChange = e => {
-    setValue(e.target.value)
-    dispatch(handleSearchQuery(e.target.value))
-  }
-
-  // ** Function to handle external Input click
-  const handleExternalClick = () => {
-    if (openSearch === true) {
-      setOpenSearch(false)
-      handleClearQueryInStore()
-    }
-  }
-
-  // ** Function to clear input value
-  const handleClearInput = setUserInput => {
-    if (!openSearch) {
-      setUserInput('')
-      handleClearQueryInStore()
-    }
-  }
-
+    return () => {
+      window.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   return (
-    <Fragment>
-      <ul className='navbar-nav d-xl-none'>
-        <NavItem className='mobile-menu me-auto'>
-          <NavLink className='nav-menu-main menu-toggle hidden-xs is-active' onClick={() => setMenuVisibility(true)}>
-            <Icon.Menu className='ficon' />
-          </NavLink>
-        </NavItem>
-      </ul>
-      <ul className='nav navbar-nav bookmark-icons align-items-center'>
-        {renderBookmarks()}
-        {renderExtraBookmarksDropdown()}
-        <NavItem className='nav-item d-none d-lg-block'>
-          <NavLink className='bookmark-star' onClick={handleBookmarkVisibility}>
-            <Icon.Star className='ficon text-warning' />
-          </NavLink>
-          <div className={classnames('bookmark-input search-input', { show: openSearch })}>
-            <div className='bookmark-input-icon'>
-              <Icon.Search size={14} />
-            </div>
-            {openSearch && store.suggestions?.length ? (
-              <Autocomplete
-                wrapperClass={classnames('search-list search-list-bookmark', {
-                  show: openSearch
-                })}
-                className='form-control'
-                suggestions={!value.length ? store.bookmarks : store.suggestions}
-                filterKey='title'
-                autoFocus={true}
-                defaultSuggestions
-                suggestionLimit={!value.length ? store.bookmarks.length : 6}
-                placeholder='Search...'
-                externalClick={handleExternalClick}
-                clearInput={(userInput, setUserInput) => handleClearInput(setUserInput)}
-                onKeyDown={onKeyDown}
-                value={value}
-                onChange={handleInputChange}
-                customRender={(
-                  item,
-                  i,
-                  filteredData,
-                  activeSuggestion,
-                  onSuggestionItemClick,
-                  onSuggestionItemHover
-                ) => {
-                  const IconTag = Icon[item.icon ? item.icon : 'X']
-                  return (
-                    <li
-                      key={i}
-                      onMouseEnter={() => onSuggestionItemHover(filteredData.indexOf(item))}
-                      className={classnames('suggestion-item d-flex align-items-center justify-content-between', {
-                        active: filteredData.indexOf(item) === activeSuggestion
-                      })}
-                    >
-                      <Link
-                        to={item.link}
-                        className='d-flex align-items-center justify-content-between p-0'
-                        onClick={() => {
-                          setOpenSearch(false)
-                          handleClearQueryInStore()
-                        }}
-                        style={{
-                          width: 'calc(90%)'
-                        }}
-                      >
-                        <div className='d-flex justify-content-start align-items-center overflow-hidden'>
-                          <IconTag size={17.5} className='me-75' />
-                          <span className='text-truncate'>{item.title}</span>
-                        </div>
-                      </Link>
-                      <Icon.Star
-                        size={17.5}
-                        className={classnames('bookmark-icon float-end', {
-                          'text-warning': item.isBookmarked
-                        })}
-                        onClick={() => handleBookmarkUpdate(item.id)}
-                      />
-                    </li>
-                  )
-                }}
-              />
-            ) : null}
-          </div>
-        </NavItem>
-      </ul>
-    </Fragment>
-  )
-}
+    <div style={styles.containerBookMark}>
+     <Star style={styles.starIcon}  onClick={toggleMenu} />
 
-export default NavbarBookmarks
+      {isOpen && (
+        <div ref={dropdownRef} style={styles.dropdown}>
+          <input
+            type="text"
+            value={query}
+            onChange={handleSearchChange}
+            placeholder="جستجو"
+            style={styles.searchInput}
+          />
+          <ul style={styles.menu}>
+            {filteredItems.length > 0 ? (
+              filteredItems.map(item => {
+                const isBookmarked = getBookmarkedItems().some(b => b.id === item.id);
+                return (
+                  <li
+                  key={item.id}
+                  style={{
+                    ...styles.menuItem,
+                    backgroundColor: hoveredItem === item.id ? '#f0f0f0' : 'transparent',  
+                  }}
+                  onMouseEnter={() => handleMouseEnter(item.id)} 
+                  onMouseLeave={handleMouseLeave}
+                   onClick={() =>navigate(item.pageUrl)}
+                >
+                  {item.title}
+                  <button
+                    onClick={() => toggleBookmark(item)}
+                    style={styles.bookmarkButton}
+                  >
+                    {isBookmarked ? (
+                      <Star fill='gold' style={styles.starIcon} />
+                    ) : (
+                      <Star fill='transparent' style={styles.starIcon} />
+                    )}
+                  </button>
+                </li>
+                
+                );
+              })
+            ) : (
+              <li style={styles.menuItem}>نتیجه‌ای یافت نشد.</li>
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const styles = {
+  containerBookMark: {
+    position: 'relative', 
+    marginRight:'30px',
+    fontFamily : 'sans',
+  },
+  menuButton: {
+    padding: '10px 20px',
+    backgroundColor: '#007BFF',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '16px',
+  },
+  dropdown: {
+    position: 'absolute',
+    top: '100%',
+    right: 0,
+    width: '300px',
+    border: '1px solid #ddd',
+    borderRadius: '5px',
+    boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+    padding: '10px',
+    zIndex: 1000,
+    maxHeight: '300px', 
+    overflowY: 'auto', 
+    backgroundColor:'#fff',
+  },
+  searchInput: {
+    width: '100%',
+    padding: '8px',
+    marginBottom: '10px',
+    borderRadius: '5px',
+    border: '1px solid #ddd',
+    outline:'none'
+  },
+  menu: {
+    listStyleType: 'none',
+    padding: '0',
+    margin: '0',
+  },
+  menuItem: {
+    padding: '8px 16px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    cursor: 'pointer',
+    fontSize: '14px',
+    transition: 'background-color 0.3s ease', 
+  },
+  
+
+  menuLink: {
+    color: '#333',
+    textDecoration: 'none',
+  },
+  bookmarkButton: {
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+  },
+  starIcon: {
+    fontSize: '18px',
+    color: '#FFD700',
+  },
+};
+
+export default DropdownMenu;
