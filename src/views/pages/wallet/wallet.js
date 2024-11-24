@@ -21,6 +21,7 @@ import { deleteNotifType } from '../../../@core/api/Notif/notifType/deleteNotifT
 import { getAllWallet } from '../../../@core/api/wallet/getAllWallet';
 import EditWallet from '../../../components/common/modal/editWallet';
 import { DeleteWallet } from '../../../@core/api/wallet/deleteWallet';
+import CostUp from '../../../components/common/modal/CostUp';
 
 const Wallet = () => {
   const itemsPerPage = 8;
@@ -62,7 +63,7 @@ const Wallet = () => {
       selector: (row) => row.UserName,
     },
     {
-      name: 'مبلغ پرداختی',
+      name: 'موجودی',
       selector: (row) => row.Cost,
     },
     {
@@ -83,6 +84,9 @@ const Wallet = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
+          <Dropdown.Item >
+              <CostUp title={'افزایش موجودی'} row={row} />
+            </Dropdown.Item>
             <Dropdown.Item >
               <EditWallet title={'ویرایش'} row={row} />
             </Dropdown.Item>

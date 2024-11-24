@@ -97,9 +97,6 @@ const Transaction = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            {/* <Dropdown.Item >
-              <EditWallet title={'ویرایش'} Transaction={row} />
-            </Dropdown.Item> */}
             <Dropdown.Item >
               <Button color='transparent' style={{textAlign:'center' , border:'none'}} onClick={() => deleteTransactionById.mutate(row.id)}>حذف تراکنش </Button>
             </Dropdown.Item>
@@ -113,7 +110,6 @@ const Transaction = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        {/* <EditWallet title={<Plus />} /> */}
         <input
           type="search"
           className="form-control"

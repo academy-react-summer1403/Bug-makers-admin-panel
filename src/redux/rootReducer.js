@@ -31,7 +31,7 @@ const rootReducer = {
     LoginState : LoginSliceReducer,
     userId:userIdSliceReducer,
     role:rolePageSliceReducer,
-    Tgroup : TourGroupSliceReducer
+    Tgroup : TourGroupSliceReducer,
 };
 
 export default rootReducer;
