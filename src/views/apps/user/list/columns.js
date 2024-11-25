@@ -4,7 +4,7 @@ import EditUserExample from '../../../../components/common/modal/edituser';
 import AddRole from '../../../../components/common/modal/addRole';
 import { store } from '@store/store';
 import { getUser, deleteUser } from '../store';
-import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical, UserPlus, X, Menu } from 'react-feather';
+import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical, UserPlus, X, Menu, Edit } from 'react-feather';
 import { Badge, Button } from 'reactstrap';
 import { useState } from 'react';
 import { FaUserShield } from "react-icons/fa";
@@ -34,9 +34,9 @@ const CustomMenu = ({ user, onEdit, onDelete, rowId }) => {
           </Tooltip>
         </Dropdown.Item>
 
-        <Dropdown.Item as="div" className="d-flex align-items-center">
-          <EditUserExample size={14} user={user}  onClick={onEdit} />
-          <span className="ms-2">ویرایش کاربر</span>
+        <Dropdown.Item as="div" className="d-flex align-items-center gap-2">
+          <Edit  size={14} />
+          <Link to={'/EditUser'} size={14} user={user}  onClick={onEdit} >ویرایش</Link>
         </Dropdown.Item>
 
         <Dropdown.Item as="div" className="d-flex align-items-center" onClick={onDelete}>

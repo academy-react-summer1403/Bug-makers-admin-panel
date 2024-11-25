@@ -10,7 +10,7 @@ import { Row, Col, Card, Form, CardBody, Button, Badge, Modal, Input, Label, Mod
 // ** Third Party Components
 import Swal from 'sweetalert2'
 import Select from 'react-select'
-import { Check, Briefcase, X } from 'react-feather'
+import { Check, Briefcase, X, Edit } from 'react-feather'
 import { useForm, Controller } from 'react-hook-form'
 import withReactContent from 'sweetalert2-react-content'
 import avatar from '../../../../assets/images/avatars/2.png'
@@ -29,6 +29,8 @@ import EditUserExample from '../../../../components/common/modal/edituser';
 import AddRole from '../../../../components/common/modal/addRole';
 import LocationPicker from '../../../../components/common/modal/LocationPicker';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+import { Tooltip } from '@mui/material';
 
 const roleColors = {
   editor: 'light-info',
@@ -259,7 +261,9 @@ const UserInfoCard = ({ selectedUser }) => {
           </div>
 
         {/* edit */}
-           <EditUserExample size={'20px'} /> 
+        <Tooltip title='ویرایش اطلاعات' placement='top'>
+          <Link to={'/EditUser'} size={14} user={user}   ><Edit size={20} /></Link>
+        </Tooltip>
            <div style={{position : 'relative' ,right : '80px' , bottom : '20px'}} >
            <AddRole  size={'20px'} />
            </div>

@@ -72,6 +72,7 @@ const ClassRome = lazy(() => import('../../views/pages/classRome/classRome.js'))
 const CourseStatus = lazy(() => import('../../views/pages/courseStatus/courseStatus.js'))
 const Wallet = lazy(() => import('../../views/pages/wallet/wallet.js'))
 const Transaction = lazy(() => import('../../views/pages/wallet/transaction.js'))
+const EditUser = lazy(() => import('../../components/common/modal/edituser.js'))
 // ** Merge Routes
 const token = localStorage.getItem('token');
 
@@ -315,6 +316,10 @@ const Routes = [
   {
     element: token ? <Transaction /> : <Navigate to={'/login'} />,
     path: '/wallet/Transaction',
+  },
+  {
+    element: token ? <EditUser /> : <Navigate to={'/login'} />,
+    path: '/EditUser',
   },
 ];
 

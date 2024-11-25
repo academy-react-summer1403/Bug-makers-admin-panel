@@ -32,6 +32,7 @@ import { Archive, Edit, Linkedin } from 'react-feather';
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 import { Tooltip } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const EditUserExample = ({ onClick , size}) => {
   const user = useSelector(state => state.user.selectUser);
@@ -65,7 +66,7 @@ const EditUserExample = ({ onClick , size}) => {
   });
 
   // ** Form Submission
-
+  const navigate = useNavigate()
   const handleSubmit = (data) => {
     const formattedData = {
       ...data,
@@ -78,6 +79,7 @@ const EditUserExample = ({ onClick , size}) => {
     };
     dispatch(updateUser(formattedData));
     setShow(false);
+    navigate('/apps/user/list')
   };
 
   // Default Values from API
@@ -144,15 +146,15 @@ const EditUserExample = ({ onClick , size}) => {
       <Tooltip title='ویرایش کاربر' placement='top'>
         <Edit size={size} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={() => setShow(true)} />
       </Tooltip>
-      <Modal
+      <div
         isOpen={show}
         toggle={() => setShow(!show)}
         className='modal-dialog-centered modal-lg'
         backdrop='static'
         keyboard={false}
       >
-        <ModalHeader className='bg-transparent' toggle={() => setShow(false)}></ModalHeader>
-        <ModalBody className="px-sm-5 mx-50 pb-5">
+        <h2 className='bg-transparent' toggle={() => setShow(false)}></h2>
+        <div className="px-sm-5 mx-50 pb-5">
           <div className='text-center mb-2'>
             <h1 className='mb-1'>آپدیت اطلاعات کاربر</h1>
             <p>اطلاعات کاربر</p>
@@ -476,14 +478,14 @@ const EditUserExample = ({ onClick , size}) => {
                 <Button type='submit' className='me-1' style={{position: 'absolute' , bottom :'10px' ,right: '100px'}} color='primary'>
                   ارسال
                 </Button>
-                <Button type='reset' color='secondary' style={{position: 'absolute' , bottom :'10px' , left: '100px'}} outline onClick={() => setShow(false)}>
+                <Button type='reset' color='secondary' style={{position: 'absolute' , bottom :'10px' , left: '100px'}} outline onClick={() => navigate('/apps/user/list')}>
                   انصراف
                 </Button>
               </Form>
             )}
           </Formik>
-        </ModalBody>
-      </Modal>
+        </div>
+      </div>
     </div>
   );
 };
