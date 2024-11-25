@@ -1,4 +1,4 @@
-import { Card } from 'react-bootstrap';
+import { Card, Dropdown } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -9,7 +9,7 @@ import { setCourseListDetail } from '../../../../redux/Course';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Button, CardHeader, Table } from 'reactstrap';
 import DataTable from 'react-data-table-component';
-import { Book, ChevronDown, User } from 'react-feather';
+import { Book, ChevronDown, Edit, Menu, User } from 'react-feather';
 import { getGroup } from '../../../../@core/api/course/getGroup';
 import UsersList from '../../user/list/Table';
 import CourseUser from './CourseUser';
@@ -23,7 +23,7 @@ import CoursePayment from './coursePayment';
 import CreateSchedual from '../../../../components/common/modal/createSchedual';
 import { getSchedualId } from '../../../../@core/api/Schedual/schedual';
 import { Avatar, Box, Grid, Typography, Skeleton } from "@mui/material";
-
+import EditGroup from '../../../../components/common/modal/editGroup'
 const CourseDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -113,7 +113,7 @@ const CourseDetail = () => {
             >
               <Box sx={{ marginRight: 2 }}>
                 {loading ? (
-                  <Skeleton variant="rectangular" width={350} height={350} />
+                  <Skeleton variant="rectangular" width={550} height={350} />
                 ) : (
                   <Avatar
                     src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
@@ -196,7 +196,24 @@ const CourseDetail = () => {
         {
             name: 'ویرایش',
            cell : row =>(
-                <DeleteGroup
+            <Dropdown>
+            <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-custom-components">
+              <Menu />
+            </Dropdown.Toggle>
+      
+            <Dropdown.Menu>
+              <Dropdown.Item as="div" className="d-flex align-items-center">
+                <EditGroup
+                  id={row.groupId}
+                  CourseId={row.courseId}
+                  GroupName={row.groupName}
+                  size="14px"
+                  GroupCapacity={row.groupCapacity}
+                />
+              </Dropdown.Item>
+      
+              <Dropdown.Item as="div" className="d-flex align-items-center">
+              <DeleteGroup
                     isActive={row.isDelete}
                     Id={row.groupId}
                     teacherId={teacherId}
@@ -207,11 +224,21 @@ const CourseDetail = () => {
                     text='حذف '
                     text2='حذف شده'
               />
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+ 
            )
         },
     ];
 
-
+    const customStyles = {
+      table: {
+        style: {
+          minHeight: '200px',
+        },
+      },
+    };
     const columnsReserve = [
         {
             sortable: true,
@@ -303,7 +330,7 @@ const CourseDetail = () => {
           name: 'عملیات',
           cell: row => (
             <div onClick={() => setSchedualId(row.id)} className='d-flex justify-content-center align-items-center gap-1'>
-                <CreateSchedual schedual={getSchdualDataid} />
+                <CreateSchedual title={<Edit />} schedual={getSchdualDataid} />
             </div>
           )
         }
@@ -350,6 +377,7 @@ const CourseDetail = () => {
                     <DataTable
                         noHeader
                         responsive
+                        customStyles={customStyles}
                         columns={columns}
                         data={groupData || []} 
                         className='react-dataTable'
@@ -362,6 +390,7 @@ const CourseDetail = () => {
                 <div className='react-dataTable user-view-account-projects'>
                     <DataTable
                         noHeader
+                        customStyles={customStyles}
                         responsive
                         columns={columnsReserve}
                         data={filterReserve || []} 
@@ -377,6 +406,7 @@ const CourseDetail = () => {
                         noHeader
                         responsive
                         pagination
+                        customStyles={customStyles}
                         columns={columnsSchedual}
                         data={productDetail?.courseSchedules || []} 
                         className='react-dataTable'

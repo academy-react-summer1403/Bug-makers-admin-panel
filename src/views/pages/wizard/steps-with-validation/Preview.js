@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 // ** Third Party Components
 import { ArrowLeft } from 'react-feather'
@@ -20,11 +20,13 @@ import { setCourseListDetail } from '../../../../redux/Course';
 import { AddBlog } from '../../../../@core/api/blog/addBlog';
 import { addCategory } from '../../../../@core/api/course/addCategroy';
 import { htmlToText } from 'html-to-text';
+import { setPreview } from '../../../../redux/Preview';
 const defaultValues = {
 
 }
 
 const Preview = ({ stepper , setCat }) => {
+
 
 
   const [addBlog, setAddBlog] = useState(true)
@@ -46,6 +48,10 @@ const Preview = ({ stepper , setCat }) => {
   const dispatch = useDispatch();
 
 
+  useEffect(() => {
+    dispatch(setPreview(false))
+
+  }, [])
   const textObject = htmlToText(getData?.Describe, {
     wordwrap: 130
   });

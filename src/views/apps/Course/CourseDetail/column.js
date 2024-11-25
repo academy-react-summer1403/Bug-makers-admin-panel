@@ -4,11 +4,13 @@ import EditUserExample from '../../../../components/common/modal/edituser';
 import AddRole from '../../../../components/common/modal/addRole';
 import { store } from '@store/store';
 import { getUser, deleteUser } from '../../user/store/index';
-import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical, UserPlus } from 'react-feather';
+import { Slack, User, Settings, Database, Edit2, FileText, Trash2, MoreVertical, UserPlus, Menu } from 'react-feather';
 import { Badge, Button } from 'reactstrap';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { deleteCourseReserve } from '../../../../@core/api/course/courseReserve';
+import { Dropdown } from 'react-bootstrap';
+import { Tooltip } from '@mui/material';
 
 // Custom Menu component
 const CustomMenu = ({ user, onEdit, onDelete, rowId , id }) => {
@@ -21,18 +23,32 @@ const CustomMenu = ({ user, onEdit, onDelete, rowId , id }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div style={{display : 'flex' , flexFlow : 'row nowrap' , justifyContent : 'center' , alignItems : 'center' , gap: '10px'}}>
+    <Dropdown>
+      <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-custom-components">
+        <Menu />
+      </Dropdown.Toggle>
 
-          <Link to={`/apps/user/view/${rowId}`} >
-            <FileText size={14}  />
-          </Link>
-          <div  onClick={onEdit}>
-            <EditUserExample size={'14px'} user={user} /> 
-          </div>
-          <div onClick={() => mutation.mutate(id)}>
-            <Trash2 size={14}/>
-          </div>
-    </div>
+      <Dropdown.Menu>
+        <Dropdown.Item as="div" className="d-flex align-items-center">
+          <Tooltip title="جزییات کاربر" placement="top">
+            <Link to={`/apps/user/view/${rowId}`} className="d-flex align-items-center">
+              <FileText size={14} />
+              <span className="ms-2">جزییات کاربر</span>
+            </Link>
+          </Tooltip>
+        </Dropdown.Item>
+
+        <Dropdown.Item as="div" className="d-flex align-items-center">
+          <EditUserExample size={14} user={user}  onClick={onEdit} />
+          <span className="ms-2">ویرایش کاربر</span>
+        </Dropdown.Item>
+
+        <Dropdown.Item as="div" className="d-flex align-items-center" onClick={onDelete}>
+          <Trash2 size={14} />
+          <span className="ms-2">حذف کاربر</span>
+        </Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
   );
 };
 const CustomAddRole = ({ user, onEdit } ) => {

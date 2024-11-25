@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox } from "react-feather";
 import { GiClassicalKnowledge, GiWallet } from 'react-icons/gi';
-import { GrTransaction } from 'react-icons/gr';
+import { GrStatusCritical, GrTransaction } from 'react-icons/gr';
 import { useSelector } from 'react-redux';
 
 export const userData = (items) => {
@@ -76,6 +76,12 @@ export const userData = (items) => {
           title: "ترم ها",
           icon: <Book size={20} />,
           navLink: "/apps/Course/Term",
+        },
+        {
+          id: "CourseStatus",
+          title: "وضعیت دوره ها",
+          icon: <GrStatusCritical size={20} />,
+          navLink: "/apps/Course/CourseStatus",
         },
         {
           id: "Tech",

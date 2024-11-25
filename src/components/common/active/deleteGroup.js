@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Badge } from 'react-bootstrap';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteGroup } from '../../../@core/api/course/deleteGroup';
+import { Button } from 'reactstrap';
 
 const DeleteGroup = ({ isActive, Id, styled, api, text, text2  , id , teacherId}) => {
 
@@ -26,13 +27,13 @@ const DeleteGroup = ({ isActive, Id, styled, api, text, text2  , id , teacherId}
 
     return (
         <>
-            <Badge 
-                className={isActived ? 'bg-success' : 'bg-danger'} 
+            <Button
+                color='transparent' 
                 style={styled} 
                 onClick={handleBadgeClick}
             >
                 {isActived ? text2 : text}
-            </Badge>
+            </Button>
         </>
     );
 };

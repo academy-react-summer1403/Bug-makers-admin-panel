@@ -91,15 +91,24 @@ const Product = props => {
   const handlingNavigate = (e) => {
     e.preventDefault();
     navigate('/apps/Course/editCourse')
-    dispatch(setPreview(false))
   }
   
+  useEffect(() => {
+    dispatch(setPreview(true))
+    
+  }, [])
   // handle state 
   return (
     <Row className='my-2'>
       <Col className='d-flex align-items-center justify-content-center mb-2 mb-md-0' md='5' xs='12'>
         <div className='d-flex align-items-center justify-content-center'>
-          <img className='img-fluid product-img' onError={(e) => {e.target.src = image}} src={Image ? Image : image}  />
+        <img
+          className='img-fluid product-img'
+          onError={(e) => { e.target.src = image }} 
+          src={Image ? Image : image} 
+          alt="Product" 
+          style={{ visibility: Image ? 'visible' : 'hidden' }}
+        />
         </div>
       </Col>
       <Col md='7' xs='12'>

@@ -292,7 +292,7 @@ const CourseUser = ({courseId}) => {
   const customStyles = {
     table: {
       style: {
-        minHeight: '200px',
+        minHeight: '300px',
       },
     },
  

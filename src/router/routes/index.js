@@ -69,6 +69,7 @@ const NotifType = lazy(() => import('../../views/pages/NotifPage/NotifType.js'))
 const NotifListMessage = lazy(() => import('../../views/pages/NotifPage/NotifListMessage.js'))
 const NotifList = lazy(() => import('../../views/pages/NotifPage/NotifList.js'))
 const ClassRome = lazy(() => import('../../views/pages/classRome/classRome.js'))
+const CourseStatus = lazy(() => import('../../views/pages/courseStatus/courseStatus.js'))
 const Wallet = lazy(() => import('../../views/pages/wallet/wallet.js'))
 const Transaction = lazy(() => import('../../views/pages/wallet/transaction.js'))
 // ** Merge Routes
@@ -210,6 +211,10 @@ const Routes = [
   {
     element: token ? <Term /> : <Navigate to={'/login'} />,
     path: '/apps/Course/Term',
+  },
+  {
+    element: token ? <CourseStatus /> : <Navigate to={'/login'} />,
+    path: '/apps/Course/CourseStatus',
   },
   {
     element: token ? <Tech /> : <Navigate to={'/login'} />,
