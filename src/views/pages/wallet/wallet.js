@@ -22,6 +22,8 @@ import { getAllWallet } from '../../../@core/api/wallet/getAllWallet';
 import EditWallet from '../../../components/common/modal/editWallet';
 import { DeleteWallet } from '../../../@core/api/wallet/deleteWallet';
 import CostUp from '../../../components/common/modal/CostUp';
+import { getUser } from '../../../@core/api/user/getUserById';
+import { sendEmailActive } from '../../../@core/api/wallet/active/sendMail';
 
 const Wallet = () => {
   const itemsPerPage = 8;
@@ -30,14 +32,47 @@ const Wallet = () => {
     queryKey: ['getWallet'],
     queryFn: getAllWallet,
   });
-
+  const [userList, setUserList] = useState([]);
+  const [combinedData, setCombinedData] = useState([]); 
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState(data);
 
+  const { data: userAll } = useQuery({
+    queryKey: ['getAllUserList'],
+    queryFn: getUser
+  });
+  useEffect(() => {
+    if (data?.data && userAll?.listUser) {
+      const combinedData = data?.data?.map((userItem) => {
+        const matchingUser = userAll?.listUser.find(
+          (listUserItem) => listUserItem.id === Number(userItem.UserId)
+        );
+        
+        if (matchingUser) {
+          return {
+            ...matchingUser,
+            ...userItem,
+          };
+        }
+  
+        return null;
+      }).filter((item) => item !== null);
+  
+      const filteredUsers = combinedData.filter((user) => 
+        user.fname.toLowerCase().includes(searchText.toLowerCase()) || 
+        user.lname.toLowerCase().includes(searchText.toLowerCase())
+      );
+  
+      setCombinedData(filteredUsers); 
+      setFilteredData(combinedData)
+      setUserList(filteredUsers); 
+    }
+  }, [data, userAll, setSearchText]);
+  console.log(combinedData);
   useEffect(() => {
     if (data) {
-      const result = data?.data.filter((row) =>
-        row.UserId?.includes(searchText.toLowerCase())       );
+      const result = userList.filter((row) =>
+        row.fname?.includes(searchText.toLowerCase())       );
       setFilteredData(result);
     }
   }, [searchText, data]);
@@ -53,10 +88,22 @@ const Wallet = () => {
     }
   })
 
+  const sendEmail = useMutation({
+    mutationKey:['activeEmail'],
+    mutationFn: (id , emailData) => sendEmailActive(id , emailData)
+  })
+
+  const handleSendMail = (row) => {
+    id = row.WalletId
+    const emailData = {
+      "email": row.gmail,
+    }
+    sendEmail.mutate(id , emailData)
+  }
   const columns = [
     {
       name: 'آیدی کاربر',
-      selector: (row) => row.UserId,
+      selector: (row) => row.fname + ' ' + row.lname,
     },
     {
       name: 'نام کاربری',
@@ -87,6 +134,12 @@ const Wallet = () => {
           <Dropdown.Item >
               <CostUp title={'افزایش موجودی'} row={row} />
             </Dropdown.Item>
+          <Dropdown.Item >
+              <Button color='transparent' onClick={() => handleSendMail(row)} >تایید کیف پول</Button>
+            </Dropdown.Item>
+          <Dropdown.Item >
+              <CostUp title={'افزایش موجودی'} row={row} />
+            </Dropdown.Item>
             <Dropdown.Item >
               <EditWallet title={'ویرایش'} row={row} />
             </Dropdown.Item>
@@ -114,7 +167,7 @@ const Wallet = () => {
         <input
           type="search"
           className="form-control"
-          placeholder="جستجو بر اساس آیدی کاربر..."
+          placeholder="جستجو بر اساس نام کاربر..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />

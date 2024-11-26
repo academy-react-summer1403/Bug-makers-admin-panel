@@ -121,6 +121,14 @@ const CoursePage = () => {
       )
     }
   ];
+  
+  const customStyles = {
+    table: {
+      style: {
+        minHeight: '500px',
+      },
+    },
+  };
 
   return (
     <div className='container mt-4'>
@@ -190,6 +198,7 @@ const CoursePage = () => {
               paginationPerPage={itemsPerPage}
               paginationRowsPerPageOptions={[8, 15, 30]}
               responsive
+              customStyles={customStyles}
               highlightOnHover
             />
           </motion.div>

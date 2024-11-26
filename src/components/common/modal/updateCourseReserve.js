@@ -3,7 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, Nav, NavItem, NavLink, TabConten
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import classnames from 'classnames';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addCategoryBlog, getCategoryListBlog, updateCategoryBlog } from '../../../@core/api/blog/Category';
 import { getCategoryId } from '../../../@core/api/blog/Category'; 
 import { getCourseReserveWithId } from '../../../@core/api/reserve/getReserveWithId';
@@ -35,6 +35,7 @@ const UpdateCourseReserve = ({selected , studentId}) => {
     setSelectId(selected)
     setShow(true)
   }
+  const queryClient = useQueryClient()
   const {data : course } = useQuery({
     queryKey:['getCourse'],
     queryFn:() => getCourseDetail(SelectId),
@@ -62,6 +63,9 @@ const UpdateCourseReserve = ({selected , studentId}) => {
     const mutation = useMutation({
       mutationKey: ['acceptReserve'],
       mutationFn: (reserveData) => acceptReserve(reserveData),
+      onSuccess:() => {
+        queryClient.invalidateQueries('courseReserve')
+      },
       onError:(error) => {
         toast.error(error.response.data.ErrorMessage)
       }

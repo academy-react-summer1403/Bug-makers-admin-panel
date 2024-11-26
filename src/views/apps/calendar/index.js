@@ -21,16 +21,15 @@ const CalendarComponent = () => {
   useEffect(() => {
     if (data?.courseDtos) {
       const eventsData = data?.courseDtos.map(event => ({
-        title: event.title,  // عنوان ایتم
+        title: event.title,  
         start: format(new Date(event.lastUpdate), 'yyyy-MM-dd'), 
         end: format(new Date(event.lastUpdate), 'yyyy-MM-dd'),   
-        id: event.courseId,  // شناسه منحصر به فرد ایتم
+        id: event.courseId,  
       }))
       setEvents(eventsData)
     }
   }, [data])  
 
-  // تقویم FullCalendar
   return (
     <Card className='shadow-none border-0 mb-0 rounded-0'>
       <CardBody className='pb-0'>
@@ -43,7 +42,7 @@ const CalendarComponent = () => {
             center: 'title',
             end: 'dayGridMonth,timeGridWeek,timeGridDay'
           }}
-          locale="fa"  // تنظیم زبان فارسی
+          locale="fa"  
           editable={true}
           eventClick={(info) => {
             const courseId = info.event.id 
