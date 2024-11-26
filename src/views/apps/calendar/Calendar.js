@@ -2,7 +2,6 @@
 import { useEffect, useRef, memo } from 'react'
 
 // ** Full Calendar & it's Plugins
-import '@fullcalendar/react/dist/vdom'
 import FullCalendar from '@fullcalendar/react'
 import listPlugin from '@fullcalendar/list'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -13,11 +12,18 @@ import interactionPlugin from '@fullcalendar/interaction'
 import toast from 'react-hot-toast'
 import { Menu } from 'react-feather'
 import { Card, CardBody } from 'reactstrap'
+import { useQuery } from '@tanstack/react-query'
+import { getCourseListWithPagination } from '../../../@core/api/course/getCourseListWithPagination'
 
 const Calendar = props => {
   // ** Refs
   const calendarRef = useRef(null)
 
+    const {data} = useQuery({
+      queryKey:['getCourse'],
+      queryFn:getCourseListWithPagination
+    })
+    console.log(data?.courseDtos);
   // ** Props
   const {
     store,
@@ -42,7 +48,7 @@ const Calendar = props => {
 
   // ** calendarOptions(Props)
   const calendarOptions = {
-    events: store.events.length ? store.events : [],
+    events: store?.events.length ? store.events : [],
     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
     initialView: 'dayGridMonth',
     headerToolbar: {
@@ -92,13 +98,6 @@ const Calendar = props => {
     eventClick({ event: clickedEvent }) {
       dispatch(selectEvent(clickedEvent))
       handleAddEventSidebar()
-
-      // * Only grab required field otherwise it goes in infinity loop
-      // ! Always grab all fields rendered by form (even if it get `undefined`) otherwise due to Vue3/Composition API you might get: "object is not extensible"
-      // event.value = grabEventDataFromEventApi(clickedEvent)
-
-      // eslint-disable-next-line no-use-before-define
-      // isAddNewEventSidebarActive.value = true
     },
 
     customButtons: {

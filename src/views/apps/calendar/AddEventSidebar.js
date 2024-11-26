@@ -47,7 +47,7 @@ const AddEventSidebar = props => {
   } = props
 
   // ** Vars & Hooks
-  const selectedEvent = store.selectedEvent,
+  const selectedEvent = store?.selectedEvent,
     {
       control,
       setError,

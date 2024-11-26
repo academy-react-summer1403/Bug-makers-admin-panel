@@ -8,6 +8,7 @@ import { getUser } from '../../../@core/api/user/getUserById';
 import { Tooltip } from '@mui/material';
 import { FormSelect } from 'react-bootstrap';
 import { UpdateTransaction } from '../../../@core/api/wallet/Transaction/UpdateTransaction';
+import toast from 'react-hot-toast';
 
 const CostUp = ({ row, title }) => {
   const [show, setShow] = useState(false);
@@ -46,6 +47,9 @@ const CostUp = ({ row, title }) => {
     onSuccess: () => {
       setShow(false);
       query.invalidateQueries('getWallet');
+    },
+    onError:(data) => {
+      toast.error('اول حسابت رو شارژ کن')
     }
   });
 

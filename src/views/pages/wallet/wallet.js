@@ -100,6 +100,13 @@ const Wallet = () => {
     },
   ];
 
+  const customStyles = {
+    table: {
+      style: {
+        minHeight: '500px',
+      },
+    },
+  };
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
@@ -123,6 +130,7 @@ const Wallet = () => {
             columns={columns}
             data={filteredData} 
             pagination
+            customStyles={customStyles}
             noDataComponent={
               <div >
               <Skeleton animation="wave"  height={50} width={1300} />

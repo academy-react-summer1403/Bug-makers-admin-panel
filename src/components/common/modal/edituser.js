@@ -33,6 +33,8 @@ import { Archive, Edit, Linkedin } from 'react-feather';
 import '@styles/react/libs/react-select/_react-select.scss'
 import { Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import ReactSelect from 'react-select';
+import { FormSelect } from 'react-bootstrap';
 
 const EditUserExample = ({ onClick , size}) => {
   const user = useSelector(state => state.user.selectUser);
@@ -413,11 +415,10 @@ const EditUserExample = ({ onClick , size}) => {
                   <Label className='form-label' for='roles'>
                     نقش <span className='text-danger'>اختیاری</span>
                   </Label>
-                  <Input
+                  <FormSelect
                     type='select'
                     id='roles'
                     name='roles'
-                    multiple
                     value={values.roles}
                     onChange={handleChange}
                     invalid={touched.roles && !!errors.roles}
@@ -427,7 +428,7 @@ const EditUserExample = ({ onClick , size}) => {
                         {role.label}
                       </option>
                     ))}
-                  </Input>
+                  </FormSelect>
                   {touched.roles && errors.roles && <FormFeedback>{errors.roles}</FormFeedback>}
                 </div>
 
