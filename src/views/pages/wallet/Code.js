@@ -13,8 +13,8 @@ import EditAssCourse from '../../../components/common/modal/editAssCourse';
 import { getAssWork } from '../../../@core/api/assWork/assWorkPage/getAssWork';
 import EditAssWork from '../../../components/common/modal/editAssWork';
 import { Dropdown } from 'react-bootstrap';
-import { Menu, Plus } from 'react-feather';
-import { Skeleton } from '@mui/material';
+import { Delete, Menu, Plus } from 'react-feather';
+import { Skeleton, Tooltip } from '@mui/material';
 import { getNotifType } from '../../../@core/api/Notif/notifType/getNotifType';
 import EditNotifType from '../../../components/common/modal/editNotifType';
 import { deleteNotifType } from '../../../@core/api/Notif/notifType/deleteNotifType';
@@ -24,139 +24,63 @@ import { DeleteWallet } from '../../../@core/api/wallet/deleteWallet';
 import CostUp from '../../../components/common/modal/CostUp';
 import { getUser } from '../../../@core/api/user/getUserById';
 import { SendEmailActive } from '../../../@core/api/wallet/active/sendMail';
-import ActiveWallet from '../../../components/common/modal/activeWallet';
+import { getAllActive } from '../../../@core/api/wallet/active/getAll';
+import { FaRecycle } from 'react-icons/fa';
+import { resetData } from '../../../@core/api/wallet/active/resetData';
 
-const Wallet = () => {
+const Code = () => {
   const itemsPerPage = 8;
     const queryClient = useQueryClient()
-  const { data } = useQuery({
-    queryKey: ['getWallet'],
-    queryFn: getAllWallet,
-  });
+
   const [userList, setUserList] = useState([]);
   const [combinedData, setCombinedData] = useState([]); 
   const [searchText, setSearchText] = useState('');
-  const [filteredData, setFilteredData] = useState(data);
+  const [filteredData, setFilteredData] = useState();
 
   const { data: userAll } = useQuery({
-    queryKey: ['getAllUserList'],
-    queryFn: getUser
+    queryKey: ['getAllActiveCode'],
+    queryFn: getAllActive
   });
+
   useEffect(() => {
-    if (data?.data && userAll?.listUser) {
-      const combinedData = data?.data?.map((userItem) => {
-        const matchingUser = userAll?.listUser?.find(
-          (listUserItem) => listUserItem.id === Number(userItem.UserId)
-        );
-        
-        if (matchingUser) {
-          return {
-            ...matchingUser,
-            ...userItem,
-          };
-        }
-  
-        return null;
-      }).filter((item) => item !== null);
-  
-      const filteredUsers = combinedData?.filter((user) => 
-        user.fname?.toLowerCase().includes(searchText.toLowerCase()) || 
-        user.lname?.toLowerCase().includes(searchText.toLowerCase())
-      );
-  
-      setCombinedData(filteredUsers); 
-      setFilteredData(combinedData)
-      setUserList(filteredUsers); 
-    }
-  }, [data, userAll , setSearchText]);
-  console.log(filteredData);
-  useEffect(() => {
-    if (data) {
-      const result = userList.filter((row) =>
-        row.fname?.includes(searchText.toLowerCase())       );
+    if (userAll) {
+      const result = userAll?.data?.filter((row) =>
+        row.email?.includes(searchText.toLowerCase())       );
       setFilteredData(result);
     }
-  }, [searchText, data]);
+  }, [searchText , userAll]);
   const useDay = (date) => {
     if(!date) return 'تاریخ  وجود ندارد';
     return moment(date).format('jYYYY/jMM/jDD'); 
   }
-  const deleteWalletById = useMutation({
-    mutationKey:['deleteWalletData'],
-    mutationFn: (data) => DeleteWallet(data),
+  const deleteData = useMutation({
+    mutationKey:['deleteCode'],
+    mutationFn: () => resetData(),
     onSuccess: () => {
-        queryClient.invalidateQueries('getWallet')   
+        queryClient.invalidateQueries('getAllActiveCode')   
     }
   })
+
 
   const sendEmail = useMutation({
     mutationKey:['activeEmail'],
     mutationFn: (row) => SendEmailActive(row)
   })
 
+
   const handleSendMail = (row) => {
-
-
     sendEmail.mutate(row)
-    
   }
   const columns = [
     {
-      name: 'آیدی کاربر',
-      selector: (row) => row.fname + ' ' + row.lname,
+      name: 'ایمیل',
+      selector: (row) => row.email
     },
     {
-      name: 'نام کاربری',
-      selector: (row) => row.UserName,
+      name: 'کد تایید',
+      selector: (row) => row.Code,
     },
-    {
-      name: 'موجودی',
-      selector: (row) => row.Cost,
-    },
-    {
-      name: 'توضیحات تایپ اعلان',
-      selector: (row) => row.IsActive,
-      sortable: true,
-      cell: row => (
-        <Badge color={row.IsActive ? 'success' : 'warning'}>{row.IsActive ? 'تایید شده' : 'در انتظار تایید'}</Badge>
-      )
-    },
-    {
-      name: 'عملیات',
-      cell: (row) => (
-      <div className="d-flex justify-content-center align-items-center gap-1">
-        <Dropdown>
-          <Dropdown.Toggle variant="transparent" style={{border:'none'}} id="dropdown-basic">
-            <Menu />
-          </Dropdown.Toggle>
 
-          <Dropdown.Menu>
-        {row.IsActive ? (
-          <Dropdown.Item >
-              <CostUp title={'افزایش موجودی'} row={row} />
-            </Dropdown.Item>
-          ) : null}
-          {row.IsActive == false ? (
-          <Dropdown.Item >
-              <ActiveWallet title='ارسال کد' row={row} />
-            </Dropdown.Item>
-          ) : null}
-          {row.IsActive == false ? (
-          <Dropdown.Item >
-              <Button color='transparent' onClick={() => handleSendMail(row)} >تایید کیف پول</Button>
-            </Dropdown.Item>
-            ) : null}
-            <Dropdown.Item >
-              <EditWallet title={'ویرایش'} row={row} />
-            </Dropdown.Item>
-            <Dropdown.Item >
-              <Button color='transparent' style={{textAlign:'center' , border:'none'}} onClick={() => deleteWalletById.mutate(row.id)}>حذف کیف پول</Button>
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-      ),
-    },
   ];
 
   const customStyles = {
@@ -166,14 +90,17 @@ const Wallet = () => {
       },
     },
   };
+
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        <EditWallet title={<Plus />} />
+        <Tooltip title='حذف داده' placement='top' >
+            <Delete className='cursor-pointer' onClick={() => deleteData.mutate()} />
+        </Tooltip>
         <input
           type="search"
           className="form-control"
-          placeholder="جستجو بر اساس نام کاربر..."
+          placeholder="جستجو بر اساس  ایمیل..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
@@ -215,4 +142,4 @@ const Wallet = () => {
   );
 };
 
-export default Wallet;
+export default Code;

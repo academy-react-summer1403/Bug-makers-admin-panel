@@ -71,6 +71,7 @@ const NotifList = lazy(() => import('../../views/pages/NotifPage/NotifList.js'))
 const ClassRome = lazy(() => import('../../views/pages/classRome/classRome.js'))
 const CourseStatus = lazy(() => import('../../views/pages/courseStatus/courseStatus.js'))
 const Wallet = lazy(() => import('../../views/pages/wallet/wallet.js'))
+const Code = lazy(() => import('../../views/pages/wallet/Code.js'))
 const Calender = lazy(() => import('../../views/apps/calendar/index.js'))
 const Transaction = lazy(() => import('../../views/pages/wallet/transaction.js'))
 const EditUser = lazy(() => import('../../components/common/modal/edituser.js'))
@@ -325,6 +326,10 @@ const Routes = [
   {
     element: token ? <Calender /> : <Navigate to={'/login'} />,
     path: '/apps/calendar',
+  },
+  {
+    element: token ? <Code /> : <Navigate to={'/login'} />,
+    path: '/wallet/Code',
   },
 ];
 

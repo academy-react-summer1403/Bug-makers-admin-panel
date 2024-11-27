@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox, Calendar } from "react-feather";
+import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox, Calendar, Code } from "react-feather";
 import { GiClassicalKnowledge, GiWallet } from 'react-icons/gi';
 import { GrStatusCritical, GrTransaction } from 'react-icons/gr';
 import { useSelector } from 'react-redux';
@@ -263,6 +263,12 @@ export const userData = (items) => {
         title: "لیست تراکنش",
         icon: <GrTransaction size={20} />,
         navLink: "/wallet/Transaction",
+      },
+      {
+        id: "code",
+        title: "لیست کد",
+        icon: <Code size={20} />,
+        navLink: "/wallet/Code",
       },
     ]
   },

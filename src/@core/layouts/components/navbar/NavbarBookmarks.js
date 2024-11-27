@@ -50,7 +50,8 @@ const DropdownMenu = () => {
     { id: "NotifList", title: "لیست اعلان", pageUrl: "/Notif/NotifList" },
     { id: "Wallet", title: "کیف پول", pageUrl: "/wallet" },
     { id: "AllWallet", title: "لیست کیف پول", pageUrl: "/wallet/AllWallet" },
-    { id: "Transaction", title: "لیست تراکنش", pageUrl: "/wallet/Transaction" }
+    { id: "Transaction", title: "لیست تراکنش", pageUrl: "/wallet/Transaction" },
+    { id: "Code", title: "لیست کد", pageUrl: "/wallet/Code" }
   ];
   
 
