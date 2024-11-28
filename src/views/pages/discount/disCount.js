@@ -25,29 +25,33 @@ import CostUp from '../../../components/common/modal/CostUp';
 import { getUser } from '../../../@core/api/user/getUserById';
 import { SendEmailActive } from '../../../@core/api/wallet/active/sendMail';
 import ActiveWallet from '../../../components/common/modal/activeWallet';
+import { getDisCount } from '../../../@core/api/discount/disCount';
+import { getCourseAllUser } from '../../../@core/api/course/getAllCByUser';
+import { DeleteCountCourse } from '../../../@core/api/discount/deleteCount';
+import CreateDisCount from '../../../components/common/modal/createDisCount';
 
-const Wallet = () => {
+const DisCount = () => {
   const itemsPerPage = 8;
     const queryClient = useQueryClient()
   const { data } = useQuery({
-    queryKey: ['getWallet'],
-    queryFn: getAllWallet,
+    queryKey: ['getCount'],
+    queryFn: getDisCount,
   });
-  const { data: userAll } = useQuery({
+  const { data: course } = useQuery({
     queryKey: ['getAllUserList'],
-    queryFn: getUser
+    queryFn: getCourseAllUser
   });
   const [userList, setUserList] = useState([]);
   const [combinedData, setCombinedData] = useState([]); 
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
-console.log(userAll);
+console.log(course);
   useEffect(() => {
-    if (data?.data && userAll?.listUser) {
+    if (data?.data && course?.courseFilterDtos) {
       const combinedData = data?.data?.map((userItem) => {
-        const matchingUser = userAll?.listUser?.find(
-          (listUserItem) => listUserItem.id === Number(userItem.UserId)
+        const matchingUser = course?.courseFilterDtos?.find(
+          (listUserItem) => listUserItem.courseId === userItem.PODID
         );
         
         if (matchingUser) {
@@ -61,20 +65,18 @@ console.log(userAll);
       }).filter((item) => item !== null);
   
       const filteredUsers = combinedData?.filter((user) => 
-        user.fname?.toLowerCase().includes(searchText.toLowerCase()) || 
-        user.lname?.toLowerCase().includes(searchText.toLowerCase())
-      );
+        user.title?.toLowerCase().includes(searchText.toLowerCase())       );
   
       setCombinedData(filteredUsers); 
       setFilteredData(combinedData)
       setUserList(filteredUsers); 
     }
-  }, [data, userAll , setSearchText]);
-  console.log(filteredData);
+  }, [data, course , setSearchText]);
+
   useEffect(() => {
     if (searchText) {
       const result = userList?.filter((row) =>
-        row.fname?.includes(searchText.toLowerCase())       );
+        row.title?.includes(searchText.toLowerCase())       );
       setFilteredData(result);
     }
   }, [searchText, data]);
@@ -82,11 +84,11 @@ console.log(userAll);
     if(!date) return 'تاریخ  وجود ندارد';
     return moment(date).format('jYYYY/jMM/jDD'); 
   }
-  const deleteWalletById = useMutation({
-    mutationKey:['deleteWalletData'],
-    mutationFn: (data) => DeleteWallet(data),
+  const deleteDisCount = useMutation({
+    mutationKey:['deleteCount'],
+    mutationFn: (data) => DeleteCountCourse(data),
     onSuccess: () => {
-        queryClient.invalidateQueries('getWallet')   
+        queryClient.invalidateQueries('getCount')   
     }
   })
 
@@ -103,24 +105,20 @@ console.log(userAll);
   }
   const columns = [
     {
-      name: 'آیدی کاربر',
-      selector: (row) => row.fname + ' ' + row.lname,
+      name: 'عنوان دوره',
+      selector: (row) => row.title,
     },
     {
-      name: 'نام کاربری',
-      selector: (row) => row.UserName,
+      name: 'قیمت اولیه',
+      selector: (row) => row.Pcost,
     },
     {
-      name: 'موجودی',
-      selector: (row) => row.Cost,
+      name: 'قیمت ثانویه',
+      selector: (row) => row.Tcost,
     },
     {
-      name: 'وضعیت',
-      selector: (row) => row.IsActive,
-      sortable: true,
-      cell: row => (
-        <Badge color={row.IsActive ? 'success' : 'warning'}>{row.IsActive ? 'تایید شده' : 'در انتظار تایید'}</Badge>
-      )
+      name: 'درصد تخفیف',
+      selector: (row) => row.discount + '%',
     },
     {
       name: 'عملیات',
@@ -132,26 +130,8 @@ console.log(userAll);
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-        {row.IsActive ? (
-          <Dropdown.Item >
-              <CostUp title={'افزایش موجودی'} row={row} />
-            </Dropdown.Item>
-          ) : null}
-          {row.IsActive == false ? (
-          <Dropdown.Item >
-              <ActiveWallet title='ارسال کد' row={row} />
-            </Dropdown.Item>
-          ) : null}
-          {row.IsActive == false ? (
-          <Dropdown.Item >
-              <Button color='transparent' onClick={() => handleSendMail(row)} >تایید کیف پول</Button>
-            </Dropdown.Item>
-            ) : null}
             <Dropdown.Item >
-              <EditWallet title={'ویرایش'} row={row} />
-            </Dropdown.Item>
-            <Dropdown.Item >
-              <Button color='transparent' style={{textAlign:'center' , border:'none'}} onClick={() => deleteWalletById.mutate(row.id)}>حذف کیف پول</Button>
+              <Button color='transparent' style={{textAlign:'center' , border:'none'}} onClick={() => deleteDisCount.mutate(row.id)}>حذف تخفیف</Button>
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -170,11 +150,11 @@ console.log(userAll);
   return (
     <div className="container mt-4">
       <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 bg-white rounded shadow p-3">
-        <EditWallet title={<Plus />} />
+      <CreateDisCount title={<Plus />}  />
         <input
           type="search"
           className="form-control"
-          placeholder="جستجو بر اساس نام کاربر..."
+          placeholder="جستجو بر اساس نام دوره..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
@@ -216,4 +196,4 @@ console.log(userAll);
   );
 };
 
-export default Wallet;
+export default DisCount;

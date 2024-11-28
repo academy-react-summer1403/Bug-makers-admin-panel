@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox, Calendar, Code } from "react-feather";
+import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox, Calendar, Code, Disc } from "react-feather";
 import { GiClassicalKnowledge, GiWallet } from 'react-icons/gi';
 import { GrStatusCritical, GrTransaction } from 'react-icons/gr';
 import { useSelector } from 'react-redux';
@@ -94,6 +94,12 @@ export const userData = (items) => {
           title: "کلاس ها",
           icon: <GiClassicalKnowledge size={20} />,
           navLink: "/ClassRome",
+        },
+        {
+          id: "DisCount",
+          title: "تخفیف",
+          icon: <Disc size={20} />,
+          navLink: "/DisCount",
         }
       ]
     },
