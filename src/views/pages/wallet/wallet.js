@@ -33,15 +33,16 @@ const Wallet = () => {
     queryKey: ['getWallet'],
     queryFn: getAllWallet,
   });
-  const [userList, setUserList] = useState([]);
-  const [combinedData, setCombinedData] = useState([]); 
-  const [searchText, setSearchText] = useState('');
-  const [filteredData, setFilteredData] = useState(data);
-
   const { data: userAll } = useQuery({
     queryKey: ['getAllUserList'],
     queryFn: getUser
   });
+  const [userList, setUserList] = useState([]);
+  const [combinedData, setCombinedData] = useState([]); 
+  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+
+console.log(userAll);
   useEffect(() => {
     if (data?.data && userAll?.listUser) {
       const combinedData = data?.data?.map((userItem) => {
@@ -71,8 +72,8 @@ const Wallet = () => {
   }, [data, userAll , setSearchText]);
   console.log(filteredData);
   useEffect(() => {
-    if (data) {
-      const result = userList.filter((row) =>
+    if (searchText) {
+      const result = userList?.filter((row) =>
         row.fname?.includes(searchText.toLowerCase())       );
       setFilteredData(result);
     }
