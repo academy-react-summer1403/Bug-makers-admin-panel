@@ -17,6 +17,7 @@ import themeConfig from "@configs/themeConfig";
 
 // ** Styles
 import "animate.css/animate.css";
+import AiChatBot from "../../../../components/common/modal/ai";
 
 const LayoutWrapper = (props) => {
   // ** Props
@@ -96,6 +97,7 @@ const LayoutWrapper = (props) => {
           {children}
         </Tag>
       </div>
+      <AiChatBot />
     </div>
   );
 };
