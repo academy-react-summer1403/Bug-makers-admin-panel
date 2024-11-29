@@ -17,7 +17,8 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  UncontrolledButtonDropdown
+  UncontrolledButtonDropdown,
+  Badge
 } from 'reactstrap'
 import Active from '../../../components/common/active/active';
 import AddGroupCourse from '../../../components/common/modal/AddGroup';
@@ -27,6 +28,10 @@ import { useSelected } from 'slate-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPreview } from '../../../redux/Preview';
 import AddNotifCourse from '../../../components/common/modal/addNotifCourse';
+import CourseDisCount from '../../../components/common/modal/disCountInCDeatil';
+import { getDisCount } from '../../../@core/api/discount/disCount';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { DeleteCountCourse } from '../../../@core/api/discount/deleteCount';
 
 const Product = props => {
   // ** Props
@@ -97,7 +102,23 @@ const Product = props => {
     dispatch(setPreview(true))
     
   }, [])
+  const query = useQueryClient()
+
+  const { data } = useQuery({
+    queryKey: ['getCount'],
+    queryFn: getDisCount,
+  });
+
+  const findData = data?.data?.find((el) => el.PODID == id)
+  console.log(findData);
   // handle state 
+  const deleteDisCount = useMutation({
+    mutationKey:['deleteCount'],
+    mutationFn: (data) => DeleteCountCourse(data),
+    onSuccess: () => {
+      query.invalidateQueries('courseDetails')   
+    }
+  })
   return (
     <Row className='my-2'>
       <Col className='d-flex align-items-center justify-content-center mb-2 mb-md-0' md='5' xs='12'>
@@ -119,9 +140,27 @@ const Product = props => {
             {teacherName}
           </a>
         </CardText>
+        {findData?.Tcost  ? (
+        <div className='ecommerce-details-price d-flex flex-wrap mt-1'>
+          {/* نمایش قیمت اصلی (قبلی) با خط خورده */}
+          <h4 className='item-price me-1 text-muted' style={{ textDecoration: 'line-through' }}>
+            {findData.Pcost} ريال
+          </h4>
+          {/* نمایش قیمت جدید (با تخفیف) */}
+          <h4 className='item-price me-1'>
+            {findData.Tcost} ريال
+          </h4>
+          {/* نمایش درصد تخفیف */}
+          <Badge className='rounded-circle' style={{lineHeight:'20px'}} color='danger'>
+            {findData?.discount}%
+          </Badge>
+        </div>
+      ) : (
         <div className='ecommerce-details-price d-flex flex-wrap mt-1'>
           <h4 className='item-price me-1'>{cost} ريال</h4>
         </div>
+      )}
+
         <CardText>
          وضعیت : <span className={` ms-25 ${isActive ? 'text-success' : 'text-danger'} `}>{isActive ? 'فعال' : 'غیرفعال'}</span>
         </CardText>
@@ -199,6 +238,12 @@ const Product = props => {
             text='حذف دوره'
             text2='افزودن به دورها'
           />
+          {findData?.Tcost ? (
+            <Button color='danger' style={{marginRight:'10px'}} onClick={() => deleteDisCount.mutate(findData?.id)} >حذف تخفیف</Button>
+          ) : (
+          <CourseDisCount  uuid={id} cost={cost} title='ایجاد تخفیف'  />
+          
+        )}
           <Active 
             isActive={isActive} 
             id={id} 
