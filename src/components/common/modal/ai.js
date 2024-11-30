@@ -4,15 +4,23 @@ import { FaRobot, FaClipboard, FaDownload } from 'react-icons/fa';
 import { saveAs } from 'file-saver'; 
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';  
+import { Button } from 'reactstrap';
+import { getRandom, courseData } from '../../../@core/layouts/utils';
+import { useMutation } from '@tanstack/react-query';
+import { updateCourse } from '../../../@core/api/course/updateCourse';
+import AddCategory from './addCategory';
+import { Link } from 'react-router-dom';
 
 const LoadingMessage = () => {
   return <div>🤖 در حال تایپ...</div>;
 };
 
 const AiChatBot = () => {
+  const [isResponse, setIsResponse] = useState(false)
   const [isOpen, setIsOpen] = useState(false); 
   const [messages, setMessages] = useState([]); 
   const [loading, setLoading] = useState(false); 
+  const [handleCat, setHandleCat] = useState(false)
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
@@ -69,6 +77,66 @@ const AiChatBot = () => {
     }
   };
 
+  const createCourse = useMutation({
+    mutationKey:['createCourse'],
+    mutationFn: (formData) => updateCourse(formData),
+    onSuccess: (data) => {
+      setHandleCat(true);
+      toast((t) => (
+        <div>
+          <p>
+            دوره ساخته شد!{' '}
+            <Link to={'/apps/Detail/' + data?.id} >
+              مشاهده
+            </Link>
+          </p>
+        </div>
+      ), {
+        duration: 15000, 
+        position: 'top-center', 
+        style: {
+          background: '#fff',
+          color: '#000',
+          borderRadius: '8px',
+          padding: '16px',
+        },
+      });
+    }
+  })
+  // create Course 
+  const handleCreateCourse =() => {
+    const randomCouse = getRandom(courseData)
+    console.log(randomCouse);
+    const formData = new FormData()
+    
+    formData.append('Title', randomCouse.Title || '');
+    formData.append('Describe', randomCouse.Describe || '');
+    formData.append('MiniDescribe', randomCouse.MiniDescribe || '');
+    formData.append('Capacity', Number(randomCouse.Capacity) || 0);
+    formData.append('CourseTypeId', randomCouse.CourseTypeId || 0);
+    formData.append('SessionNumber', randomCouse.SessionNumber || '');
+    formData.append('CurrentCoursePaymentNumber', 0);
+    formData.append('TremId', randomCouse.TremId || 0);
+    formData.append('ClassId', randomCouse.ClassId || 0);
+    formData.append('CourseLvlId', randomCouse.CourseLvlId || 0);
+    formData.append('TeacherId', Number(randomCouse.TeacherId.value) || 0);
+    formData.append('Cost', Number(randomCouse.Cost) || 0);
+    formData.append('UniqeUrlString', randomCouse.UniqeUrlString || '');
+    formData.append('Image', randomCouse?.imageUrl instanceof File ? URL.createObjectURL(randomCouse?.imageUrl) : randomCouse?.imageUrl);
+    formData.append('StartTime', new Date(randomCouse.StartTime).toISOString());
+    formData.append('EndTime', new Date(randomCouse.StartTime).toISOString());
+    formData.append('GoogleSchema', null);
+    formData.append('GoogleTitle', randomCouse.GoogleTitle || '');
+    formData.append('ShortLink', null);
+    formData.append('TumbImageAddress', randomCouse?.imageUrl instanceof File ?URL.createObjectURL(randomCouse?.imageUrl) :randomCouse?.imageUrl);
+    formData.append('ImageAddress', randomCouse?.imageUrl instanceof File ? URL.createObjectURL(randomCouse?.imageUrl) : randomCouse?.imageUrl);
+    createCourse.mutate(formData)
+  }
+  // talking Ai 
+  const talkWithAi = () => {
+    setIsResponse(true)
+  }
+
   return (
     <div onClick={handleOutsideClick}>
       <div
@@ -91,8 +159,15 @@ const AiChatBot = () => {
             <span>چت با ربات</span>
             <button onClick={toggleChat} style={styles.closeButton}>X</button>
           </div>
+          {isResponse === false ? (
+            <div className='d-flex justify-content-center align-items-center gap-1 ' style={{flexFlow:'row wrap'}}>
+              {handleCat ? null : <Button onClick={handleCreateCourse}  color='primary' outline >ساخت دوره</Button>}
+              <Button  color='primary' outline>ساخت مقاله</Button>
+              <Button  onClick={talkWithAi} color='primary' outline>ارتباط با AI</Button>
+              {handleCat ? <AddCategory uuid={createCourse?.data?.id} /> : null}
+            </div>
+          ) : null}
 
-          {/* پیام‌ها */}
           <div style={styles.messagesContainer}>
             {messages.map((msg, index) => (
               <div
@@ -145,6 +220,7 @@ const AiChatBot = () => {
           <div style={styles.inputArea}>
             <input
               type="text"
+              disabled={isResponse ? false : true}
               placeholder="پیام خود را وارد کنید..."
               style={styles.input}
               onKeyDown={(e) => {

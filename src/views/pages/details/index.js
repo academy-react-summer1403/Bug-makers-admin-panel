@@ -225,7 +225,7 @@ const Product = props => {
         <hr />
         {preview ? (
         <div className='d-flex flex-column flex-sm-row pt-1' >
-          <AddCategory uuid={id} />
+          <AddCategory courseTeches={courseTeches} uuid={id} />
           <AddNotifCourse uuid={id} teacherId={params2} />
           <AddGroupCourse color='info' title='ساخت گروه' id={params} teacherId={params2}/>
 
