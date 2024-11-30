@@ -30,7 +30,7 @@ const AddCategory = ({ uuid , courseTeches}) => {
     }
   };
 
-  const filterData = technologies?.filter((el) => courseTeches.includes(el.techName));
+  const filterData = technologies?.filter((el) => courseTeches?.includes(el.techName));
 
   const initialSelectedOptions = filterData?.map((tech) => ({
     value: tech.id,
