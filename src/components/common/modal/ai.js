@@ -4,13 +4,15 @@ import { FaRobot, FaClipboard, FaDownload } from 'react-icons/fa';
 import { saveAs } from 'file-saver'; 
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';  
-import { Button } from 'reactstrap';
-import { getRandom, courseData } from '../../../@core/layouts/utils';
+import { getRandom, courseData , blogData } from '../../../@core/layouts/utils';
 import { useMutation } from '@tanstack/react-query';
 import { updateCourse } from '../../../@core/api/course/updateCourse';
 import AddCategory from './addCategory';
 import { Link } from 'react-router-dom';
-
+import img2 from '../../../assets/images/icons/image.jpg'
+import { Modal, ModalHeader, ModalBody, Button, Card, CardImg, CardBody, CardTitle, CardText } from 'reactstrap';
+import { updateBlog } from '../../../@core/api/blog/updateCourse';
+import { AddBlog } from '../../../@core/api/blog/addBlog';
 const LoadingMessage = () => {
   return <div>🤖 در حال تایپ...</div>;
 };
@@ -21,7 +23,10 @@ const AiChatBot = () => {
   const [messages, setMessages] = useState([]); 
   const [loading, setLoading] = useState(false); 
   const [handleCat, setHandleCat] = useState(false)
-
+  const [courseDataState, setCourseDataState] = useState()
+  const [preview, setPreview] = useState(false)
+  const [previewBlog, setPreviewBlog] = useState(false)
+  const toggle = () => setPreview(!preview);
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
@@ -81,6 +86,7 @@ const AiChatBot = () => {
     mutationKey:['createCourse'],
     mutationFn: (formData) => updateCourse(formData),
     onSuccess: (data) => {
+      setPreview(false)
       setHandleCat(true);
       toast((t) => (
         <div>
@@ -106,31 +112,85 @@ const AiChatBot = () => {
   // create Course 
   const handleCreateCourse =() => {
     const randomCouse = getRandom(courseData)
-    console.log(randomCouse);
+    setPreview(true);
+    setCourseDataState(randomCouse);
+  }
+  // submit course 
+  const handleSubmiteCourse = () => {
     const formData = new FormData()
     
-    formData.append('Title', randomCouse.Title || '');
-    formData.append('Describe', randomCouse.Describe || '');
-    formData.append('MiniDescribe', randomCouse.MiniDescribe || '');
-    formData.append('Capacity', Number(randomCouse.Capacity) || 0);
-    formData.append('CourseTypeId', randomCouse.CourseTypeId || 0);
-    formData.append('SessionNumber', randomCouse.SessionNumber || '');
+    formData.append('Title', courseDataState.Title || '');
+    formData.append('Describe', courseDataState.Describe || '');
+    formData.append('MiniDescribe', courseDataState.MiniDescribe || '');
+    formData.append('Capacity', Number(courseDataState.Capacity) || 0);
+    formData.append('CourseTypeId', courseDataState.CourseTypeId || 0);
+    formData.append('SessionNumber', courseDataState.SessionNumber || '');
     formData.append('CurrentCoursePaymentNumber', 0);
-    formData.append('TremId', randomCouse.TremId || 0);
-    formData.append('ClassId', randomCouse.ClassId || 0);
-    formData.append('CourseLvlId', randomCouse.CourseLvlId || 0);
-    formData.append('TeacherId', Number(randomCouse.TeacherId.value) || 0);
-    formData.append('Cost', Number(randomCouse.Cost) || 0);
-    formData.append('UniqeUrlString', randomCouse.UniqeUrlString || '');
-    formData.append('Image', randomCouse?.imageUrl instanceof File ? URL.createObjectURL(randomCouse?.imageUrl) : randomCouse?.imageUrl);
-    formData.append('StartTime', new Date(randomCouse.StartTime).toISOString());
-    formData.append('EndTime', new Date(randomCouse.StartTime).toISOString());
+    formData.append('TremId', courseDataState.TremId || 0);
+    formData.append('ClassId', courseDataState.ClassId || 0);
+    formData.append('CourseLvlId', courseDataState.CourseLvlId || 0);
+    formData.append('TeacherId', Number(courseDataState.TeacherId.value) || 0);
+    formData.append('Cost', Number(courseDataState.Cost) || 0);
+    formData.append('UniqeUrlString', courseDataState.UniqeUrlString || '');
+    formData.append('Image', courseDataState?.imageUrl instanceof File ? URL.createObjectURL(courseDataState?.imageUrl) : courseDataState?.imageUrl);
+    formData.append('StartTime', new Date(courseDataState.StartTime).toISOString());
+    formData.append('EndTime', new Date(courseDataState.StartTime).toISOString());
     formData.append('GoogleSchema', null);
-    formData.append('GoogleTitle', randomCouse.GoogleTitle || '');
+    formData.append('GoogleTitle', courseDataState.GoogleTitle || '');
     formData.append('ShortLink', null);
-    formData.append('TumbImageAddress', randomCouse?.imageUrl instanceof File ?URL.createObjectURL(randomCouse?.imageUrl) :randomCouse?.imageUrl);
-    formData.append('ImageAddress', randomCouse?.imageUrl instanceof File ? URL.createObjectURL(randomCouse?.imageUrl) : randomCouse?.imageUrl);
+    formData.append('TumbImageAddress', courseDataState?.imageUrl instanceof File ?URL.createObjectURL(courseDataState?.imageUrl) :courseDataState?.imageUrl);
+    formData.append('ImageAddress', courseDataState?.imageUrl instanceof File ? URL.createObjectURL(courseDataState?.imageUrl) : courseDataState?.imageUrl);
     createCourse.mutate(formData)
+  }
+
+  // api create blog 
+  const createBlog = useMutation({
+    mutationKey:['createBlogKey'],
+    mutationFn: (formData) => AddBlog(formData),
+    onSuccess: (data) => {
+      setPreviewBlog(false)
+      toast((t) => (
+        <div>
+          <p>
+            مقاله ساخته شد آن را تایید کنید!{' '}
+            <Link to={'/apps/blog'} >
+              مشاهده
+            </Link>
+          </p>
+        </div>
+      ), {
+        duration: 15000, 
+        position: 'top-center', 
+        style: {
+          background: '#fff',
+          color: '#000',
+          borderRadius: '8px',
+          padding: '16px',
+        },
+      });
+    }
+  })
+  // create blog  
+  const handleCreateBlog = () => {
+    const randomCouse = getRandom(blogData)
+    setPreviewBlog(true);
+    setCourseDataState(randomCouse);
+  }
+
+  const handleSubmitBlog = () => {
+    const formData = new FormData();
+    
+    formData.append('Title', courseDataState.Title || '');
+    formData.append('GoogleTitle', courseDataState.GoogleTitle || '');
+    formData.append('GoogleDescribe', courseDataState.GoogleDescribe || '');
+    formData.append('MiniDescribe', courseDataState.MiniDescribe || '');
+    formData.append('Describe', courseDataState.Describe || '');
+    formData.append('Keyword', courseDataState.Keyword || '');
+    formData.append('IsSlider', courseDataState.isSlider || true);
+    formData.append('NewsCatregoryId', courseDataState.NewsCatregoryId || 1);
+    formData.append('Image', courseDataState?.imageUrl);
+
+    createBlog.mutate(formData)
   }
   // talking Ai 
   const talkWithAi = () => {
@@ -162,12 +222,55 @@ const AiChatBot = () => {
           {isResponse === false ? (
             <div className='d-flex justify-content-center align-items-center gap-1 ' style={{flexFlow:'row wrap'}}>
               {handleCat ? null : <Button onClick={handleCreateCourse}  color='primary' outline >ساخت دوره</Button>}
-              <Button  color='primary' outline>ساخت مقاله</Button>
+              <Button onClick={handleCreateBlog} color='primary' outline>ساخت مقاله</Button>
               <Button  onClick={talkWithAi} color='primary' outline>ارتباط با AI</Button>
               {handleCat ? <AddCategory uuid={createCourse?.data?.id} /> : null}
             </div>
           ) : null}
 
+          {preview ? (
+             <Modal isOpen={preview} toggle={toggle} centered>
+             <ModalHeader toggle={toggle}>{courseDataState?.Title}</ModalHeader>
+             <ModalBody>
+               <Card>
+                 <CardImg top width="100%" onError={(e) => {e.target.src = img2}} style={{height:'300px' , objectFit: 'cover'}} src={courseDataState?.Image ? courseDataState?.Image : img2} />
+                 <CardBody>
+                   <CardTitle tag="h5">{courseDataState?.MiniDescribe}</CardTitle>
+                   <CardText>{courseDataState?.Describe}</CardText>
+                   <CardText><strong>تعداد جلسات:</strong> {courseDataState?.SessionNumber}</CardText>
+                   <CardText><strong>ظرفیت:</strong> {courseDataState?.Capacity} نفر</CardText>
+                   <CardText><strong>هزینه:</strong> {courseDataState?.Cost.toLocaleString()} تومان</CardText>
+                   <CardText><strong>زمان شروع:</strong> {new Date(courseDataState?.StartTime).toLocaleString()}</CardText>
+                   <CardText><strong>زمان پایان:</strong> {new Date(courseDataState?.EndTime).toLocaleString()}</CardText>
+                   <Button onClick={handleSubmiteCourse} color='success' >تایید و ساخت دوره</Button>
+                   <span style={{fontSize:'10px' , color:'red' , marginRight:'20px'}}>پس از تایید دوره حتما دسته بندی را انتخاب نمایید</span>
+                 </CardBody>
+               </Card>
+             </ModalBody>
+           </Modal>
+          ) : null}
+                    {previewBlog ? (
+             <Modal isOpen={previewBlog} toggle={toggle} centered>
+             <ModalHeader toggle={toggle}>{courseDataState?.Title}</ModalHeader>
+             <ModalBody>
+               <Card>
+                 <CardImg top width="100%" onError={(e) => {e.target.src = img2}} style={{height:'300px' , objectFit: 'cover'}} src={courseDataState?.Image ? courseDataState?.Image : img2} />
+                 <CardBody>
+                   <CardTitle tag="h5">{courseDataState?.MiniDescribe}</CardTitle>
+                   <CardText>{courseDataState?.Describe}</CardText>
+                   <CardText><strong> تگ کلیدی:</strong> {courseDataState?.Keyword}</CardText>
+                   <CardText><strong>  عنوان گوگل:</strong> {courseDataState?.GoogleTitle}</CardText>
+                   <CardText><strong>  توضیحات گوگل:</strong> {courseDataState?.GoogleDescribe}</CardText>
+                   <CardText><strong>IsSlider :</strong> {courseDataState?.IsSlider}</CardText>
+                   <CardText><strong>آیدی دسته بندی:</strong> {courseDataState?.NewsCatregoryId}</CardText>
+                   <CardText><strong>زمان شروع:</strong> {new Date(courseDataState?.StartTime).toLocaleString()}</CardText>
+                   <CardText><strong>زمان پایان:</strong> {new Date(courseDataState?.EndTime).toLocaleString()}</CardText>
+                   <Button onClick={handleSubmitBlog} color='success' >تایید و ساخت مقاله</Button>
+                 </CardBody>
+               </Card>
+             </ModalBody>
+           </Modal>
+          ) : null}
           <div style={styles.messagesContainer}>
             {messages.map((msg, index) => (
               <div
