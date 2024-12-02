@@ -76,6 +76,8 @@ const Calender = lazy(() => import('../../views/apps/calendar/index.js'))
 const Transaction = lazy(() => import('../../views/pages/wallet/transaction.js'))
 const DisCount = lazy(() => import('../../views/pages/discount/disCount.js'))
 const EditUser = lazy(() => import('../../components/common/modal/edituser.js'))
+const Job = lazy(() => import('../../views/pages/job/job.js'))
+
 // ** Merge Routes
 const token = localStorage.getItem('token');
 
@@ -335,6 +337,10 @@ const Routes = [
   {
     element: token ? <DisCount /> : <Navigate to={'/login'} />,
     path: '/DisCount',
+  },
+  {
+    element: token ? <Job /> : <Navigate to={'/login'} />,
+    path: '/Job/list',
   },
 ];
 

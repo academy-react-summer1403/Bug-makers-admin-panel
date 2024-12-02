@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox, Calendar, Code, Disc } from "react-feather";
 import { GiClassicalKnowledge, GiWallet } from 'react-icons/gi';
-import { GrStatusCritical, GrTransaction } from 'react-icons/gr';
+import { GrStatusCritical, GrTransaction, GrUserWorker , GrWorkshop} from 'react-icons/gr';
 import { useSelector } from 'react-redux';
 
 export const userData = (items) => {
@@ -284,6 +284,31 @@ export const userData = (items) => {
     icon: <Calendar size={20} />,
     navLink:"/apps/calendar"
   },
+  {
+    id: "Job",
+    title: "کاریابی",
+    icon: <GrUserWorker size={20} />,
+    children: [
+      {
+        id: "jobList",
+        title: "لیست شغل ها",
+        icon: <GrWorkshop size={20} />,
+        navLink: "/Job/list",
+      },
+      // {
+      //   id: "Transaction",
+      //   title: "لیست تراکنش",
+      //   icon: <GrTransaction size={20} />,
+      //   navLink: "/wallet/Transaction",
+      // },
+      // {
+      //   id: "code",
+      //   title: "لیست کد",
+      //   icon: <Code size={20} />,
+      //   navLink: "/wallet/Code",
+      // },
+    ]
+  }
 
 
   ];
