@@ -123,7 +123,7 @@ const Job = () => {
         <input
           type="search"
           className="form-control"
-          placeholder="جستجو بر اساس عنوان شغل..."
+          placeholder="جستجو بر اساس عنوان شغل و سطح آزمون..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
