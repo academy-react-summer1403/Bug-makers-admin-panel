@@ -13,6 +13,7 @@ import img2 from '../../../assets/images/icons/image.jpg'
 import { Modal, ModalHeader, ModalBody, Button, Card, CardImg, CardBody, CardTitle, CardText } from 'reactstrap';
 import { updateBlog } from '../../../@core/api/blog/updateCourse';
 import { AddBlog } from '../../../@core/api/blog/addBlog';
+import {Input} from 'reactstrap';
 const LoadingMessage = () => {
   return <div>🤖 در حال تایپ...</div>;
 };
@@ -27,6 +28,18 @@ const AiChatBot = () => {
   const [preview, setPreview] = useState(false)
   const [previewBlog, setPreviewBlog] = useState(false)
   const toggle = () => setPreview(!preview);
+  const toggleBlog = () => setPreviewBlog(!previewBlog);
+  const [about, setAbout] = useState('')
+
+  // handle path 
+  const courseBlog = 
+  (window.location.pathname === '/apps/Course/AddCourse' || window.location.pathname === '/apps/Course/editCourse') 
+    ? 'دوره' 
+    : (window.location.pathname === '/apps/blog/editBlog' || window.location.pathname === '/apps/blog/AddBlog') 
+      ? 'مقاله' 
+      : '';
+
+
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
@@ -219,15 +232,38 @@ const AiChatBot = () => {
             <span>چت با ربات</span>
             <button onClick={toggleChat} style={styles.closeButton}>X</button>
           </div>
-          {isResponse === false ? (
-            <div className='d-flex justify-content-center align-items-center gap-1 ' style={{flexFlow:'row wrap'}}>
-              {handleCat ? null : <Button onClick={handleCreateCourse}  color='primary' outline >ساخت دوره</Button>}
-              <Button onClick={handleCreateBlog} color='primary' outline>ساخت مقاله</Button>
-              <Button  onClick={talkWithAi} color='primary' outline>ارتباط با AI</Button>
+          {isResponse === false  ? (
+            <div className='d-flex justify-content-center align-items-center gap-1 m-1 ' style={{flexFlow:'row wrap'}}>
+              {handleCat || courseBlog === 'دوره' || courseBlog === 'مقاله' ? null : <Button onClick={handleCreateCourse}  color='primary' outline >ساخت دوره</Button>}
+              {courseBlog === 'دوره' || courseBlog === 'مقاله' ? null : <Button onClick={handleCreateBlog} color='primary' outline>ساخت مقاله</Button>}
+              {courseBlog === 'دوره' || courseBlog === 'مقاله' ? null : <Button  onClick={talkWithAi} color='primary' outline>ارتباط با AI</Button>}
               {handleCat ? <AddCategory uuid={createCourse?.data?.id} /> : null}
             </div>
           ) : null}
-
+          {courseBlog === 'دوره' || courseBlog === 'مقاله' ? (
+          <div className='d-flex justify-content-center align-items-end m-1' style={{flexFlow: 'column wrap'}}>
+            <Input 
+              type="text"
+              onChange={(e) => setAbout(e.target.value)}
+              value={about}
+              placeholder='نام دوره یا مقاله'
+            />
+            <Button  
+              color='primary' 
+              outline 
+              size='sm'
+              onClick={(e) => {
+                  const message = 'میخوام یک' + ' ' + courseBlog + ' ' + 'بسازم' + ' ' + 'درباره' + ' ' + about + ' ' + 'توضیحات ساخت این' + ' ' + courseBlog + ' ' + 'رو بده'
+                  console.log(message);
+                  if (message) {
+                    handleSendMessage(message);
+                    setAbout('') 
+                  }
+              }}
+            
+            >ساخت توضیحات</Button>
+          </div>
+            ) : null}
           {preview ? (
              <Modal isOpen={preview} toggle={toggle} centered>
              <ModalHeader toggle={toggle}>{courseDataState?.Title}</ModalHeader>
@@ -239,7 +275,7 @@ const AiChatBot = () => {
                    <CardText>{courseDataState?.Describe}</CardText>
                    <CardText><strong>تعداد جلسات:</strong> {courseDataState?.SessionNumber}</CardText>
                    <CardText><strong>ظرفیت:</strong> {courseDataState?.Capacity} نفر</CardText>
-                   <CardText><strong>هزینه:</strong> {courseDataState?.Cost.toLocaleString()} تومان</CardText>
+                   <CardText><strong>هزینه:</strong> {courseDataState?.Cost} تومان</CardText>
                    <CardText><strong>زمان شروع:</strong> {new Date(courseDataState?.StartTime).toLocaleString()}</CardText>
                    <CardText><strong>زمان پایان:</strong> {new Date(courseDataState?.EndTime).toLocaleString()}</CardText>
                    <Button onClick={handleSubmiteCourse} color='success' >تایید و ساخت دوره</Button>
@@ -250,8 +286,8 @@ const AiChatBot = () => {
            </Modal>
           ) : null}
                     {previewBlog ? (
-             <Modal isOpen={previewBlog} toggle={toggle} centered>
-             <ModalHeader toggle={toggle}>{courseDataState?.Title}</ModalHeader>
+             <Modal isOpen={previewBlog} toggle={toggleBlog} centered>
+             <ModalHeader toggle={toggleBlog}>{courseDataState?.Title}</ModalHeader>
              <ModalBody>
                <Card>
                  <CardImg top width="100%" onError={(e) => {e.target.src = img2}} style={{height:'300px' , objectFit: 'cover'}} src={courseDataState?.Image ? courseDataState?.Image : img2} />
