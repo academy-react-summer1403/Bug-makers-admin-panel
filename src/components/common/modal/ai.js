@@ -356,6 +356,7 @@ const AiChatBot = () => {
             )}
           </div>
 
+            {courseBlog === '' ? (
           <div style={styles.inputArea}>
             <input
               type="text"
@@ -373,6 +374,7 @@ const AiChatBot = () => {
               }}
             />
           </div>
+          ) : null}
 
           <div style={styles.buttonsContainer}>
             <button onClick={handleDownloadChat} style={styles.downloadButton}>
