@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FaRobot, FaClipboard, FaDownload } from 'react-icons/fa'; 
+import { FaRobot, FaClipboard, FaDownload , FaBeer } from 'react-icons/fa'; 
 import { saveAs } from 'file-saver'; 
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';  
@@ -14,6 +14,10 @@ import { Modal, ModalHeader, ModalBody, Button, Card, CardImg, CardBody, CardTit
 import { updateBlog } from '../../../@core/api/blog/updateCourse';
 import { AddBlog } from '../../../@core/api/blog/addBlog';
 import {Input} from 'reactstrap';
+import { useDispatch } from 'react-redux';
+import { setDesc } from '../../../redux/descSlice';
+import { Tooltip } from '@mui/material';
+
 const LoadingMessage = () => {
   return <div>🤖 در حال تایپ...</div>;
 };
@@ -30,7 +34,7 @@ const AiChatBot = () => {
   const toggle = () => setPreview(!preview);
   const toggleBlog = () => setPreviewBlog(!previewBlog);
   const [about, setAbout] = useState('')
-
+  const dispatch = useDispatch()
   // handle path 
   const courseBlog = 
   (window.location.pathname === '/apps/Course/AddCourse' || window.location.pathname === '/apps/Course/editCourse') 
@@ -79,6 +83,12 @@ const AiChatBot = () => {
         console.error('Error copying message: ', err);
       });
   };
+
+  const importDesc = (message) => {
+    dispatch(setDesc(message))
+      toast.success('در توضیحات جایگذاری شد');
+
+  }
 
   const handleDownloadChat = () => {
     const chatText = messages
@@ -329,12 +339,26 @@ const AiChatBot = () => {
                   {msg.text}
                 </div>
                 {msg.sender === 'bot' && (
+                  <div className='d-flex ' style={{flexFlow: 'column wrap' ,gap : '5px'}}>
+                    <Tooltip title='کپی در کلیپ بورد' placement='top' >
                   <button
                     onClick={() => handleCopyMessage(msg.text)}
                     style={styles.copyButton}
                   >
                     <FaClipboard />
                   </button>
+                  </Tooltip>
+                  {courseBlog === 'دوره' || courseBlog === 'مقاله' ? (
+                  <Tooltip title='جایگذاری در توضیحات' placement='bottom' >
+                  <button
+                    onClick={() => importDesc(msg.text)}
+                    style={styles.copyButton}
+                  >
+                    <FaBeer />
+                  </button>
+                  </Tooltip>
+                  ) : null}
+                  </div>
                 )}
               </div>
             ))}
