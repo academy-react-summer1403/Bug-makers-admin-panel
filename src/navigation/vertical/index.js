@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox, Calendar, Code, Disc } from "react-feather";
+import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox, Calendar, Code, Disc, UserCheck } from "react-feather";
 import { GiClassicalKnowledge, GiWallet } from 'react-icons/gi';
-import { GrStatusCritical, GrTransaction, GrUserWorker , GrWorkshop} from 'react-icons/gr';
+import { GrStatusCritical, GrTest, GrTransaction, GrUserWorker , GrWorkshop} from 'react-icons/gr';
+import { PiExam } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
 
 export const userData = (items) => {
@@ -294,6 +295,37 @@ export const userData = (items) => {
         title: "لیست شغل ها",
         icon: <GrWorkshop size={20} />,
         navLink: "/Job/list",
+      },
+      // {
+      //   id: "Transaction",
+      //   title: "لیست تراکنش",
+      //   icon: <GrTransaction size={20} />,
+      //   navLink: "/wallet/Transaction",
+      // },
+      // {
+      //   id: "code",
+      //   title: "لیست کد",
+      //   icon: <Code size={20} />,
+      //   navLink: "/wallet/Code",
+      // },
+    ]
+  },
+  {
+    id: "Exam",
+    title: "آزمون",
+    icon: <PiExam size={20} />,
+    children: [
+      {
+        id: "Examlist",
+        title: "لیست آزمون ها",
+        icon: <GrTest size={20} />,
+        navLink: "/Exam/list",
+      },
+      {
+        id: "UserExam",
+        title: "لیست کاربران آزمون",
+        icon: <UserCheck size={20} />,
+        navLink: "/Exam/UserExam",
       },
       // {
       //   id: "Transaction",
