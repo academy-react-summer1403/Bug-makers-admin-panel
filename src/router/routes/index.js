@@ -80,6 +80,7 @@ const Job = lazy(() => import('../../views/pages/job/job.js'))
 const Exam = lazy(() => import('../../views/pages/exam/exam.js'))
 const UserExam = lazy(() => import('../../views/pages/exam/userExam.js'))
 const EditUserWizard = lazy(() => import('../../views/pages/edituser/index.js'))
+const VideoPage = lazy(() => import('../../views/pages/video/videoPage.js'))
 
 
 // ** Merge Routes
@@ -353,6 +354,10 @@ const Routes = [
   {
     element: token ? <Job /> : <Navigate to={'/login'} />,
     path: '/Job/list',
+  },
+  {
+    element: token ? <VideoPage /> : <Navigate to={'/login'} />,
+    path: '/VideoPage',
   },
 ];
 

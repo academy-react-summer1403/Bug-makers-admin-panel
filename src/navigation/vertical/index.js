@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox, Calendar, Code, Disc, UserCheck } from "react-feather";
+import { Home, User, Mail, Book, Clipboard, FileText, BookOpen, MessageCircle, Bell, Tag, Inbox, Calendar, Code, Disc, UserCheck, Video } from "react-feather";
 import { GiClassicalKnowledge, GiWallet } from 'react-icons/gi';
 import { GrStatusCritical, GrTest, GrTransaction, GrUserWorker , GrWorkshop} from 'react-icons/gr';
 import { PiExam } from 'react-icons/pi';
@@ -101,6 +101,12 @@ export const userData = (items) => {
           title: "تخفیف",
           icon: <Disc size={20} />,
           navLink: "/DisCount",
+        },
+        {
+          id: "VideoPage",
+          title: "ویدیو دوره",
+          icon: <Video size={20} />,
+          navLink: "/VideoPage",
         }
       ]
     },
@@ -315,18 +321,6 @@ export const userData = (items) => {
         icon: <UserCheck size={20} />,
         navLink: "/Exam/UserExam",
       },
-      // {
-      //   id: "Transaction",
-      //   title: "لیست تراکنش",
-      //   icon: <GrTransaction size={20} />,
-      //   navLink: "/wallet/Transaction",
-      // },
-      // {
-      //   id: "code",
-      //   title: "لیست کد",
-      //   icon: <Code size={20} />,
-      //   navLink: "/wallet/Code",
-      // },
     ]
   }
 
