@@ -30,9 +30,6 @@ axiosInstance.interceptors.response.use(
     if (response.data.success) {
       toast.success(response.data.message || 'عملیات با موفقیت انجام شد')
     }     
-    if (response.data.success) {
-      toast.success(response.data.message || 'عملیات با موفقیت انجام شد')
-    }  
     return response;
   },
   
