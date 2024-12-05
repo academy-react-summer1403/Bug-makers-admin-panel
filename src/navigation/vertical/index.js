@@ -285,31 +285,19 @@ export const userData = (items) => {
     icon: <Calendar size={20} />,
     navLink:"/apps/calendar"
   },
-  {
-    id: "Job",
-    title: "کاریابی",
-    icon: <GrUserWorker size={20} />,
-    children: [
-      {
-        id: "jobList",
-        title: "لیست شغل ها",
-        icon: <GrWorkshop size={20} />,
-        navLink: "/Job/list",
-      },
-      // {
-      //   id: "Transaction",
-      //   title: "لیست تراکنش",
-      //   icon: <GrTransaction size={20} />,
-      //   navLink: "/wallet/Transaction",
-      // },
-      // {
-      //   id: "code",
-      //   title: "لیست کد",
-      //   icon: <Code size={20} />,
-      //   navLink: "/wallet/Code",
-      // },
-    ]
-  },
+  // {
+  //   id: "Job",
+  //   title: "کاریابی",
+  //   icon: <GrUserWorker size={20} />,
+  //   children: [
+  //     {
+  //       id: "jobList",
+  //       title: "لیست شغل ها",
+  //       icon: <GrWorkshop size={20} />,
+  //       navLink: "/Job/list",
+  //     },
+  //   ]
+  // },
   {
     id: "Exam",
     title: "آزمون",

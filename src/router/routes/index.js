@@ -79,6 +79,8 @@ const EditUser = lazy(() => import('../../components/common/modal/edituser.js'))
 const Job = lazy(() => import('../../views/pages/job/job.js'))
 const Exam = lazy(() => import('../../views/pages/exam/exam.js'))
 const UserExam = lazy(() => import('../../views/pages/exam/userExam.js'))
+const EditUserWizard = lazy(() => import('../../views/pages/edituser/index.js'))
+
 
 // ** Merge Routes
 const token = localStorage.getItem('token');
@@ -325,7 +327,7 @@ const Routes = [
     path: '/wallet/Transaction',
   },
   {
-    element: token ? <EditUser /> : <Navigate to={'/login'} />,
+    element: token ? <EditUserWizard /> : <Navigate to={'/login'} />,
     path: '/EditUser',
   },
   {

@@ -145,13 +145,14 @@ const EditUserExample = ({ onClick , size}) => {
       }}
       onClick={onClick}
     >
-      <Tooltip title='ویرایش کاربر' placement='top'>
+      {/* <Tooltip title='ویرایش کاربر' placement='top'>
         <Edit size={size} className=' cursor-pointer' style={{marginTop: '2px'}} onClick={() => setShow(true)} />
-      </Tooltip>
+      </Tooltip> */}
       <div
         isOpen={show}
         toggle={() => setShow(!show)}
-        className='modal-dialog-centered modal-lg'
+        className='modal-dialog-centered modal-lg p-2'
+        style={{background:'#fff'}}
         backdrop='static'
         keyboard={false}
       >
@@ -168,7 +169,7 @@ const EditUserExample = ({ onClick , size}) => {
             enableReinitialize={true}
           >
             {({ handleChange, values, errors, touched }) => (
-              <Form style={{  display : 'flex', justifyContent : 'center' , flexFlow: 'row wrap', gap: '14px'}}>
+              <Form style={{  display : 'flex', justifyContent : 'center' , flexFlow: 'row wrap', gap:'50px'}}>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='userName'>
                     نام کاربری <span className='text-danger'>*</span>
@@ -178,6 +179,7 @@ const EditUserExample = ({ onClick , size}) => {
                     name='userName'
                     placeholder='userName'
                     value={values.userName}
+                    style={{width:'200px'}}
                     onChange={handleChange}
                     invalid={touched.userName && !!errors.userName}
                   />
@@ -192,6 +194,7 @@ const EditUserExample = ({ onClick , size}) => {
                     name='gmail'
                     placeholder='user@gmail.com'
                     value={values.gmail}
+                    style={{width:'200px'}}
                     onChange={handleChange}
                     invalid={touched.gmail && !!errors.gmail}
                   />
@@ -205,6 +208,7 @@ const EditUserExample = ({ onClick , size}) => {
                   <Input
                     id='phoneNumber'
                     name='phoneNumber'
+                    style={{width:'200px'}}
                     placeholder='(09xxxxxxxxx)'
                     value={values.phoneNumber}
                     onChange={handleChange}
@@ -221,6 +225,7 @@ const EditUserExample = ({ onClick , size}) => {
                     id='fName'
                     name='fName'
                     placeholder='نام'
+                    style={{width:'200px'}}
                     value={values.fName}
                     onChange={handleChange}
                     invalid={touched.fName && !!errors.fName}
@@ -235,6 +240,7 @@ const EditUserExample = ({ onClick , size}) => {
                   <Input
                     id='lName'
                     name='lName'
+                    style={{width:'200px'}}
                     placeholder='نام خانوادگی'
                     value={values.lName}
                     onChange={handleChange}
@@ -249,6 +255,7 @@ const EditUserExample = ({ onClick , size}) => {
                   <Input
                     id='nationalCode'
                     name='nationalCode'
+                    style={{width:'200px'}}
                     placeholder='national code'
                     value={values.nationalCode}
                     onChange={handleChange}
@@ -260,35 +267,15 @@ const EditUserExample = ({ onClick , size}) => {
 
                 {/* start  */}
 
-                <div style={{width:'230px'}}>
-                <Label className='form-label' for='gender'>
-                    جنسیت <span className='text-danger'>اختیاری</span>
-                  </Label>
-                  <Input
-                    type='select'
-                    id='gender'
-                    name='gender'
-                    value={values.gender}
-                    onChange={(e) => {
-                      const value = e.target.value === 'true';
-                      handleChange({ target: { name: 'gender', value } });
-                    }}
-                    invalid={touched.gender && !!errors.gender}
-                  >
-                    <option value='true'>مرد</option>
-                    <option value='false'>زن</option>
-                  </Input>
-
-                  {touched.gender && errors.gender && <FormFeedback>{errors.gender}</FormFeedback>}
-                </div>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='homeAdderess'>
-                    ادرس  <span className='text-danger'>اختیاری</span>
+                    ادرس  
                   </Label>
                   <Input
                     id='homeAdderess'
                     name='homeAdderess'
                     placeholder='آدرس'
+                    style={{width:'200px'}}
                     value={values.homeAdderess}
                     onChange={handleChange}
                     invalid={touched.homeAdderess && !!errors.homeAdderess}
@@ -297,11 +284,12 @@ const EditUserExample = ({ onClick , size}) => {
                 </div>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='userAbout'>
-                    درباره کاربر  <span className='text-danger'>اختیاری</span>
+                    درباره کاربر 
                   </Label>
                   <Input
                     id='userAbout'
                     name='userAbout'
+                    style={{width:'200px'}}
                     placeholder='درباره کاربر'
                     value={values.userAbout}
                     onChange={handleChange}
@@ -311,11 +299,12 @@ const EditUserExample = ({ onClick , size}) => {
                 </div>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='currentPictureAddress'>
-                   عکس پروفایل  <span className='text-danger'>اختیاری</span>
+                   عکس پروفایل 
                   </Label>
                   <Input
                     id='currentPictureAddress'
                     name='currentPictureAddress'
+                    style={{width:'200px'}}
                     placeholder='درباره کاربر'
                     value={values.currentPictureAddress}
                     onChange={handleChange}
@@ -325,10 +314,11 @@ const EditUserExample = ({ onClick , size}) => {
                 </div>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='recoveryEmail'>
-                    ایمیل بازگردانی  <span className='text-danger'>اختیاری</span>
+                    ایمیل بازگردانی  
                   </Label>
                   <Input
                     id='recoveryEmail'
+                    style={{width:'200px'}}
                     name='recoveryEmail'
                     placeholder='ایمیل  بازگردانی'
                     value={values.recoveryEmail}
@@ -339,42 +329,28 @@ const EditUserExample = ({ onClick , size}) => {
                 </div>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='telegramLink'>
-                    لینک تلگرام  <span className='text-danger'>اختیاری</span>
+                    لینک تلگرام  
                   </Label>
                   <Input
                     id='telegramLink'
                     name='telegramLink'
                     placeholder='لینک تلگرام'
+                    style={{width:'200px'}}
                     value={values.telegramLink}
                     onChange={handleChange}
                     invalid={touched.telegramLink && !!errors.telegramLink		}
                   />
                   {touched.telegramLink && errors.telegramLink && <FormFeedback>{errors.telegramLink}</FormFeedback>}
                 </div>
-                <div className='mb-1 ' style={{width : '230px'}}>
-                  <Label className='form-label' for='gender'>
-                    جنسیت <span className='text-danger'>اختیاری</span>
-                  </Label>
-                  <Input
-                    type='select'
-                    id='gender'
-                    name='gender'
-                    value={values.gender}
-                    onChange={handleChange}
-                    invalid={touched.gender && !!errors.gender}
-                  >
-                    <option value='true'>مرد</option>
-                    <option value='false'>زن</option>
-                  </Input>
-                  {touched.gender && errors.gender && <FormFeedback>{errors.gender}</FormFeedback>}
-                </div>
+
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='linkdinProfile'>
-                    لینک لینکدین  <span className='text-danger'>اختیاری</span>
+                    لینک لینکدین  
                   </Label>
                   <Input
                     id='linkdinProfile'
                     name='linkdinProfile'
+                    style={{width:'200px'}}
                     placeholder='لینک لینکدین'
                     value={values.linkdinProfile}
                     onChange={handleChange}
@@ -384,11 +360,12 @@ const EditUserExample = ({ onClick , size}) => {
                 </div>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='latitude'>
-                    lat  <span className='text-danger'>اختیاری</span>
+                    lat  
                   </Label>
                   <Input
                     id='latitude'
                     name='latitude'
+                    style={{width:'200px'}}
                     placeholder='latitude'
                     value={values.latitude}
                     onChange={handleChange}
@@ -398,10 +375,11 @@ const EditUserExample = ({ onClick , size}) => {
                 </div>
                 <div className='mb-1 w-40'>
                   <Label className='form-label' for='longitude'>
-                    long  <span className='text-danger'>اختیاری</span>
+                    long  
                   </Label>
                   <Input
                     id='longitude'
+                    style={{width:'200px'}}
                     name='longitude'
                     placeholder='longitude'
                     value={values.longitude}
@@ -413,11 +391,12 @@ const EditUserExample = ({ onClick , size}) => {
 
                 <div className='mb-1' style={{ width: '230px' }}>
                   <Label className='form-label' for='roles'>
-                    نقش <span className='text-danger'>اختیاری</span>
+                    نقش 
                   </Label>
                   <FormSelect
                     type='select'
                     id='roles'
+                    style={{width:'200px'}}
                     name='roles'
                     value={values.roles}
                     onChange={handleChange}
@@ -434,14 +413,38 @@ const EditUserExample = ({ onClick , size}) => {
 
                 <div className='mb-1' style={{ width: '230px' }}>
                   <Label className='form-label' for='birthDay'>
-                    تاریخ تولد <span className='text-danger'>اختیاری</span>
+                    تاریخ تولد 
                   </Label>
                   <DatePicker 
-                  selected={startDate} 
+                  selected={startDate}
+                  style={{width:'200px'}} 
                   onChange={(date) => 
                   setStartDate(date)} 
                   value={useBirthDay(values.birthDay)}
                   />
+                </div>
+                
+                <div style={{width:'230px'}}>
+                <Label className='form-label' for='gender'>
+                    جنسیت 
+                  </Label>
+                  <Input
+                    type='select'
+                    id='gender'
+                    style={{width:'200px' , margin:0}}
+                    name='gender'
+                    value={values.gender}
+                    onChange={(e) => {
+                      const value = e.target.value === 'true';
+                      handleChange({ target: { name: 'gender', value } });
+                    }}
+                    invalid={touched.gender && !!errors.gender}
+                  >
+                    <option value='true'>مرد</option>
+                    <option value='false'>زن</option>
+                  </Input>
+
+                  {touched.gender && errors.gender && <FormFeedback>{errors.gender}</FormFeedback>}
                 </div>
                 <div className='mb-1  ' style={{width: '300px'}}>
                   <Label className='form-label'>نوع کاربر</Label>
@@ -449,7 +452,7 @@ const EditUserExample = ({ onClick , size}) => {
                     <Label style={{ marginBottom: '0.5rem' }}>
                       <Input
                         type='checkbox'
-                        name='isTecher'
+                        name='isTecher' 
                         checked={values.isTecher}
                         onChange={handleChange}
                       />
