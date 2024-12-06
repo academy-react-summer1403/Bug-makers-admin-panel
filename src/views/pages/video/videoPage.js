@@ -15,11 +15,12 @@ import { deleteVideo, getVideoAll } from '../../../@core/api/video/videoApi';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import CreateVideo from '../../../components/common/modal/createVideo';
+import ShowGroupVideo from '../../../components/common/modal/showGroupVideo';
 
 const VideoPage = () => {
   const itemsPerPage = 8;
     const queryClient = useQueryClient()
-  const { data } = useQuery({
+  const { data , isLoading} = useQuery({
     queryKey: ['getVideo'],
     queryFn: getVideoAll,
   });
@@ -96,33 +97,10 @@ console.log(course);
       cell: (row) => <Link to={'/apps/Detail/' + row.courseId} >{row.title}</Link>,
     },
     {
-      name: 'قیمت اولیه',
-      selector: (row) => row.Pcost,
-      cell: row => (
-        <Tooltip title={row.videoUrl} placement='top-end'>
-            <span 
-                style={{
-                    width:'150px',
-                    overflow:'hidden',
-                    textOverflow:'ellipsis',
-                    whiteSpace:'nowrap'
-                }}
-            >
-                {row.videoUrl}
-            </span>
-        </Tooltip>
-      )
+      name: 'تعداد گروه',
+      selector: (row) => row.groups.length,
     },
-    {
-      name: 'آیدی گروه دوره',
-      selector: (row) => row.groupId,
-    },
-    {
-      name: 'دسترسی',
-      cell: row => (
-        <Badge color={row.isLock ? 'danger' : 'success'} >{row.isLock ? 'قفل شده' : 'باز شده'}</Badge>
-      )
-    },
+
     {
       name: 'عملیات',
       cell: (row) => (
@@ -134,7 +112,7 @@ console.log(course);
 
           <Dropdown.Menu>
             <Dropdown.Item >
-              <CreateVideo row={row} title='ویرایش' />
+              <ShowGroupVideo isLoading={isLoading} row={row} />
             </Dropdown.Item>
             <Dropdown.Item >
               <Button color='transparent' style={{textAlign:'center' , border:'none'}} onClick={() => deleteVideoFun.mutate(row.id)}>حذف ویدیو</Button>
