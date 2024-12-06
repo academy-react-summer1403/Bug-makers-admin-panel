@@ -1,8 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient  } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { Badge } from 'reactstrap';
+import { Badge, Button } from 'reactstrap';
 import EditBullding from '../../../components/common/modal/editBullding';
 import Active from '../../../components/common/active/active';
 import moment from 'moment-jalaali';
@@ -24,11 +24,11 @@ import EdEditTerm from '../../../components/common/modal/editTerm';
 import EditTermCloseTime from '../../../components/common/modal/editTermCloseTime';
 import { Calendar, Menu, Plus } from 'react-feather';
 import { Skeleton, Tooltip } from '@mui/material';
-import { getAllJob } from '../../../@core/api/job/getAllJob';
+import { UpdateWork, deleteJobApi, getAllJob } from '../../../@core/api/job/getAllJob';
 
 const Job = () => {
   const itemsPerPage = 8;
-
+  const query = useQueryClient()
   const { data , isLoading : dataLoading } = useQuery({
     queryKey: ['getJob'],
     queryFn: getAllJob,
@@ -44,9 +44,9 @@ const Job = () => {
 
   useEffect(() => {
     if (data) {
-      const result = data?.data?.filter((row) => {
-        const matchesSearchText = row.title?.toLowerCase().includes(searchText.toLowerCase())         
-        const matchesActiveStatus = isActive === null || row.IsActive === isActive;
+      const result = data?.filter((row) => {
+        const matchesSearchText = row.jobTitle?.toLowerCase().includes(searchText.toLowerCase())         
+        const matchesActiveStatus = isActive === null || row.inWork === isActive;
         
         return matchesSearchText && matchesActiveStatus;
       });
@@ -60,33 +60,110 @@ const Job = () => {
   }
 
 
+  const changeInWork = useMutation({
+    mutationKey:['changeWork'],
+    mutationFn: (data) => UpdateWork(data),
+    onSuccess:() => {
+      query.invalidateQueries('getJob')
+    }
+  })
+  const deleteJob = useMutation({
+    mutationKey:['deleteJobKey'],
+    mutationFn: (id) => deleteJobApi(id),
+    onSuccess:() => {
+      query.invalidateQueries('getJob')
+    }
+  })
 
-  
+
+  const handleToggleInWork = (row) => {
+    const updatedRow = { ...row, inWork: !row.inWork };  
+    handleChangeState(updatedRow);
+  };
+
+  const handleChangeState = (updatedRow) => {
+    const formData = new FormData();
+    const data = {
+      id: updatedRow.id,
+      show: updatedRow.inWork
+    }
+    changeInWork.mutate(data)
+    
+  }
   const columns = [
     {
       name: 'عنوان شغل',
-      selector: (row) => row.title,
+      selector: (row) => row.jobTitle,
     },
     {
-      name: 'نام دسته بندی',
-      selector: (row) => row.Category,
-    },
-    {
-      name: 'نام کمپانی ',
-      selector: (row) => row.CompanyName,
-    },
-    {
-      name: 'وضعیت',
-      selector: (row) => row.IsActive,
-      sortable: true,
+      name: 'درباره شغل',
+      selector: (row) => row.aboutJob,
       cell : row => (
-        <Badge color={row.IsActive ? 'success' : 'danger'} >{row.IsActive ? 'فعال' : 'غیر فعال'}</Badge>
+        <Tooltip title={row.aboutJob} placement='top-end'>
+          <span style={{
+            width:'150px',
+            whiteSpace:'nowrap',
+            overflow:'hidden',
+            textOverflow:'ellipsis'
+          }}>
+          {row.aboutJob}
+          </span>
+        </Tooltip>
       )
     },
     {
-      name: 'تاریخ انتشار',
-      width:'150px',
-      selector: (row) => useDay(row.Date),
+      name: 'سایت کمپانی',
+      selector: (row) => row.companyWebSite,
+      cell : row => (
+        <Tooltip title={row.companyWebSite} placement='top-end'>
+          <span style={{
+            width:'100px',
+            whiteSpace:'nowrap',
+            overflow:'hidden',
+            textOverflow:'ellipsis'
+          }}>
+          {row.companyWebSite}
+          </span>
+        </Tooltip>
+      )
+    },
+    {
+      name: 'لینکدین کمپانی',
+      selector: (row) => row.companyLinkdin,
+      cell : row => (
+        <Tooltip title={row.companyLinkdin} placement='top-end'>
+          <span style={{
+            width:'100px',
+            whiteSpace:'nowrap',
+            overflow:'hidden',
+            textOverflow:'ellipsis'
+          }}>
+          {row.companyLinkdin}
+          </span>
+        </Tooltip>
+      )
+    },
+    {
+      name: 'نام کمپانی ',
+      selector: (row) => row.companyName,
+    },
+    {
+      name: 'نام کمپانی ',
+      selector: (row) => useDay(row.workStartDate),
+    },
+    {
+      name: 'نام کمپانی ',
+      selector: (row) => useDay(row.workEndDate),
+    },
+    {
+      name: 'وضعیت',
+      selector: (row) => row.inWork,
+      sortable: true,
+      cell : row => (
+        <Tooltip title='برای تغییر وضعیت کلیک کنید' placement='top'>
+        <Badge className='cursor-pointer' onClick={() => handleToggleInWork(row)} color={row.inWork ? 'success' : 'danger'} >{row.inWork ? 'فعال' : 'غیر فعال'}</Badge>
+        </Tooltip>
+      )
     },
     {
       name: 'عملیات',
@@ -98,11 +175,7 @@ const Job = () => {
   
         <Dropdown.Menu className="border-0">
           <Dropdown.Item as="div" className="d-flex justify-content-center align-items-center gap-1">
-            <EdEditTerm size="sm" row={row} title="ویرایش" />
-          </Dropdown.Item>
-  
-          <Dropdown.Item as="div" className="d-flex justify-content-center align-items-center gap-1">
-            <EditTermCloseTime size="sm" row={row} title="ویرایش زمان" />
+            <Button color='transparent'  size="sm" onClick={() => deleteJob.mutate(row.id)} >حذف شغل</Button>
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
