@@ -16,7 +16,7 @@ export const createVideo = async (data) => {
 const response = await axiosInstance.post('https://6751b883d1983b9597b40062.mockapi.io/courseVideo/courseVideo' ,data);
     return response.data;
 };
-export const updateVideo = async (data , id) => {
+export const UpdateCourseGroupName = async (data , id) => {
 
 const response = await axiosInstance.put(`https://6751b883d1983b9597b40062.mockapi.io/courseVideo/courseVideo/${id}` ,data);
     return response.data;

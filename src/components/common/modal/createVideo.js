@@ -22,7 +22,8 @@ import persian_fa from "react-date-object/locales/persian_fa"
 import { AddSchedualAtomatic, AddSchedualSingle, UpdateSchedual } from '../../../@core/api/Schedual/schedual';
 import { getCourseGroupId } from '../../../@core/api/course/getCourseWithGroupId';
 import { Switch, Tooltip } from '@mui/material';
-import { createVideo, updateVideo } from '../../../@core/api/video/videoApi';
+import { createVideo } from '../../../@core/api/video/videoApi';
+import toast from 'react-hot-toast';
 const CreateVideo = ({row , title}) => {
 
   const [show, setShow] = useState(false);
@@ -39,17 +40,9 @@ console.log(selectedId);
   };
 
 
-  const defaultValues = row ? {
-    id: row.id,
-    courseId: row.courseId || selectedId,
-    groupId: row.groupId || groupIdSchedual,
-    videoUrl:  row.videoUrl || '',
-    isLock: row.isLock  || false,
-  } : {
+  const defaultValues =  {
     courseId: selectedId,
-    groupId: groupIdSchedual,
-    videoUrl:  '',
-    isLock: '',
+    groups:[]
   }
   const queryClient = useQueryClient();
 
@@ -74,40 +67,14 @@ console.log(selectedId);
         enabled: row ? !!getCourseWithGroup : !!selectedId,
       })
     
-      useEffect(() => {
-        if(courseDetail){
-          setTeacherId(courseDetail?.teacherId)
-        }
-      }, [courseDetail])
-      
-    const {data : group} = useQuery({
-    queryKey:['getGroup', row ? courseDetail?.teacherId : teacherId ,  getCourseWithGroup ? getCourseWithGroup?.courseGroupDto?.courseId : selectedId],
-    queryFn: () => getGroup(row ? courseDetail?.teacherId : teacherId ,  getCourseWithGroup ? getCourseWithGroup?.courseGroupDto?.courseId : selectedId),
-    enabled: row ? !!getCourseWithGroup : !!teacherId
-  })
-  const validationSchema1 = Yup.object({
-    videoUrl: Yup.string(),
-  })
-  
 
-
-
-
-  const [SelectId, setSelectId] = useState(1)
-  const { data : getCategoryIdData} = useQuery({
-    queryKey:['categoryIdList',SelectId],
-    queryFn: () => getCategoryId(SelectId),
-    enabled: !!SelectId
-})
 
 const createVideoFun = useMutation({
-    mutationKey:['createVideoKey'],
-    mutationFn:
-    row ? (
-        (data) => updateVideo(data , data.id) ) : (
-        (data) => createVideo(data)),
+    mutationKey:['createGroupKey'],
+    mutationFn:(data) => createVideo(data),
     onSuccess:() => {
         queryClient.invalidateQueries('getVideo')
+        toast.success('گروه اضافه شد')
     }
 })
 
@@ -126,7 +93,7 @@ const handleSubmit1 = (values) => {
 
   return (
     <div>
-        <Tooltip title='افزودن ویدیو' placement='top' >
+        <Tooltip title='افزودن گروه' placement='top' >
       <Button onClick={() => setShow(true)} size="sm" color="transparent" className="cursor-pointer" style={{ border: 'none' }}>
         {title}
       </Button>
@@ -138,7 +105,6 @@ const handleSubmit1 = (values) => {
         <ModalBody className="px-sm-5 mx-50 pb-5">
           <Formik
             initialValues={defaultValues}
-            validationSchema={validationSchema1}
             onSubmit={handleSubmit1}
             enableReinitialize={true}
           >
@@ -180,48 +146,7 @@ const handleSubmit1 = (values) => {
                   {errors.courseId && touched.courseId && <div className="text-danger">{errors.courseId}</div>}
                 </FormGroup>
 
-                {/* Group selection */}
-                <FormGroup>
-                  <Label for="groupId">گروه دوره</Label>
-                  <FormSelect
-                    name="groupId"
-                    id="groupId"
-                    value={groupIdSchedual}
-                    onChange={(e) => setGroupIdSchedual(e.target.value)}
-                  >
-                    <option value="">انتخاب گروه</option>
-                    {group?.map((item) => (
-                      <option key={item.groupId} value={item.groupId}>
-                        {item.groupName}
-                      </option>
-                    ))}
-                  </FormSelect>
-                  {errors.groupId && touched.groupId && <div className="text-danger">{errors.groupId}</div>}
-                </FormGroup>
-
-                {/* Video URL */}
-                <FormGroup>
-                  <Label for="videoUrl">آدرس ویدیو</Label>
-                  <Input
-                    name="videoUrl"
-                    id="videoUrl"
-                    onChange={handleChange}
-                    value={values.videoUrl}
-                  />
-                  {errors.videoUrl && touched.videoUrl && <div className="text-danger">{errors.videoUrl}</div>}
-                </FormGroup>
-
-                {/* Access (Lock Switch) */}
-                <FormGroup>
-                  <Label for="isLock">دسترسی</Label>
-                  <Switch
-                    checked={values.isLock}
-                    onChange={(e) => setFieldValue('isLock', e.target.checked)}
-                    name="isLock"
-                    id="isLock"
-                  />
-                  {errors.isLock && touched.isLock && <div className="text-danger">{errors.isLock}</div>}
-                </FormGroup>
+              
 
                 <Button color="primary" type="submit">
                   {row ? 'ویرایش ویدیو' : 'افزودن ویدیو'}
